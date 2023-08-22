@@ -1,0 +1,21 @@
+Package: piCurve
+Type: Package
+Title: Photosynthesis Irradiance Modeling
+Version: 0.1.0
+Authors@R: c(
+    person(given = "Mohammad",
+           family = "M. Amirian",
+           role = c("aut", "cre"),
+           email = "m.amirianmatlob@dal.ca"),
+    person(given = "Andrew",
+           family = "Irwin",
+           role = c("aut"),
+           email = "A.Irwin@dal.ca"))
+Maintainer: The package maintainer <m.amirianmatlob@dal.ca>
+Description: The piCurve package incorporates a pool of photosynthesis irradiance (PI) models, enabling researchers to analyze the intricate relationship between irradiance and photosynthesis. It provides a comprehensive framework to study the effects of different irradiance levels on photosynthetic activity across various plant species and environmental conditions.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.2.3
+Roxygen: list(markdown = TRUE)
+Imports: tibble, fBasics

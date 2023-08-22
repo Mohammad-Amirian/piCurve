@@ -1,0 +1,150 @@
+#####################################################################
+# Statistical Functions:: MSE, adjusted_R2, AICc, BIC
+#####################################################################
+
+# MSE function ----
+#' Statistical Adequacy Test
+#'
+#' @description
+#' Wrapper to calculate Mean Squared Error (MSE) value.
+#'
+#' @param data Data frame –- containing the primary production profile.
+#' @param model_fit Vector – containing the calculated primary production profile.
+#'
+#' @return \samp{MSE} calculates measures the average squared difference between
+#' predicted and actual values.
+#'
+#' @export
+#'
+#' @examples
+#' # model parameters
+#' params <- c(Pmax = 20, alpha = 0.6, R = 0)
+#'
+#' # generate an irradiance profile
+#' df <- tibble::tibble(I = seq(0, 100, length = 25))
+#'
+#' df$PP <- # generate PP using Baly's rectangular hyperbola model
+#'    Model_piCurve(parameters = params, model_name = "Eq3-Baly", data = df) +
+#'    5 * rnorm(25, 0, 0.25)    # add some noise to PP
+#'
+#' # Estimate the optimal values for the generated dataset using MLE method
+#' fit <- OptPIparams(parameters = c(params, StDev = 2), model_name = "Eq3-Baly",
+#'                    STATapp = "MLE", Hessian = TRUE, data = df)
+#'
+#' # Calculate the primary production profile using the optimal values
+#' model_fit <- Model_piCurve(parameters = fit$par, model_name = fit$model, data = df)
+#'
+#' MSE(df, model_fit)
+#'
+MSE <- function(data, model_fit){
+    sum( (data$PP - model_fit)^2 / length(model_fit) )
+}
+
+
+# R2 and adjusted R2 ----
+#' Statistical Adequacy Test
+#'
+#' @description
+#' Wrapper to calculate R2 and adjusted R2 value.
+#'
+#' @param data Data frame –- containing the primary production profile.
+#' @param model_fit Vector – containing the calculated primary production profile.
+#' @param Nparams Numeric -- total number of parameters used in the model.
+#'
+#' @return The function returns a vector consisting of R2 and adjusted R2.
+#' @export
+#'
+#' @examples
+#' # model parameters
+#' params <- c(Pmax = 20, alpha = 0.6, R = 0)
+#'
+#' # generate an irradiance profile
+#' df <- tibble::tibble(I = seq(0, 100, length = 25))
+#'
+#' df$PP <- # generate PP using Baly's rectangular hyperbola model
+#'    Model_piCurve(parameters = params, model_name = "Eq3-Baly", data = df) +
+#'    5 * rnorm(25, 0, 0.25)    # add some noise to PP
+#'
+#' # Estimate the optimal values for the generated dataset using MLE method
+#' fit <- OptPIparams(parameters = c(params, StDev = 2), model_name = "Eq3-Baly",
+#'                    STATapp = "MLE", Hessian = TRUE, data = df)
+#'
+#' # Calculate the primary production profile using the optimal values
+#' model_fit <- Model_piCurve(parameters = fit$par, model_name = fit$model, data = df)
+#'
+#' R2(df, model_fit, Nparams = length(fit$par))
+#'
+R2 <- function(data, model_fit, Nparams){
+
+    # empirical primary production
+    PP <- data$PP
+    # square difference between empirical PP and estimated PP
+    diff_squared_val <- (PP - model_fit)^2
+    # take column-wise mean from the empirical data
+    mean_databar <- mean(PP, na.rm = TRUE)
+    # subtract each vector from its mean value
+    SST <- (PP - mean_databar)^2
+    # take column-wise sum
+    SST <- sum(SST)
+    # take column-wise sum from square diff between empirical data and the fit
+    SSE <-  sum(diff_squared_val, na.rm = TRUE)
+
+    # calculate R2
+    R2 <- 1 - SSE/SST
+
+    # calculate adjusted R2
+    N = length(PP)                # number of data points
+
+    R2adj <- 1 - ( (N-1) / (N-Nparams) ) * (1-R2)
+
+    return(c(R2 = R2, R2adj = R2adj))
+}
+
+# Calculate AIC, AICc, and BIC ----
+#' Statistical Adequacy Test
+#'
+#' @description
+#' Wrapper to calculate AIC, AICc, and BIC values.
+#'
+#' @param Fitted_Model List -- the fitted model (output of \verb{OptPIparams} function).
+#' @param SampleN Numeric -- length of primary production profile.
+#'
+#' @return The function returns a vector consisting of AIC, AICc and BIC values.
+#' @export
+#'
+#' @examples
+#' # model parameters
+#' params <- c(Pmax = 20, alpha = 0.6, R = 0)
+#'
+#' # generate an irradiance profile
+#' df <- tibble::tibble(I = seq(0, 100, length = 25))
+#'
+#' df$PP <- # generate PP using Baly's rectangular hyperbola model
+#'    Model_piCurve(parameters = params, model_name = "Eq3-Baly", data = df) +
+#'    5 * rnorm(25, 0, 0.25)    # add some noise to PP
+#'
+#' # Estimate the optimal values for the generated dataset using MLE method
+#' fit <- OptPIparams(parameters = c(params, StDev = 2), model_name = "Eq3-Baly",
+#'                    STATapp = "MLE", Hessian = TRUE, data = df)
+#'
+#' # Calculate 95 % CI for the estimated parameters
+#' InfoCriteria(Fitted_Model = fit, SampleN = length(df$PP))
+
+InfoCriteria <- function(Fitted_Model, SampleN){
+
+    p = length(Fitted_Model$par)
+
+    # AIC = 2(p - ln(likelihood)). To maximize the likelihood value, logL is
+    # mutiplied by (-1) in MLE_fn, embedded in OptPIparams function. The negative
+    # sign has thus been considered.
+    AIC  <- 2 * (p + Fitted_Model$value)
+
+    AICc <- AIC + 2 * p * (p + 1) / (SampleN - p -1)
+
+    # BIC = p ln(SampleN) - 2 ln(likelihood)). Same as AIC applies to BIC
+    BIC <- p * log(SampleN) + 2 * Fitted_Model$value
+
+    return(c(AIC = AIC, AICc = AICc, BIC = BIC))
+}
+
+

@@ -1,0 +1,324 @@
+
+#' Find the optimal parameters in PI models
+#' @description
+#' \samp{OptPIparams} uses general-purpose optimization to identify the optimal parameters
+#' in the photosynthesis-irradiance curve models.
+#' The method includes the \samp{Nelder-Mead}, \samp{quasi-Newton}, and \samp{conjugate-gradient} algorithms,
+#' as well as options for box-constrained optimization and simulated annealing. Two different
+#' statistical approaches, Mean Squared Error (MSE) and Maximum Likelihood Estimation (MLE),
+#' are available for objective function optimization.
+#'
+#' @param parameters Vector -- containing the values listed below:
+#' \itemize{
+#'      \item{\code{Pmax} \eqn{\hspace{0.1cm}}: }{Maximum photosynthesis rate normalised by Chl_a (sign +),}
+#'      \item{\code{alpha}: }{Light-saturation slope at low light level (sign +),}
+#'      \item{\code{beta}  \eqn{\hspace{0.15cm}}: }{Photoinhibition rate at high light level (sign +),}
+#'      \item{\code{R}  \eqn{\hspace{0.7cm}}: }{dark reaction parameter (sign + OR -),}
+#'      \item{\code{shape}  \eqn{\hspace{0cm}}: }{shape parameter (sign +) -- Only required for some of the models. See \samp{Details}}.
+#'      \item{\code{StDev}  \eqn{\hspace{0cm}}: }{standard deviation parameter -- Only required when \samp{STATapp = MLE}}.
+#' }
+#' @param model_name String -- which model? (See \samp{details})
+#' @param STATapp String -- Providing the statistical methods for optimization,
+#' which are \samp{MSE} or \samp{MLE}. See \samp{Details}. Default is \samp{MSE}.
+#' @param data Vector -- Containing the irradiance profile.
+#' @param GradientFn String -- A function that produces the gradient for \verb{BFGS},
+#' \verb{CG} and \verb{L-BFGS-B} techniques, and if it is not provided, a numerical
+#' estimation using \samp{finite-differences} will be applied.
+#' @param ... An option to pass further arguments to \verb{GradientFn}.
+#' @param Method String -- The method employed to determine the optimal values for the
+#' model's parameters. Further details \code{?stats::optim}.
+#' @param LowerBnd Numeric -- Lower boundaries on the variables for the \verb{L-BFGS-B}
+#' method, or bounds in which to search for method \verb{Brent}.
+#' @param UpperBnd Numeric -- Upper boundaries on the variables for the \verb{L-BFGS-B}
+#' method, or bounds in which to search for method \verb{Brent}.
+#' @param Control List -- a list of control parameters. Further details \code{?stats::optim}.
+#' @param Hessian Logical -- Should the Hessian matrix be returned through numerical
+#' differentiation? Default is \verb{FALSE}.
+#'
+#' @return Below is a list of the results obtained from the optimization.
+#' \itemize{
+#' \item{\verb{par:}} The optimal parameters obtained through optimization by
+#' using either the mean squared error (\samp{MSE}) or maximum likelihood estimate (\samp{MLE}) method.
+#'
+#' \item{\verb{value:}}
+#' The MSE value on the primary production (\verb{PP}) profile when
+#' \verb{STATapp = MSE} is met or \verb{STATapp} is not specified. This metric
+#' measures the average squared difference between predicted and actual values
+#' in regression analysis. A lower value for the mean MSE indicates a better fit.
+#' For \verb{STATapp = MLE}, the optimization uses Maximum Likelihood Estimation
+#' method to find the optimal parameters. The value in this case stands for the
+#' likelihood of observing the primary production (\verb{PP}) for the estimated
+#' parameters. A higher value for the MLE indicates a better fit as the method
+#'  aims to find the parameter values that make the observed data most
+#' likely to occur according to the assumed distribution
+#'
+#' \item{\verb{counts:}}
+#' This is a vector consisting of two integers that indicate the number of times
+#' the model and its gradient \verb{GradientFn} were called during a certain process.
+#' This count does not include the calls made to compute the Hessian (if requested),
+#' or any calls to the model to compute a finite-difference approximation to the gradient.
+#'
+#' \item{\verb{message:}}
+#' A character string that provides any extra information given by the optimizer
+#' upon completion of a process. if there is no such additional information, a value of \verb{NULL} will be returned.
+#'
+#' \item{\verb{hessian:}}
+#' A symmetric matrix that estimates the Hessian at the optimal solution, but only if the hessian argument is set to \verb{TRUE}.
+#' It is important to note that this is the Hessian of the unconstrained problem, even if there are active box constraints.
+#'
+#' \item{\verb{convergence:}}
+#' An integer value representing the optimization process is completed. A value of 0 indicates
+#' that the process has completed successfully, which is always the case for \verb{SANN} and \verb{Brent}.
+#' However, there may be other possible error codes listed below, which could be generated during the process.
+#'
+#' \itemize{
+#'      \item{\verb{1 :}  }{indicates that the iteration limit maxit had been reached.}
+#'      \item{\verb{10:}}{indicates that the \verb{Nelder-Mead} simplex method has encountered degeneracy, meaning that
+#'      two or more vertices of the simplex have converged to the same point.}
+#'      \item{\verb{51:}}{indicates a warning that has been issued by the  \verb{L-BFGS-B} method.
+#'      Further details regarding this warning can be found in the \verb{message} component of the output.}
+#'      \item{\verb{52:}} {indicates an error that has occurred within the \verb{L-BFGS-B} method.
+#'      Additional details about this error can be found in the \verb{message} component of the output.}
+#' }
+#'
+#' \item{\verb{info_criteria:}} A vector consisting AIC, AICc, and BIC values when \verb{MLE} approach is chosen.
+#' The main difference between these values lie in the penalties they impose on model complexity.
+#' AIC tends to select more complex models compared to BIC, while AICc provides a correction
+#' to AIC for small sample sizes. BIC, on the other hand, penalizes model complexity more
+#' heavily than AIC and AICc, often resulting in the selection of simpler models.
+#'
+#' \item{\verb{model:}} Name of equation used to model the given data sample.
+#'
+#' \item{\verb{SQA:}} Statistical Quality Assessment consists of a vector incorporating
+#' R2 and adjusted R2 values. R2 values provide information about the
+#' goodness of the fit by indicating the proportion of data variation that is
+#' explained by the model. Adjusted R2 considers a penalty for over parameterization.
+#' Together, these two measures help evaluating the accuracy
+#' of the model's predictions and provide insights into how well the model
+#' captures/explains the observed data variation. Note that these values should
+#' not be used as a model selection criteria. AICc or BIC should be used for that
+#' purpose.
+#' }
+#'
+#' @details
+#'
+#' The \strong{\verb{STATapp}} argument refers to the statistical approach.  To achieve
+#' a more accurate estimation in a regression model (greater R\eqn{^2}), users may consider
+#' using the MSE method over the MLE method, as the former measures the average
+#' squared difference between predicted and actual values. In contrast, the MLE
+#' method determines the best possible values by maximizing the likelihood of
+#' observing the data within the given model, thus offering the user a detailed
+#' insight into the estimation error of each parameter. To get such insight when
+#' \verb{STATapp = MLE}, the \verb{Hessian} argument should be set to \verb{TRUE}. If forgotten,
+#' the user can use \verb{optimHess} function.
+#'
+#' This package includes both commonly-used and recently-developed PI models.
+#' The list of models is provided below.
+#'
+#' \strong{Table 1}. Existing formulas for light-saturation curve (\eqn{I_k = P_{\max}^B/ \alpha}).
+#' | \strong{Name} \eqn{\hspace{0.5cm}} | \strong{Model} | \strong{Function Type} | \strong{References} |
+#' | --- | --- |  --- |  --- |
+#' | Eq1 | \eqn{P^B = P^B_{\max}\dfrac{I+I_k - |I-I_k|}{2I_k} \hspace{1cm}} | Bilinear | \emph{Blackman 1905} |
+#' | Eq2 | \eqn{P^B = P^B_{\max}\dfrac{I}{I + I_k}} | Rectangular Hyperbola | \emph{Baly 1935} |
+#' | Eq3 | \eqn{P^B = P^B_{\max}\dfrac{I}{\sqrt{I^2 + I^2_k}}} | Modified Rectangular Hyperbola | \emph{Smith 1936} |
+#' | Eq4 | \eqn{P^B = P^B_{\max}(1-e^{-I/I_k})} | Exponential | \emph{Webb et al. 1974} |
+#' | Eq5 | \eqn{P^B = P^B_{\max} \tanh \left( \dfrac{I}{I_k} \right)} | Hyperbolic Tangent|  \emph{Jassby et al. 1976} |
+#' | Eq6 | \eqn{P^B = \dfrac{P^B_{\max}}{2 \theta} \left[\mathcal{I} -\sqrt{\mathcal{I}^2 - 4 \theta(\mathcal{I} - 1)} \right]} \eqn{\hspace{0.5cm}} | Non-rectangular hyperbola | \emph{Prioul et al. 1977} |
+#' | Eq7 | \eqn{P^B = P^B_{\max} \dfrac{I}{(I^b+I^b_k)^{1/b}}} | Generalized Rectangular Hyperbola \eqn{\hspace{0.5cm}} | \emph{Bannister 1979} |
+#'
+#' where \eqn{b} is a shape parameter, \eqn{\theta = \dfrac{1}{1 + \exp{(-b)}}} is
+#' a sigmoid function setting \eqn{0< \theta <1}, and \eqn{\mathcal{I} = \left(\dfrac{I}{I_k} + 1\right) }.
+#'
+#' @note
+#' The function \samp{Model_piCurve} can handle all combinations of the names
+#' listed above, where the input string \verb{model_name}  is concerned.
+#' For instance,if any of the following forms are used, the function will set
+#'  \verb{model_name = "Eq1_Blackman"}.
+#'
+#' \itemize{
+#'          \item With or without spacing: Eq1Blackman, Eq1 Blackman,
+#'          \item Underscore or hyphen spacing: Eq1_Blackman, Eq1-Blackman,
+#'          \item Any form of lower/upper case: eq1_blackman, EQ1_blackman,
+#'          \item Missing author name: EQ1, Eq1, eQ1, eq1, 1,
+#'          \item Missing Eq indicator: blackman, Blackman,
+#'          \item Other combination of all the above: Blackmaneq1, BlackmanEq1,
+#'          Blackman Eq1, eq1 Blackman, etc.
+#' }
+#'
+#'
+#' This function utilizes the \verb{optim()} function from the \verb{stats}
+#' package to perform the optimization. As such, the function makes available all
+#' of the arguments that can be used with the \verb{optim()} function within itself.
+#'
+#'
+#' @export
+#'
+#' @examples
+#' # model parameters
+#' params <- c(Pmax = 20, alpha = 0.6, R = 0)
+#'
+#' # generate an irradiance profile
+#' df <- tibble::tibble(I = seq(0, 100, length = 25))
+#'
+#' df$PP <- # generate PP using Baly's rectangular hyperbola model
+#'    Model_piCurve(parameters = params, model_name = "Eq3-Baly", data = df) +
+#'    5 * rnorm(25, 0, 0.25)    # add some noise to PP
+#'
+#' # Estimate the optimal values for the generated dataset using MSE method
+#' OptPIparams(parameters = params, model_name = "Eq3-Baly", data = df)
+#'
+#' # Estimate the optimal values for the generated dataset using MLE method
+#' OptPIparams(parameters = c(params, StDev = 2), model_name = "Eq3-Baly",
+#'             STATapp = "MLE", Hessian = TRUE, data = df)
+
+#'
+#' @importFrom fBasics Heaviside
+#' @importFrom stats optim
+#'
+OptPIparams <- function(parameters,
+                        model_name = c(
+                            ## no photoinhibition
+                            "Eq1_lm",
+                            "Eq2_Blackman",
+                            "Eq3_Baly",
+                            "Eq4_Smith",
+                            "Eq5_Talling",
+                            "Eq6_Vollenweider_Ln",
+                            "Eq7_Webb",
+                            "Eq8_Jassby",
+                            "Eq9_Prioul",
+                            "Eq10_Bannister",
+
+                            ## with photoinhibition
+                            "Eq11_Blackman_extended_1",
+                            "Eq12_Blackman_extended_2",
+                            "Eq13_Vollenweider",
+                            "Eq14_Steele",
+                            "Eq15_Steele_modified",
+                            "Eq16_Peeters",
+                            "Eq17_Platt",
+                            "Eq18_Neale",
+                            "Eq19_Neale_modified",
+                            "Eq20_Ye",
+                            "Eq21_Baly_extended",
+                            "Eq22_Smith_extended",
+                            "Eq23_Prioul_extended",
+                            "Eq24_Bannister_extended",
+                            "Eq25_Tanh_Tanh_1",
+                            "Eq26_Tanh_Tanh_2",
+                            "Eq27_Tanh_Tanh_shape",
+                            "Eq28_Tanh_Expo",
+                            "Eq29_Expo_Tanh_1",
+                            "Eq30_Expo_Tanh_2",
+                            "Eq31_Expo_Tanh_shape",
+                            "Eq32_Expo_Expo",
+                            "Eq33_Amirian_Tanh",
+                            "Eq34_Amirian_Expo"
+                        ),
+                        data,
+                        STATapp = c("MSE", "MLE"),
+                        GradientFn = NULL,
+                        ...,
+                        Method = c("Nelder-Mead", "BFGS", "CG", "L-BFGS-B", "SANN", "Brent"),
+                        LowerBnd = -Inf,
+                        UpperBnd =  Inf,
+                        Control = list(),
+                        Hessian = FALSE) {
+    # select the model specified by the user
+    equation <- Model_setup(which_model = model_name)
+
+    # MSE_fn needs an equation name, requiring us to define the function in
+    # the global environment due to Scoping Rules of R
+    MSE_fn <- function(parameters, data) {
+        PPhat <- # predicted PP for a given parameters
+            tryCatch(
+                equation(parameters = parameters, data),
+                error = function (e)
+                    rep(0, data$PP)
+                )
+
+        MSE(data, model_fit = PPhat) # return MSE value
+    }
+
+
+    # same comment as MSE_n concerning scoping rules of R applies to MLE_fn
+    MLE_fn <- function(parameters, data) {
+        # predicted PP for a given parameters
+        PPhat <-
+            tryCatch(
+                equation(parameters = parameters, data),
+                error = function (e)
+                    rep(0, data$PP)
+                )
+
+        logl <- # calculate log-likelihood function
+            tryCatch(
+                LogL(data, model_fit = PPhat, StDev = parameters["StDev"]),
+                error = function (e) -1e5  # generate a large number in case of err
+                )
+
+        # return negative logl as it gets maximized using optim
+        return(-logl)
+    }
+
+    # find the optimal parameters using optim fn with either MSE or MLE approach.
+    # Default choice MSE
+    ifelse(
+        missing(STATapp) || tolower(STATapp) == "mse",
+        fit <- optim(
+            par = parameters,
+            fn = MSE_fn,
+            data = data,
+            gr  = GradientFn,
+            ...,
+            method  = Method,
+            lower   = LowerBnd,
+            upper   = UpperBnd,
+            control = Control,
+            hessian = Hessian
+            ),
+        ifelse(
+            tolower(STATapp) == "mle",
+            fit <- optim(
+                par = parameters,
+                fn = MLE_fn,
+                data = data,
+                gr  = GradientFn,
+                ...,
+                method  = Method,
+                lower   = LowerBnd,
+                upper   = UpperBnd,
+                control = Control,
+                hessian = Hessian
+                )
+            ,
+            stop(
+                "Please ensure that the STATapp field is either empty or set to 'mse' or 'mle'"
+            )
+        )
+    )
+    ifelse(
+        missing(STATapp) || tolower(STATapp) == "mse",
+        fit,
+        # add AIC, AICc, and BIC info to the fit for MLE method
+        fit$info_criteria <-
+            InfoCriteria(Fitted_Model = fit, SampleN = length(data$PP))
+    )
+
+    # Other than R, rest of the params are pushed into abs() in the main
+    # functions,making negative and positive values equivalent. Herein, I take
+    # the absolute value (abs()) of the optimized values to ensure consistency
+    # and eliminate any differences due to signs.
+    fit$par[names(fit$par) != "R"] <- abs(fit$par[names(fit$par) != "R"])
+
+    # add the model name to the optimization results
+    fit$model <- model_name
+
+    # add R2 ad adjusted R2 values to the optimization results
+    PPhat <- equation(parameters = fit$par, data)
+    fit$SQA <- R2(data, model_fit = PPhat, Nparams = length(fit$par))
+
+    return(fit)
+}
+
+
