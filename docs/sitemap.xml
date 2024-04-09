@@ -16,13 +16,28 @@
     <loc>/index.html</loc>
   </url>
   <url>
+    <loc>/reference/AIC_AICc_BIC_piCurve.html</loc>
+  </url>
+  <url>
+    <loc>/reference/Cal_infoMatrix.html</loc>
+  </url>
+  <url>
+    <loc>/reference/ConfInt_piCurve.html</loc>
+  </url>
+  <url>
     <loc>/reference/ConfInt_piModel.html</loc>
   </url>
   <url>
     <loc>/reference/InfoCriteria.html</loc>
   </url>
   <url>
+    <loc>/reference/InfoMat_piCurve.html</loc>
+  </url>
+  <url>
     <loc>/reference/MSE.html</loc>
+  </url>
+  <url>
+    <loc>/reference/MSE_piCurve.html</loc>
   </url>
   <url>
     <loc>/reference/Model_piCurve.html</loc>
@@ -31,7 +46,19 @@
     <loc>/reference/OptPIparams.html</loc>
   </url>
   <url>
+    <loc>/reference/OptPar_piCurve.html</loc>
+  </url>
+  <url>
     <loc>/reference/R2.html</loc>
+  </url>
+  <url>
+    <loc>/reference/R2_piCurve.html</loc>
+  </url>
+  <url>
+    <loc>/reference/ReCal_CI_piCurve.html</loc>
+  </url>
+  <url>
+    <loc>/reference/ReCal_CI_piModel.html</loc>
   </url>
   <url>
     <loc>/reference/index.html</loc>

@@ -23,20 +23,20 @@
 #' # generate an irradiance profile
 #' df <- tibble::tibble(I = seq(0, 100, length = 25))
 #'
-#' df$PP <- # generate PP using Baly's rectangular hyperbola model
-#'    Model_piCurve(parameters = params, model_name = "Eq3-Baly", data = df) +
-#'    5 * rnorm(25, 0, 0.25)    # add some noise to PP
+#' df$PP <- # generate the photosynthetic rate using Jassby-tanh (LS5) model
+#'    Model_piCurve(parameters = params, model_name = "tanh", data = df, data_type = "ls") +
+#'    5 * rnorm(25, 0, 0.25)    # add noise
 #'
 #' # Estimate the optimal values for the generated dataset using MLE method
-#' fit <- OptPIparams(parameters = c(params, StDev = 2), model_name = "Eq3-Baly",
-#'                    STATapp = "MLE", Hessian = TRUE, data = df)
+#' fit <- OptPar_piCurve(parameters = c(params, StDev = 2), model_name = "tanh",
+#'                       STATapp = "MLE", Hessian = TRUE, data = df, data_type = "ls")
 #'
 #' # Calculate the primary production profile using the optimal values
-#' model_fit <- Model_piCurve(parameters = fit$par, model_name = fit$model, data = df)
+#' model_fit <- Model_piCurve(parameters = fit$par, model_name = fit$model, data = df, data_type = "ls")
 #'
-#' MSE(df, model_fit)
+#' MSE_piCurve(df, model_fit)
 #'
-MSE <- function(data, model_fit){
+MSE_piCurve <- function(data, model_fit){
     sum( (data$PP - model_fit)^2 / length(model_fit) )
 }
 
@@ -61,22 +61,22 @@ MSE <- function(data, model_fit){
 #' # generate an irradiance profile
 #' df <- tibble::tibble(I = seq(0, 100, length = 25))
 #'
-#' df$PP <- # generate PP using Baly's rectangular hyperbola model
-#'    Model_piCurve(parameters = params, model_name = "Eq3-Baly", data = df) +
-#'    5 * rnorm(25, 0, 0.25)    # add some noise to PP
+#' df$PP <- # generate the photosynthetic rate using Jassby-tanh (LS5) model
+#'    Model_piCurve(parameters = params, model_name = "tanh", data = df, data_type = "ls") +
+#'    5 * rnorm(25, 0, 0.25)    # add noise
 #'
 #' # Estimate the optimal values for the generated dataset using MLE method
-#' fit <- OptPIparams(parameters = c(params, StDev = 2), model_name = "Eq3-Baly",
-#'                    STATapp = "MLE", Hessian = TRUE, data = df)
+#' fit <- OptPar_piCurve(parameters = c(params, StDev = 2), model_name = "tanh",
+#'                    STATapp = "MLE", Hessian = TRUE, data = df, data_type = "ls")
 #'
-#' # Calculate the primary production profile using the optimal values
-#' model_fit <- Model_piCurve(parameters = fit$par, model_name = fit$model, data = df)
+#' # Calculate the photosynthetic rate profile using the optimal values
+#' model_fit <- Model_piCurve(parameters = fit$par, model_name = fit$model, data = df, data_type = "ls")
 #'
-#' R2(df, model_fit, Nparams = length(fit$par))
+#' R2_piCurve(df, model_fit, Nparams = length(fit$par))
 #'
-R2 <- function(data, model_fit, Nparams){
+R2_piCurve <- function(data, model_fit, Nparams){
 
-    # empirical primary production
+    # empirical photosynthetic rate profile
     PP <- data$PP
     # square difference between empirical PP and estimated PP
     diff_squared_val <- (PP - model_fit)^2
@@ -106,10 +106,10 @@ R2 <- function(data, model_fit, Nparams){
 #' @description
 #' Wrapper to calculate AIC, AICc, and BIC values.
 #'
-#' @param Fitted_Model List -- the fitted model (output of \verb{OptPIparams} function).
-#' @param SampleN Numeric -- length of primary production profile.
+#' @param Fitted_Model List -- the fitted model (output of \verb{OptPar_piCurve} function).
+#' @param SampleN Numeric -- length of sample size.
 #'
-#' @return The function returns a vector consisting of AIC, AICc and BIC values.
+#' @return The function returns a vector that consists of AIC, AICc and BIC values.
 #' @export
 #'
 #' @examples
@@ -119,18 +119,18 @@ R2 <- function(data, model_fit, Nparams){
 #' # generate an irradiance profile
 #' df <- tibble::tibble(I = seq(0, 100, length = 25))
 #'
-#' df$PP <- # generate PP using Baly's rectangular hyperbola model
-#'    Model_piCurve(parameters = params, model_name = "Eq3-Baly", data = df) +
-#'    5 * rnorm(25, 0, 0.25)    # add some noise to PP
+#' df$PP <- # generate the photosynthetic rate using Jassby-tanh (LS5) model
+#'    Model_piCurve(parameters = params, model_name = "tanh", data = df, data_type = "ls") +
+#'    5 * rnorm(25, 0, 0.25)    # add noise
 #'
 #' # Estimate the optimal values for the generated dataset using MLE method
-#' fit <- OptPIparams(parameters = c(params, StDev = 2), model_name = "Eq3-Baly",
-#'                    STATapp = "MLE", Hessian = TRUE, data = df)
+#' fit <- OptPar_piCurve(parameters = c(params, StDev = 2), model_name = "tanh",
+#'                       STATapp = "MLE", Hessian = TRUE, data = df, data_type = "ls")
 #'
 #' # Calculate 95 % CI for the estimated parameters
-#' InfoCriteria(Fitted_Model = fit, SampleN = length(df$PP))
+#' AIC_AICc_BIC_piCurve(Fitted_Model = fit, SampleN = length(df$PP))
 
-InfoCriteria <- function(Fitted_Model, SampleN){
+AIC_AICc_BIC_piCurve <- function(Fitted_Model, SampleN){
 
     p = length(Fitted_Model$par)
 

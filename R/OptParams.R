@@ -1,7 +1,7 @@
 
 #' Find the optimal parameters in PI models
 #' @description
-#' \samp{OptPIparams} uses general-purpose optimization to identify the optimal parameters
+#' \samp{OptPar_piCurve} uses general-purpose optimization to identify the optimal parameters
 #' in the photosynthesis-irradiance curve models.
 #' The method includes the \samp{Nelder-Mead}, \samp{quasi-Newton}, and \samp{conjugate-gradient} algorithms,
 #' as well as options for box-constrained optimization and simulated annealing. Two different
@@ -10,17 +10,18 @@
 #'
 #' @param parameters Vector -- containing the values listed below:
 #' \itemize{
-#'      \item{\code{Pmax} \eqn{\hspace{0.1cm}}: }{Maximum photosynthesis rate normalised by Chl_a (sign +),}
+#'      \item{\code{Pmax} \eqn{\hspace{0.1cm}}: }{Maximum photosynthetic rate normalised by Chl_a (sign +),}
 #'      \item{\code{alpha}: }{Light-saturation slope at low light level (sign +),}
-#'      \item{\code{beta}  \eqn{\hspace{0.15cm}}: }{Photoinhibition rate at high light level (sign +),}
-#'      \item{\code{R}  \eqn{\hspace{0.7cm}}: }{dark reaction parameter (sign + OR -),}
-#'      \item{\code{shape}  \eqn{\hspace{0cm}}: }{shape parameter (sign +) -- Only required for some of the models. See \samp{Details}}.
-#'      \item{\code{StDev}  \eqn{\hspace{0cm}}: }{standard deviation parameter -- Only required when \samp{STATapp = MLE}}.
+#'      \item{\code{beta}  \eqn{\hspace{0.15cm}}: }{Photoinhibition parameter (sign +),}
+#'      \item{\code{R}  \eqn{\hspace{0.7cm}}: }{Dark reaction rate (sign + OR -),}
+#'      \item{\code{shape}  \eqn{\hspace{0cm}}: }{Shape parameter (sign +) -- Only required for some of the models. See \samp{Details}}.
+#'      \item{\code{StDev}  \eqn{\hspace{0cm}}: }{Standard deviation parameter -- Only required when \samp{STATapp = MLE}}.
 #' }
 #' @param model_name String -- which model? (See \samp{details})
 #' @param STATapp String -- Providing the statistical methods for optimization,
 #' which are \samp{MSE} or \samp{MLE}. See \samp{Details}. Default is \samp{MSE}.
 #' @param data Vector -- Containing the irradiance profile.
+#' @param data_type String -- data sample type?
 #' @param GradientFn String -- A function that produces the gradient for \verb{BFGS},
 #' \verb{CG} and \verb{L-BFGS-B} techniques, and if it is not provided, a numerical
 #' estimation using \samp{finite-differences} will be applied.
@@ -112,44 +113,12 @@
 #' \verb{STATapp = MLE}, the \verb{Hessian} argument should be set to \verb{TRUE}. If forgotten,
 #' the user can use \verb{optimHess} function.
 #'
-#' This package includes both commonly-used and recently-developed PI models.
-#' The list of models is provided below.
-#'
-#' \strong{Table 1}. Existing formulas for light-saturation curve (\eqn{I_k = P_{\max}^B/ \alpha}).
-#' | \strong{Name} \eqn{\hspace{0.5cm}} | \strong{Model} | \strong{Function Type} | \strong{References} |
-#' | --- | --- |  --- |  --- |
-#' | Eq1 | \eqn{P^B = P^B_{\max}\dfrac{I+I_k - |I-I_k|}{2I_k} \hspace{1cm}} | Bilinear | \emph{Blackman 1905} |
-#' | Eq2 | \eqn{P^B = P^B_{\max}\dfrac{I}{I + I_k}} | Rectangular Hyperbola | \emph{Baly 1935} |
-#' | Eq3 | \eqn{P^B = P^B_{\max}\dfrac{I}{\sqrt{I^2 + I^2_k}}} | Modified Rectangular Hyperbola | \emph{Smith 1936} |
-#' | Eq4 | \eqn{P^B = P^B_{\max}(1-e^{-I/I_k})} | Exponential | \emph{Webb et al. 1974} |
-#' | Eq5 | \eqn{P^B = P^B_{\max} \tanh \left( \dfrac{I}{I_k} \right)} | Hyperbolic Tangent|  \emph{Jassby et al. 1976} |
-#' | Eq6 | \eqn{P^B = \dfrac{P^B_{\max}}{2 \theta} \left[\mathcal{I} -\sqrt{\mathcal{I}^2 - 4 \theta(\mathcal{I} - 1)} \right]} \eqn{\hspace{0.5cm}} | Non-rectangular hyperbola | \emph{Prioul et al. 1977} |
-#' | Eq7 | \eqn{P^B = P^B_{\max} \dfrac{I}{(I^b+I^b_k)^{1/b}}} | Generalized Rectangular Hyperbola \eqn{\hspace{0.5cm}} | \emph{Bannister 1979} |
-#'
-#' where \eqn{b} is a shape parameter, \eqn{\theta = \dfrac{1}{1 + \exp{(-b)}}} is
-#' a sigmoid function setting \eqn{0< \theta <1}, and \eqn{\mathcal{I} = \left(\dfrac{I}{I_k} + 1\right) }.
-#'
-#' @note
-#' The function \samp{Model_piCurve} can handle all combinations of the names
-#' listed above, where the input string \verb{model_name}  is concerned.
-#' For instance,if any of the following forms are used, the function will set
-#'  \verb{model_name = "Eq1_Blackman"}.
-#'
-#' \itemize{
-#'          \item With or without spacing: Eq1Blackman, Eq1 Blackman,
-#'          \item Underscore or hyphen spacing: Eq1_Blackman, Eq1-Blackman,
-#'          \item Any form of lower/upper case: eq1_blackman, EQ1_blackman,
-#'          \item Missing author name: EQ1, Eq1, eQ1, eq1, 1,
-#'          \item Missing Eq indicator: blackman, Blackman,
-#'          \item Other combination of all the above: Blackmaneq1, BlackmanEq1,
-#'          Blackman Eq1, eq1 Blackman, etc.
-#' }
-#'
+#' This package includes 36 models which can be found in \code{?piCurve::Model_piCurve} both
+#' commonly-used and recently-developed PI models. The list of models is provided below.
 #'
 #' This function utilizes the \verb{optim()} function from the \verb{stats}
 #' package to perform the optimization. As such, the function makes available all
 #' of the arguments that can be used with the \verb{optim()} function within itself.
-#'
 #'
 #' @export
 #'
@@ -160,72 +129,38 @@
 #' # generate an irradiance profile
 #' df <- tibble::tibble(I = seq(0, 100, length = 25))
 #'
-#' df$PP <- # generate PP using Baly's rectangular hyperbola model
-#'    Model_piCurve(parameters = params, model_name = "Eq3-Baly", data = df) +
-#'    5 * rnorm(25, 0, 0.25)    # add some noise to PP
+#' df$PP <- # generate the photosynthetic rate using Jassby-tanh (LS5) model
+#'    Model_piCurve(parameters = params, model_name = "tanh", data = df, data_type = "ls") +
+#'    5 * rnorm(25, 0, 0.25)    # add noise
 #'
 #' # Estimate the optimal values for the generated dataset using MSE method
-#' OptPIparams(parameters = params, model_name = "Eq3-Baly", data = df)
+#' OptPar_piCurve(parameters = params, model_name = "tanh", data = df, data_type = "ls")
 #'
 #' # Estimate the optimal values for the generated dataset using MLE method
-#' OptPIparams(parameters = c(params, StDev = 2), model_name = "Eq3-Baly",
-#'             STATapp = "MLE", Hessian = TRUE, data = df)
+#' OptPar_piCurve(parameters = c(params, StDev = 2), model_name = "tanh",
+#'             STATapp = "MLE", Hessian = TRUE, data = df, data_type = "ls")
 
 #'
 #' @importFrom fBasics Heaviside
 #' @importFrom stats optim
 #'
-OptPIparams <- function(parameters,
-                        model_name = c(
-                            ## no photoinhibition
-                            "Eq1_lm",
-                            "Eq2_Blackman",
-                            "Eq3_Baly",
-                            "Eq4_Smith",
-                            "Eq5_Talling",
-                            "Eq6_Vollenweider_Ln",
-                            "Eq7_Webb",
-                            "Eq8_Jassby",
-                            "Eq9_Prioul",
-                            "Eq10_Bannister",
+OptPar_piCurve <- function(parameters,
+                           model_name,
+                           data,
+                           data_type = c("light-limited",
+                                         "light-saturating",
+                                         "photoinhibition"),
+                           STATapp = c("MSE", "MLE"),
+                           GradientFn = NULL,
+                           ...,
+                           Method = c("Nelder-Mead", "BFGS", "CG", "L-BFGS-B", "SANN", "Brent"),
+                           LowerBnd = -Inf,
+                           UpperBnd =  Inf,
+                           Control = list(),
+                           Hessian = FALSE) {
 
-                            ## with photoinhibition
-                            "Eq11_Blackman_extended_1",
-                            "Eq12_Blackman_extended_2",
-                            "Eq13_Vollenweider",
-                            "Eq14_Steele",
-                            "Eq15_Steele_modified",
-                            "Eq16_Peeters",
-                            "Eq17_Platt",
-                            "Eq18_Neale",
-                            "Eq19_Neale_modified",
-                            "Eq20_Ye",
-                            "Eq21_Baly_extended",
-                            "Eq22_Smith_extended",
-                            "Eq23_Prioul_extended",
-                            "Eq24_Bannister_extended",
-                            "Eq25_Tanh_Tanh_1",
-                            "Eq26_Tanh_Tanh_2",
-                            "Eq27_Tanh_Tanh_shape",
-                            "Eq28_Tanh_Expo",
-                            "Eq29_Expo_Tanh_1",
-                            "Eq30_Expo_Tanh_2",
-                            "Eq31_Expo_Tanh_shape",
-                            "Eq32_Expo_Expo",
-                            "Eq33_Amirian_Tanh",
-                            "Eq34_Amirian_Expo"
-                        ),
-                        data,
-                        STATapp = c("MSE", "MLE"),
-                        GradientFn = NULL,
-                        ...,
-                        Method = c("Nelder-Mead", "BFGS", "CG", "L-BFGS-B", "SANN", "Brent"),
-                        LowerBnd = -Inf,
-                        UpperBnd =  Inf,
-                        Control = list(),
-                        Hessian = FALSE) {
     # select the model specified by the user
-    equation <- Model_setup(which_model = model_name)
+    equation <- Model_setup(which_model = model_name, data_type)
 
     # MSE_fn needs an equation name, requiring us to define the function in
     # the global environment due to Scoping Rules of R
@@ -237,7 +172,7 @@ OptPIparams <- function(parameters,
                     rep(0, data$PP)
                 )
 
-        MSE(data, model_fit = PPhat) # return MSE value
+        MSE_piCurve(data, model_fit = PPhat) # return MSE value
     }
 
 
@@ -297,26 +232,37 @@ OptPIparams <- function(parameters,
             )
         )
     )
+
+    # in case if any letter exists in model name (provided by user), remove them
+    # model_name <- gsub("[^1,2,3,4,5,6,7,8,9,10]", "", model_name)
+
+    # Other than dark resperation rate (R), rest of the params are pushed into abs() in the main
+    # functions, making negative and positive values equivalent. There is two
+    # exceptions associates with LS6_Prioul and Ph08_Prioul in which the shape parameter belongs
+    # to (-Inf, Inf). Thus, I am excluding them from other models before taking
+    # the absolute value (abs()) of the optimized values.
+
+    ifelse(nameFormat(model_name) %in% c("ls6", "ph08"),
+           # In equations ls6 and ph08, shape ranges from -Inf to Inf
+           fit$par[!(names(fit$par) %in% c("shape", "R"))] <- abs(fit$par[!(names(fit$par) %in% c("shape", "R"))]),
+           # the other the equations
+           fit$par[names(fit$par) != "R"] <- abs(fit$par[names(fit$par) != "R"])
+           )
+
     ifelse(
         missing(STATapp) || tolower(STATapp) == "mse",
         fit,
         # add AIC, AICc, and BIC info to the fit for MLE method
         fit$info_criteria <-
-            InfoCriteria(Fitted_Model = fit, SampleN = length(data$PP))
+            AIC_AICc_BIC_piCurve(Fitted_Model = fit, SampleN = length(data$PP))
     )
-
-    # Other than R, rest of the params are pushed into abs() in the main
-    # functions,making negative and positive values equivalent. Herein, I take
-    # the absolute value (abs()) of the optimized values to ensure consistency
-    # and eliminate any differences due to signs.
-    fit$par[names(fit$par) != "R"] <- abs(fit$par[names(fit$par) != "R"])
 
     # add the model name to the optimization results
     fit$model <- model_name
 
     # add R2 ad adjusted R2 values to the optimization results
     PPhat <- equation(parameters = fit$par, data)
-    fit$SQA <- R2(data, model_fit = PPhat, Nparams = length(fit$par))
+    fit$SQA <- R2_piCurve(data, model_fit = PPhat, Nparams = length(fit$par))
 
     return(fit)
 }

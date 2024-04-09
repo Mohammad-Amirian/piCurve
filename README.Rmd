@@ -1,13 +1,13 @@
 ---
 title: "piCurve Package"
-output: html_notebook
+output:
+  md_document:
+    variant: markdown_github
 ---
 
 ## Overview
 
-The **piCurve** package integrates a diverse range of photosynthesis irradiance (PI) models, providing a user-friendly environment for users to explore the effects of different irradiance levels on photosynthetic activity using statistical methods. These models have been rigorously tested and validated against experimental data, ensuring their reliability and accuracy. The optimal parameters of the each formulation get estimated through non-linear optimization using two statistical approaches: MSE and MLE.
-
-Individual and general model fit...
+The **piCurve** package integrates a diverse range of photosynthesis irradiance (PI) models, providing a user-friendly environment for users to explore the effects of different irradiance levels on photosynthetic rate using statistical methods. The models have been rigorously tested and validated against experimental data, ensuring their reliability and accuracy. The optimal parameters of the each formulation get estimated through non-linear optimization using two statistical approaches: MSE and MLE.
 
 ## How to use piCurve
 
@@ -20,116 +20,85 @@ library(viridis)
 library(fBasics)
 ```
 
+### Light-saturation models
 
-### NO Pohotoinhibitio Case
-
-To see how the package works, I will first generate some data using one of the PI formulations, the Jassby hyperbolic tangent model. Then I will add some noise to the generated data sample and use that as my given database.
+The following data sample is given where `I` and `PP` stand for irradiance and photosynthetic rate, respectively.
 
 ```{r generate data 1, include=FALSE}
 set.seed(987)  # Update the seed value to any integer
 params <- c(Pmax = 20, alpha = 0.6, R = 0) # model parameters
 df <- tibble::tibble(I = seq(0, 300, length = 40)) # generate an irradiance profile
 
-df$PP <- # generate PP using Jassby's hyperbolic tangent model
-    Model_piCurve(parameters = params, model_name = "Eq8Jassby", data = df) +
+df$PP <- # generate data using Jassby's hyperbolic tangent model
+    Model_piCurve(params, model_name = "tanh", data = df, data_type = "ls") +
     5 * rnorm(length(df$I), 0, 0.2)  # add some noise to PP
-
-head(round(df, digits = 2), 3)
 ```
 
-where `I` and `PP` stand for irradiance and primary production profile, respectively.
-
-#### Fit individually  
+```{r, include=TRUE}
+head(round(df, digits = 2), 5)
+```
 
 To find the optimal parameters for the embed formulations with `MSE` method, one can specify `STATapp = "MSE"` or leave that empty. The default approach is set on `MSE`. See the following example.
 
 ```{r}
-OptPIparams(parameters = params, model_name = "eq2_blackman", data = df)
+fit_mse <-
+    OptPar_piCurve(
+        parameters = params,
+        model_name = "tanh",
+        data = df,
+        data_type = "ls"
+    )
+
+fit_mse
 ```
 
 For `MLE` method, one simply needs to specify `STATapp = "MLE"`. See the following example
 
 ```{r}
-OptPIparams(parameters = c(params, StDev=2), model_name = "eq2_blackman", data = df, STATapp = "MLE")
+fit_mle <-
+    OptPar_piCurve(
+        parameters = c(params, StDev = 2),
+        model_name = "tanh",
+        data = df,
+        # Hessian = TRUE,
+        STATapp = "MLE",
+        data_type = "ls"
+    )
+
+fit_mle
 ```
 
-#### Fit all at Once
-
-For a given data sample, let's find the optimal parameters for all models and examine which model captures the highest variation.
-
-```{r useful functions, echo=FALSE}
-
-# generalized function to fit equations on data samples all at once
-apply_Eq <-
-    function(model_index, STATapp, Hessian = FALSE, Control = list(), data = data) {
-        if (model_index == 1) {
-            # equations 1 is a linear regression and does not have Pmax param
-            params <- params[names(params) != "Pmax"]
-            }
-        
-        if (model_index %in% c(9, 10)) {
-            # equations 6 and 7 have one extra param
-            params <- add_shape_par(params)
-        }
-        
-        OptPIparams(
-            parameters = params,
-            model_name = model_index,
-            data = data,
-            STATapp,
-            Hessian = Hessian,
-            Control = Control
-        )
-    }
-
-```
+In case if, the user forgot to set `Hessian = TRUE`, the information matrix can be calculated using `InfoMat_piCurve` as shown below.
 
 ```{r}
-params <- c(Pmax = 20, alpha = 0.6, R = 0) 
+fit_mle$hessian <-
+    InfoMat_piCurve(
+        parameters = fit_mle$par,
+        model_name = fit_mle$model,
+        data = df,
+        data_type = "ls"
+    )
 
-fit_model <- # fit all equations
-    lapply(1:10, function(idx)apply_Eq(model_index = idx, data = df)) 
-
-outputs <-   # combine all the outputs of each fit
-    lapply(1:10, 
-           function(idx) reshape_piFits(fitted_model = fit_model[[idx]])
-           )|> 
-    dplyr::bind_rows() 
-
-outputs |> apply(2, function(x)round(x, digits = 2)) |> data.frame()
+fit_mle$hessian 
 ```
 
-```{r include=TRUE}
-best_model <- dplyr::filter(outputs, R2adj %in% max(outputs$R2adj))
-
-cat("formulation NO.", toupper(best_model$Model), "achieves", round(best_model$R2adj, 2) * 100, "% accuracy, capturing the highest amount of variation in the given data sample.")
-```
-
-
-#### Model Selection
-
-To select the best model, one may consider using AIC/AICc or BIC -- depending on the question of interest. To this end, one may follow the same procedure.
+visualizing the fit
 
 ```{r}
-params <- c(Pmax = 20, alpha = 0.6, R = 0, StDev = 2) 
-fit_model <- # fit all equations
-    lapply(1:10, function(x)apply_Eq(model_index = x, STATapp = "mle", 
-                                    Hessian = "TRUE", 
-                                    Control = list(maxit = 2000),
-                                    data = df))
+df$P_est <-
+    Model_piCurve(
+        fit_mle$par,
+        model_name = fit_mse$model,
+        data_type = "ls",
+        data = df
+    )
 
-outputs <-   # combine all the outputs of each fit
-    lapply(1:10,
-           function(idx){reshape_piFits(fit_model[[idx]], STATapp = "mle")}) |>
-    dplyr::bind_rows() 
-
-outputs |> apply(2, function(x)round(x, digits = 2)) |> data.frame()
-```
-
-```{r include=TRUE}
-best_model <- dplyr::filter(outputs, AICc %in% min(outputs$AICc))
-
-cat("formulation NO.", toupper(best_model$Model), " with the accuracy of", round(best_model$R2adj, 2) * 100, "has the lowest AICc/BIC value, meaning that the model is the best equation explaining the given data sample")
+df |> 
+    ggplot(aes(I, PP)) + 
+    geom_point(size = 2) + 
+    geom_line(aes(x = I, y = P_est), linewidth = 1, alpha = 0.7) +
+    theme_bw() +
+    labs(x = "Irradiance", y = "Photosynthetic Rate")
 ```
 
 #### Confidence Interval
@@ -137,228 +106,62 @@ cat("formulation NO.", toupper(best_model$Model), " with the accuracy of", round
 To calculate CI, `MLE` method must be used with `Hessian = TRUE`. Then, one simply needs to use `ConfInt_piModel()` function as shown below.
 
 ```{r}
-cal_CI <-
-    lapply(1:10,
-           function(idx) {
-               c(Model = idx, ConfInt_piModel(Fitted_Model = fit_model[[idx]], Clevel = 0.95))
-           }) |>
-    dplyr::bind_rows() 
-
-cal_CI
+ConfInt_piCurve(Fitted_Model = fit_mle)
 ```
 
+### Photoinhibition models
 
-#### visualization 
-
-To visualize all the results in one plot, one can also use `ggplot` as done bellow.
-
-
-```{r}
-data_fit <- 
-    lapply(1:10,
-       function(idx)
-           Model_piCurve(
-               parameters = fit_model[[idx]]$par,
-               model_name = idx,
-               data = df
-           )) 
-
-eqs_info <- c(3, 8, 7)
-
-fit <- 
-    lapply(eqs_info, #1:10, 
-           function(idx)data.frame(Phat=data_fit[[idx]], I = df$I, Model=idx)) |>
-    dplyr::bind_rows() |> dplyr::mutate(Model = as.character(Model))
-```
-
-```{r}
-fit <-     
-    rbind(
-        fit |> filter(Model == 3) |> mutate(Model = "Baly"),
-        fit |> filter(Model == 7) |> mutate(Model = "Webb"),
-        fit |> filter(Model == 8) |> mutate(Model = "Jassby")
-    )
-```
-
-
-```{r}
-
-
-p <- 
-    ggplot(df, mapping = aes(x=I, y = PP)) + 
-    geom_line(fit, mapping = aes(x = I, y = Phat, col = Model), linewidth = 1) +
-    geom_point(size = 3, alpha = 0.7) + 
-    theme_linedraw() +
-    theme(legend.position = "top") +
-        labs(x = "Irradiance [ Watts / m2 ]", 
-         y = "       Primary Production
-         [ mg C / (mg chl_a) h-1 ]") + 
-    theme(axis.text = element_text(size = 14), axis.title=element_text(size = 12))
-
-p +
-    # scale_color_brewer(palette = "Set3")
-    scale_color_viridis(discrete = TRUE, option = "D")
-# ggsave("pi-fit-01.png", width = 10, height = 5)
-```
-
-
-
-
-### Photoinhibitio Case
-
-Similar to the previous part, I will first generate some data using one of the PI formulations, the 5-parameters-extended Blackman model. Then I will add some noise to the generated data sample and use that as my given database.
+Similar to above, one can alter the codes to photoinhibition models. A list of models can be found under details in `?Model_piCurve()`. Consider the following data sample, let's fit double-tanh (Ph10) model on it.
 
 ```{r generate data 2, include=FALSE}
 set.seed(987)  # Update the seed value to any integer
-params <- c(Pmax = 22, alpha = 0.9, beta = 0.08, R = 0) # model parameters
-df <- tibble::tibble(I = seq(0, 500, length = 40)) # generate an irradiance profile
+params <- c(Pmax = 20, alpha = 0.8, beta = 0.1, R = 0) # model parameters
+df <- tibble::tibble(I = seq(0, 300, length = 40)) # generate an irradiance profile
 
-df$PP <- # generate PP using 5-parameters-extended Blackman model
-    Model_piCurve(parameters = params, model_name = "Eq11", data = df) +
+df$PP <- # generate data using Jassby's hyperbolic tangent model
+    Model_piCurve(params, model_name = "2tanh", data = df, data_type = "ph") +
     5 * rnorm(length(df$I), 0, 0.2)  # add some noise to PP
-
-head(round(df, digits = 2), 3)
-```
-
-where `I` and `PP` stand for irradiance and primary production profile, respectively.
-
-#### Fit individually  
-
-To find the optimal parameters for the embed formulations with `MSE` method, one can specify `STATapp = "MSE"` or leave that empty. The default approach is set on `MSE`. See the following example.
-
-```{r}
-params <- Approx_Ibreak_par(params, df)
-fit <- OptPIparams(parameters = params, model_name = "eq12", data = df)
-fit
-```
-
-#### Fit all at Once
-
-For a given data sample, let's find the optimal parameters for all models and examine which model captures the highest variation.
-
-```{r useful functions update, echo=FALSE}
-# generalized function to fit equations on data samples all at once
-apply_Eq <-
-    function(model_index, STATapp, Hessian = FALSE, Control = list(), data = data) {
-        if (model_index == 1) {
-            # Eq14: Steele 1962 doesn't have beta param
-            params <- params[names(params) != "beta"]
-            
-            }
-        
-        if (model_index %in% c(13, 23, 24, 27, 31)) {
-            # equations with an extra shape parameter
-            params <- add_shape_par(params)
-        }
-        
-        if (model_index %in% c(12, 18)){
-            # equations with Ibreak parameter
-            params <- Approx_Ibreak_par(parameters = params, data = data)
-            }
-        
-        OptPIparams(
-            parameters = params,
-            model_name = model_index,
-            data = data,
-            STATapp,
-            Hessian = Hessian,
-            Control = Control
-        )
-    }
-```
-
-```{r}
-params <- c(Pmax = 22, alpha = 0.9, beta = 0.08, R = 0) # model parameters
-
-fit_model <- # fit all equations
-    lapply(11:34, function(idx)apply_Eq(model_index = idx, data = df)) 
-
-outputs <-   # combine all the outputs of each fit
-    lapply(1:length(fit_model), 
-           function(idx) reshape_piFits(fitted_model = fit_model[[idx]])
-           )|> 
-    dplyr::bind_rows() 
-
-outputs |> apply(2, function(x)round(x, digits = 2)) |> data.frame() 
-```
-
-```{r include=TRUE}
-best_model <- dplyr::filter(outputs, R2adj %in% max(outputs$R2adj))
-
-cat("formulation NO.", toupper(best_model$Model), "achieves", round(best_model$R2adj, 2) * 100, "% accuracy, capturing the highest amount of variation in the given data sample.")
-```
-
-
-#### Model Selection
-
-To select the best model, one may consider using AIC/AICc or BIC -- depending on the question of interest. To this end, one may follow the same procedure.
-
-```{r}
-params <- c(Pmax = 22, alpha = 0.9, beta = 0.08, R = 0, StDev = 1) # model parameters
-fit_model <- # fit all equations
-    lapply(11:34, function(x)apply_Eq(model_index = x, STATapp = "mle", 
-                                    Hessian = "TRUE", 
-                                    Control = list(maxit = 2000),
-                                    data = df))
-
-outputs <-   # combine all the outputs of each fit
-    lapply(1:length(fit_model),
-           function(idx){reshape_piFits(fit_model[[idx]], STATapp = "mle")}) |>
-    dplyr::bind_rows() #|> dplyr::mutate(index = 1:length(fit_model))
-
-outputs |> apply(2, function(x)round(x, digits = 2)) |> data.frame() 
-```
-
-```{r include=TRUE}
-best_model <- dplyr::filter(outputs, AICc %in% min(outputs$AICc))
-
-cat("formulation NO.", toupper(best_model$Model), " with the accuracy of", round(best_model$R2adj, 2) * 100, "has the lowest AICc/BIC value, meaning that the model is the best equation explaining the given data sample")
-```
-
-
-#### visualization 
-
-To visualize all the results in one plot, one can also use `ggplot` as done bellow.
-
-
-```{r}
-good_fits <- outputs |> dplyr::filter(R2 > 0.85) 
-
-data_fit <- 
-    lapply(good_fits$Model,
-       function(idx)
-           Model_piCurve(
-               parameters = good_fits |> dplyr::filter(Model == idx) |> as.vector() |> unlist(),
-               model_name = idx,
-               data = df
-           )
-       )
 ```
 
 
 ```{r}
-fit <- 
-    lapply(1:length(data_fit), 
-           function(idx)data.frame(Phat=data_fit[[idx]], I = df$I, Model= good_fits$Model[idx])) |>
-    dplyr::bind_rows() |> dplyr::mutate(Model = as.character(Model))
+head(df, 3)
 ```
-
 
 ```{r}
-p <- 
-    ggplot(df, mapping = aes(x=I, y = PP)) + 
-    geom_line(fit, mapping = aes(x = I, y = Phat, col = Model), linewidth = 1) +
-    geom_point(size = 3, alpha = 0.7) + 
-    theme_linedraw() +
-    theme(legend.position = "top") +
-        labs(x = "Irradiance [ Watts / m2 ]", 
-         y = "       Primary Production
-         [ mg C / (mg chl_a) h-1 ]") + 
-    theme(axis.text = element_text(size = 14), axis.title=element_text(size = 12))
+fit_mle <-
+    OptPar_piCurve(
+        parameters = c(params, StDev = 2),
+        model_name = "2tanh",
+        data = df,
+        STATapp = "MLE",
+        data_type = "ph"
+    )
 
-p +
-    scale_color_brewer(palette = "Set1")
-    # scale_color_viridis(discrete = TRUE, option = "D")
-    
+fit_mle
 ```
 
+visualizing the fit
+
+```{r}
+df$P_est <-
+    Model_piCurve(
+        fit_mle$par,
+        model_name = fit_mle$model,
+        data_type = "ph",
+        data = df
+    )
+
+df |> 
+    ggplot(aes(I, PP)) + 
+    geom_point(size = 2) + 
+    geom_line(aes(x = I, y = P_est), linewidth = 1, alpha = 0.7) +
+    theme_bw() +
+    labs(x = "Irradiance", y = "Photosynthetic Rate")
+```
+
+## Citation
+
+This package is developed based on the research outlined in the following paper. If you utilize the `piCurve` package in your work, we kindly request that you cite the referenced publication.
+
+Mohammad Amirian, Emmanuel Devred, Zoe V. Finkel, Andrew J. Irwin. “*An improved parameterization of photoinhibition in phytoplankton photosynthesis-irradiance curves*,” xxx 2024.

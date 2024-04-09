@@ -6,94 +6,107 @@
 \usage{
 Model_piCurve(
   parameters,
-  model_name = c("Eq1_lm", "Eq2_Blackman", "Eq3_Baly", "Eq4_Smith", "Eq5_Talling",
-    "Eq6_Vollenweider_Ln", "Eq7_Webb", "Eq8_Jassby", "Eq9_Prioul", "Eq10_Bannister",
-    "Eq11_Blackman_extended_1", "Eq12_Blackman_extended_2", "Eq13_Vollenweider",
-    "Eq14_Steele", "Eq15_Steele_modified", "Eq16_Peeters", "Eq17_Platt", "Eq18_Neale",
-    "Eq19_Neale_modified", "Eq20_Ye", "Eq21_Baly_extended", "Eq22_Smith_extended",
-    "Eq23_Prioul_extended", "Eq24_Bannister_extended", "Eq25_Tanh_Tanh_1",
-    "Eq26_Tanh_Tanh_2", "Eq27_Tanh_Tanh_shape", 
-     "Eq28_Tanh_Expo",
-    "Eq29_Expo_Tanh_1", "Eq30_Expo_Tanh_2", "Eq31_Expo_Tanh_shape", "Eq32_Expo_Expo",
-    "Eq33_Amirian_Tanh", "Eq34_Amirian_Expo"),
-  data
+  model_name,
+  data,
+  data_type = c("light-limited", "light-saturating", "photoinhibition")
 )
 }
 \arguments{
 \item{parameters}{Vector -- containing the values listed below:
 \itemize{
-\item{\code{Pmax} \eqn{\hspace{0.1cm}}: }{Maximum photosynthesis rate normalised by Chl_a (sign +),}
-\item{\code{alpha}: }{Light-saturation slope at low light level (sign +),}
-\item{\code{beta}  \eqn{\hspace{0.15cm}}: }{Photoinhibition rate at high light level (sign +),}
-\item{\code{R}  \eqn{\hspace{0.7cm}}: }{Dark reaction parameter (sign + OR -),}
+\item{\code{Pmax} \eqn{\hspace{0.1cm}}: }{Maximum photosynthetic rate  (sign +),}
+\item{\code{alpha}: }{Slope of the light-saturation curve at low light (sign +),}
+\item{\code{beta}  \eqn{\hspace{0.15cm}}: }{Photoinhibition parameter (sign +),}
+\item{\code{R}  \eqn{\hspace{0.7cm}}: }{Dark reaction rate (sign + OR -),}
 \item{\code{shape}  \eqn{\hspace{0cm}}: }{Shape parameter (sign +) -- Only required for some of the models. See \samp{Details}}.
 }}
 
 \item{model_name}{String -- which model? (List of available models is given in \samp{details})}
 
-\item{data}{Vector -- Containing the irradiance profile.}
+\item{data}{Vector -- containing the irradiance profile.}
+
+\item{data_type}{String -- data sample type?}
 }
 \value{
-A vector that containing the primary production (\verb{PP}) calculated
-by a given formula provided by user.
+A vector that contains the predicted photosynthetic rate over difference irradiances using a given function.
 }
 \description{
-Wrapper to formulate the photosynthesis-irradiance curve using well-established
+Wrapper to formulate the photosynthesis-irradiance (PI) curve using well-established
 functions such as bi-linear, exponential, hyperbolic tangent, second order polynomial,
 generalized rectangular hyperbola, and their appropriate combinations.
 }
 \details{
-This package includes both commonly-used and recently-developed PI models.
-The list of models is provided below.
+This package comprises three distinct model frameworks for formulating the PI curve:
+light-limited, light-saturating, and photoinhibition models. Each framework is detailed below
 
-\strong{Table 1}. Existing formulas for light-saturation curve (\eqn{I_k = P_{\max}^B/ \alpha}).\tabular{llll}{
+==============================
+
+\strong{Table 1}. Model used to formulate light-limited PI curve.\tabular{llll}{
    \strong{Name} \eqn{\hspace{0.5cm}} \tab \strong{Model} \tab \strong{Function Type} \tab \strong{References} \cr
-   Eq1 \tab \eqn{P^B = \alpha I  \hspace{1cm}} \tab Linear \tab \emph{Linear Regression} \cr
-   Eq2 \tab \eqn{P^B = P^B_{\max}\dfrac{I+I_k - |I-I_k|}{2I_k} \hspace{1cm}} \tab Bilinear \tab \emph{Blackman 1905} \cr
-   Eq3 \tab \eqn{P^B = P^B_{\max}\dfrac{I}{I + I_k}} \tab Rectangular Hyperbola \tab \emph{Baly 1935} \cr
-   Eq4 \tab \eqn{P^B = P^B_{\max}\dfrac{I}{\sqrt{I^2 + I^2_k}}} \tab Modified Rectangular Hyperbola \tab \emph{Smith 1936} \cr
-   Eq5 \tab \eqn{P^B = P^B_{\max} \ln \left( \dfrac{2I}{I_k} \right)} \tab Logarithm \tab \emph{Talling 1957} \cr
-   Eq6 \tab \eqn{P^B = P^B_{\max}\ln \left( \dfrac{I}{I_k} + \sqrt{1 +  \left(\dfrac{I}{I_k}\right)^2} \right)} \tab Modified Logarithm \tab \emph{Vollenweider 1958} \cr
-   Eq7 \tab \eqn{P^B = P^B_{\max}(1-e^{-I/I_k})} \tab Exponential \tab \emph{Webb et al. 1974} \cr
-   Eq8 \tab \eqn{P^B = P^B_{\max} \tanh \left( \dfrac{I}{I_k} \right)} \tab Hyperbolic Tangent \tab \emph{Jassby et al. 1976} \cr
-   Eq9 \tab \eqn{P^B = \dfrac{P^B_{\max}}{2 \theta} \left[\mathcal{I} -\sqrt{\mathcal{I}^2 - 4 \theta(\mathcal{I} - 1)} \right]} \eqn{\hspace{0.5cm}} \tab Non-rectangular hyperbola \tab \emph{Prioul et al. 1977} \cr
-   Eq10 \tab \eqn{P^B = P^B_{\max} \dfrac{I}{(I^b+I^b_k)^{1/b}}} \tab Generalized Rectangular Hyperbola \eqn{\hspace{0.5cm}} \tab \emph{Bannister 1979} \cr
+   lm \tab \eqn{P^B = \alpha I  \hspace{1cm}} \tab Linear \tab \emph{Linear Regression} \cr
 }
 
 
-where \eqn{b} is a shape parameter, \eqn{\theta = \dfrac{1}{1 + \exp{(-b)}}} is
-a sigmoid function setting \eqn{0< \theta <1}, and \eqn{\mathcal{I} = \left(\dfrac{I}{I_k} + 1\right) }.
-}
-\note{
-The function \samp{Model_piCurve} can handle all combinations of the names
-listed above, where the input string \verb{model_name}  is concerned.
-For instance,if any of the following forms are used, the function will set
-\verb{model_name = "Eq1_Blackman"}.
+==============================
 
-\itemize{
-\item With or without spacing: Eq1Blackman, Eq1 Blackman,
-\item Underscore or hyphen spacing: Eq1_Blackman, Eq1-Blackman,
-\item Any form of lower/upper case: eq1_blackman, EQ1_blackman,
-\item Missing author name: EQ1, Eq1, eQ1, eq1, 1,
-\item Missing Eq indicator: blackman, Blackman,
-\item Other combination of all the above: Blackmaneq1, BlackmanEq1,
-Blackman Eq1, eq1 Blackman, etc.
+\strong{Table 2}. Models used to formulate light-saturating PI curve.\tabular{llll}{
+   \strong{Name} \eqn{\hspace{0.5cm}} \tab \strong{Model} \tab \strong{Function Name} \tab \strong{References} \cr
+   LS1 \tab \eqn{P^B = P^B_{\max}\dfrac{I+I_\alpha - |I-I_\alpha|}{2I_\alpha} \hspace{1cm}} \tab Blackman-pw \tab \emph{Blackman 1905} \cr
+   LS2 \tab \eqn{P^B = P^B_{\max}\dfrac{I}{I + I_\alpha}} \tab Baly-RH \tab \emph{Baly 1935} \cr
+   LS3 \tab \eqn{P^B = P^B_{\max}\dfrac{I}{\sqrt{I^2 + I^2_\alpha}}} \tab Smith-RH \tab \emph{Smith 1936} \cr
+   LS4 \tab \eqn{P^B = P^B_{\max}(1-e^{-I/I_\alpha})} \tab Webb-exp \tab \emph{Webb et al. 1974} \cr
+   LS5 \tab \eqn{P^B = P^B_{\max} \tanh \left( \dfrac{I}{I_\alpha} \right)} \tab Jassby-tanh \tab \emph{Jassby et al. 1976} \cr
+   LS6 \tab \eqn{P^B = \dfrac{P^B_{\max}}{2 \theta} \left[\mathcal{I} -\sqrt{\mathcal{I}^2 - 4 \theta(\mathcal{I} - 1)} \right]} \eqn{\hspace{0.5cm}} \tab Prioul-nonRH \tab \emph{Prioul et al. 1977} \cr
+   LS7 \tab \eqn{P^B = P^B_{\max} \dfrac{I}{(I^b+I^b_\alpha)^{1/b}}} \tab Bannister-gRH \eqn{\hspace{0.5cm}} \tab \emph{Bannister 1979} \cr
 }
+
+
+==============================
+
+\strong{Table 3}. Models used to formulate photoinhibition PI curve.\tabular{llll}{
+   \strong{Name} \eqn{\hspace{0.5cm}} \tab \strong{Model} \tab \strong{Function Name} \tab \strong{References} \cr
+   Ph01 \tab \eqn{P^B = P^B_s~ (I/I_{\alpha}^s) ~e^{1-( I/ I_{\alpha}^s)} \hspace{1cm}} \tab Steele-exp \tab \emph{Steele 1962} \cr
+   Ph02 \tab \eqn{P^B = P^B_s~ \dfrac{(I/I_{\alpha}^s)}{ ~ I^2 / (I_{\alpha}^s I_{\beta}^s) + (I/I_{\alpha}^s) + 1}} \tab Peeters-rational \tab \emph{Peeters et al. 1978} \cr
+   Ph03 \tab \eqn{P^B = P^B_s~ (1-e^{-I/I_{\alpha}^s})e^{-I/I_{\beta}^s} \hspace{1cm}} \tab Platt-exp \tab \emph{Platt et al. 1980} \cr
+   Ph04 \tab \eqn{P^B = P^B_s~ \tanh \left(I/I_{\alpha}^s\right) ~ e^{-I/I_{\beta}^s} \hspace{1cm}} \tab Neale-exp \tab \emph{Neale et al. 1986} \cr
+   Ph05 \tab \eqn{P^B = P^B_s~ \dfrac{I}{I + I_{\alpha}^s}  ~ e^{-I/I_{\beta}^s} \hspace{1cm}} \tab Baly-exp \tab \emph{...} \cr
+   Ph06 \tab \eqn{P^B = P^B_s~ \dfrac{I}{\sqrt{I^2 + (I_{\alpha}^s)^2}}  ~ e^{-I/I_{\beta}^s} \hspace{1cm}} \tab Smith-exp \tab \emph{...} \cr
+   Ph07 \tab \eqn{P^B = P^B_s~ \dfrac{I}{(I^b + (I_{\alpha}^s)^b)^{1/b}} ~ e^{-I/I_{\beta}^s} \hspace{1cm}} \tab Bannister-exp \tab \emph{...} \cr
+   Ph08 \tab \eqn{P^B = P^B_s~ \dfrac{P^B_{s}}{2 \theta} \left[ \mathcal{I} - \sqrt{\mathcal{I}^2 - 4 \theta(\mathcal{I} - 1)} \right] ~ e^{-I/I_{\beta}^s} \hspace{1cm}} \tab Prioul-exp \tab \emph{...} \cr
+   Ph09 \tab \eqn{P^B = \begin{cases} \alpha I & \hspace{0.5cm} I \leq P^B_{\max} / \alpha \\ & \\ P^B_{\max} & \hspace{0.5cm} P^B_{\max} / \alpha < I \leq P^B_{\max} / \beta\\ & \\ -\beta I & \hspace{0.5cm} I > P^B_{\max} / \beta \end{cases} \hspace{1cm}} \tab Extended-Blackman \tab \emph{...} \cr
+   Ph10 \tab \eqn{P^B = P^B_{\max} \tanh \left( \dfrac{I}{I_{\alpha}} \right) \tanh{ \left[ \left( \dfrac{I_{\beta}}{I} \right)^{\cosh^2(1)} \right] }  \hspace{1cm}} \tab Double-tanh \tab \emph{Amirian et al. 2024} \cr
+   Ph11 \tab \eqn{P^B = P^B_{\max} \tanh \left( \dfrac{I}{I_{\alpha}} \right) \tanh{ \left[ \left( \dfrac{I_{\beta}}{I} \right)^{\gamma} \right] }  \hspace{1cm}} \tab Double-tanh-shp \tab \emph{Amirian et al. 2024} \cr
+   Ph12 \tab \eqn{P^B = P^B_{\max}  \left[1 - \exp{\left( -\dfrac{I}{I_{\alpha}} \right)} \right] \tanh{ \left[ \left( \dfrac{I_{\beta}}{I} \right)^{\cosh^2(1)} \right] }  \hspace{1cm}} \tab Exp-tanh \tab \emph{Amirian et al. 2024} \cr
+   Ph13 \tab \eqn{P^B = P^B_{\max} \left[1 - \exp{\left( -\dfrac{I}{I_{\alpha}} \right)} \right] \tanh{ \left[ \left( \dfrac{I_{\beta}}{I} \right)^{\gamma} \right] }  \hspace{1cm}} \tab Exp-tanh-shp \tab \emph{Amirian et al. 2024} \cr
+   Ph14 \tab \eqn{P^B = P^B_{\max}  \tanh{\left(\dfrac{I}{I_{\alpha}}\right)} \left[1 - \exp{\left(-\dfrac{I_{\beta}}{I}\right)} \right]    \hspace{1cm}} \tab Tanh-rcp_exp \tab \emph{Amirian et al. 2024} \cr
+   Ph15 \tab \eqn{P^B = P^B_{\max} \left[1 - \exp{\left(-\dfrac{I}{I_{\alpha}}\right)} \right] \left[1 - \exp{\left(-\dfrac{I_{\beta}}{I}\right)} \right]  \hspace{1cm}} \tab Exp_rcp_exp \tab \emph{Amirian et al. 2024} \cr
+}
+
+
+In equations LS6 and Ph08, \eqn{b} is a shape parameter, \eqn{\theta = \dfrac{1}{1 + \exp{(-b)}}} is
+a sigmoid function setting \eqn{0< \theta <1}, and \eqn{\mathcal{I} = \left(\dfrac{I}{I_\alpha} + 1\right) }.
+In the above tables also, \eqn{I_{\alpha} = P_{\max}^B/ \alpha}, \eqn{I^s_{\alpha} = P_{s}^B/ \alpha}, \eqn{I_{\beta} = P_{\max}^B/ \beta}, and \eqn{I^s_{\beta} = P_{s}^B/ \beta}.
+
+==============================
+
+Note that the default model_name for light-saturating and photoinhibition data types is
+Jassby-tanh (LS5) and double-tanh (Ph12) model, resepctively.
 }
 \examples{
 # model parameters
 params <- c(Pmax = 20, alpha = 0.6, R = 0)
 
 # generate an irradiance profile
-df <- tibble::tibble(I = seq(0, 100, length = 25))
+df <- tibble::tibble(I = seq(0, 300, length = 25))
 
-# compute the primary production profile using Baly's rectangular hyperbola model
-Model_piCurve(parameters = params, model_name = "Eq3-Baly", data = df)
+# compute the photosynthetic rate using Jassby-tanh (LS5) model
+Model_piCurve(parameters = params, model_name = "tanh", data = df, data_type = "ls")
 
-# compute the primary production profile using Eq10 model
-Model_piCurve(parameters = c(params, beta = 0.3), model_name = "Eq11_Blackman_extended_1", data = df)
+# compute the photosynthetic rate using double-tanh (Ph10) model
+Model_piCurve(parameters = c(params, beta = 0.3), model_name = "2tanh", data = df, data_type = "ph")
 
 }
 \references{
-Will be add later
+Mohammad Amirian, Emmanuel Devred, Zoe V. Finkel, Andrew J. Irwin.
+“\emph{An improved parameterization of photoinhibition in phytoplankton photosynthesis-irradiance curves},” xxx 2024.
 }

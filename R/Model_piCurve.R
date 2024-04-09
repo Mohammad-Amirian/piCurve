@@ -1,64 +1,82 @@
 
 #' @title Formulate PI Curve
 #' @description
-#' Wrapper to formulate the photosynthesis-irradiance curve using well-established
+#' Wrapper to formulate the photosynthesis-irradiance (PI) curve using well-established
 #' functions such as bi-linear, exponential, hyperbolic tangent, second order polynomial,
 #' generalized rectangular hyperbola, and their appropriate combinations.
 #'
 #' @param parameters Vector -- containing the values listed below:
 #' \itemize{
-#'      \item{\code{Pmax} \eqn{\hspace{0.1cm}}: }{Maximum photosynthesis rate normalised by Chl_a (sign +),}
-#'      \item{\code{alpha}: }{Light-saturation slope at low light level (sign +),}
-#'      \item{\code{beta}  \eqn{\hspace{0.15cm}}: }{Photoinhibition rate at high light level (sign +),}
-#'      \item{\code{R}  \eqn{\hspace{0.7cm}}: }{Dark reaction parameter (sign + OR -),}
+#'      \item{\code{Pmax} \eqn{\hspace{0.1cm}}: }{Maximum photosynthetic rate  (sign +),}
+#'      \item{\code{alpha}: }{Slope of the light-saturation curve at low light (sign +),}
+#'      \item{\code{beta}  \eqn{\hspace{0.15cm}}: }{Photoinhibition parameter (sign +),}
+#'      \item{\code{R}  \eqn{\hspace{0.7cm}}: }{Dark reaction rate (sign + OR -),}
 #'      \item{\code{shape}  \eqn{\hspace{0cm}}: }{Shape parameter (sign +) -- Only required for some of the models. See \samp{Details}}.
 #' }
-
 #' @param model_name String -- which model? (List of available models is given in \samp{details})
-#' @param data Vector -- Containing the irradiance profile.
+#' @param data Vector -- containing the irradiance profile.
+#' @param data_type String -- data sample type?
 #'
-#' @return A vector that containing the primary production (\verb{PP}) calculated
-#' by a given formula provided by user.
+#' @return A vector that contains the predicted photosynthetic rate over difference irradiances using a given function.
+#'
 #' @export
 #' @references
-#' Will be add later
+#' Mohammad Amirian, Emmanuel Devred, Zoe V. Finkel, Andrew J. Irwin.
+#' “\emph{An improved parameterization of photoinhibition in phytoplankton photosynthesis-irradiance curves},” xxx 2024.
 #'
 #' @details
-#' This package includes both commonly-used and recently-developed PI models.
-#' The list of models is provided below.
+#' This package comprises three distinct model frameworks for formulating the PI curve:
+#' light-limited, light-saturating, and photoinhibition models. Each framework is detailed below
 #'
-#' \strong{Table 1}. Existing formulas for light-saturation curve (\eqn{I_k = P_{\max}^B/ \alpha}).
+#' ==============================
+#'
+#' \strong{Table 1}. Model used to formulate light-limited PI curve.
 #' | \strong{Name} \eqn{\hspace{0.5cm}} | \strong{Model} | \strong{Function Type} | \strong{References} |
 #' | --- | --- |  --- |  --- |
-#' | Eq1 | \eqn{P^B = \alpha I  \hspace{1cm}} | Linear | \emph{Linear Regression} |
-#' | Eq2 | \eqn{P^B = P^B_{\max}\dfrac{I+I_k - |I-I_k|}{2I_k} \hspace{1cm}} | Bilinear | \emph{Blackman 1905} |
-#' | Eq3 | \eqn{P^B = P^B_{\max}\dfrac{I}{I + I_k}} | Rectangular Hyperbola | \emph{Baly 1935} |
-#' | Eq4 | \eqn{P^B = P^B_{\max}\dfrac{I}{\sqrt{I^2 + I^2_k}}} | Modified Rectangular Hyperbola | \emph{Smith 1936} |
-#' | Eq5 | \eqn{P^B = P^B_{\max} \ln \left( \dfrac{2I}{I_k} \right)} | Logarithm | \emph{Talling 1957} |
-#' | Eq6 | \eqn{P^B = P^B_{\max}\ln \left( \dfrac{I}{I_k} + \sqrt{1 +  \left(\dfrac{I}{I_k}\right)^2} \right)}| Modified Logarithm | \emph{Vollenweider 1958} |
-#' | Eq7 | \eqn{P^B = P^B_{\max}(1-e^{-I/I_k})} | Exponential | \emph{Webb et al. 1974} |
-#' | Eq8 | \eqn{P^B = P^B_{\max} \tanh \left( \dfrac{I}{I_k} \right)} | Hyperbolic Tangent|  \emph{Jassby et al. 1976} |
-#' | Eq9 | \eqn{P^B = \dfrac{P^B_{\max}}{2 \theta} \left[\mathcal{I} -\sqrt{\mathcal{I}^2 - 4 \theta(\mathcal{I} - 1)} \right]} \eqn{\hspace{0.5cm}} | Non-rectangular hyperbola | \emph{Prioul et al. 1977} |
-#' | Eq10 | \eqn{P^B = P^B_{\max} \dfrac{I}{(I^b+I^b_k)^{1/b}}} | Generalized Rectangular Hyperbola \eqn{\hspace{0.5cm}} | \emph{Bannister 1979} |
+#' | lm | \eqn{P^B = \alpha I  \hspace{1cm}} | Linear | \emph{Linear Regression} |
 #'
-#' where \eqn{b} is a shape parameter, \eqn{\theta = \dfrac{1}{1 + \exp{(-b)}}} is
-#' a sigmoid function setting \eqn{0< \theta <1}, and \eqn{\mathcal{I} = \left(\dfrac{I}{I_k} + 1\right) }.
+#' ==============================
 #'
-#' @note
-#' The function \samp{Model_piCurve} can handle all combinations of the names
-#' listed above, where the input string \verb{model_name}  is concerned.
-#' For instance,if any of the following forms are used, the function will set
-#'  \verb{model_name = "Eq1_Blackman"}.
+#' \strong{Table 2}. Models used to formulate light-saturating PI curve.
+#' | \strong{Name} \eqn{\hspace{0.5cm}} | \strong{Model} | \strong{Function Name} | \strong{References} |
+#' | --- | --- |  --- |  --- |
+#' | LS1 | \eqn{P^B = P^B_{\max}\dfrac{I+I_\alpha - |I-I_\alpha|}{2I_\alpha} \hspace{1cm}} | Blackman-pw | \emph{Blackman 1905} |
+#' | LS2 | \eqn{P^B = P^B_{\max}\dfrac{I}{I + I_\alpha}} | Baly-RH | \emph{Baly 1935} |
+#' | LS3 | \eqn{P^B = P^B_{\max}\dfrac{I}{\sqrt{I^2 + I^2_\alpha}}} | Smith-RH | \emph{Smith 1936} |
+#' | LS4 | \eqn{P^B = P^B_{\max}(1-e^{-I/I_\alpha})} | Webb-exp | \emph{Webb et al. 1974} |
+#' | LS5 | \eqn{P^B = P^B_{\max} \tanh \left( \dfrac{I}{I_\alpha} \right)} | Jassby-tanh |  \emph{Jassby et al. 1976} |
+#' | LS6 | \eqn{P^B = \dfrac{P^B_{\max}}{2 \theta} \left[\mathcal{I} -\sqrt{\mathcal{I}^2 - 4 \theta(\mathcal{I} - 1)} \right]} \eqn{\hspace{0.5cm}} | Prioul-nonRH | \emph{Prioul et al. 1977} |
+#' | LS7 | \eqn{P^B = P^B_{\max} \dfrac{I}{(I^b+I^b_\alpha)^{1/b}}} | Bannister-gRH \eqn{\hspace{0.5cm}} | \emph{Bannister 1979} |
 #'
-#' \itemize{
-#'          \item With or without spacing: Eq1Blackman, Eq1 Blackman,
-#'          \item Underscore or hyphen spacing: Eq1_Blackman, Eq1-Blackman,
-#'          \item Any form of lower/upper case: eq1_blackman, EQ1_blackman,
-#'          \item Missing author name: EQ1, Eq1, eQ1, eq1, 1,
-#'          \item Missing Eq indicator: blackman, Blackman,
-#'          \item Other combination of all the above: Blackmaneq1, BlackmanEq1,
-#'          Blackman Eq1, eq1 Blackman, etc.
-#' }
+#' ==============================
+#'
+#' \strong{Table 3}. Models used to formulate photoinhibition PI curve.
+#' | \strong{Name} \eqn{\hspace{0.5cm}} | \strong{Model} | \strong{Function Name} | \strong{References} |
+#' | --- | --- |  --- |  --- |
+#' | Ph01 | \eqn{P^B = P^B_s~ (I/I_{\alpha}^s) ~e^{1-( I/ I_{\alpha}^s)} \hspace{1cm}} | Steele-exp | \emph{Steele 1962} |
+#' | Ph02 | \eqn{P^B = P^B_s~ \dfrac{(I/I_{\alpha}^s)}{ ~ I^2 / (I_{\alpha}^s I_{\beta}^s) + (I/I_{\alpha}^s) + 1}} | Peeters-rational | \emph{Peeters et al. 1978} |
+#' | Ph03 | \eqn{P^B = P^B_s~ (1-e^{-I/I_{\alpha}^s})e^{-I/I_{\beta}^s} \hspace{1cm}} | Platt-exp | \emph{Platt et al. 1980} |
+#' | Ph04 | \eqn{P^B = P^B_s~ \tanh \left(I/I_{\alpha}^s\right) ~ e^{-I/I_{\beta}^s} \hspace{1cm}} | Neale-exp | \emph{Neale et al. 1986} |
+#' | Ph05 | \eqn{P^B = P^B_s~ \dfrac{I}{I + I_{\alpha}^s}  ~ e^{-I/I_{\beta}^s} \hspace{1cm}} | Baly-exp | \emph{...} |
+#' | Ph06 | \eqn{P^B = P^B_s~ \dfrac{I}{\sqrt{I^2 + (I_{\alpha}^s)^2}}  ~ e^{-I/I_{\beta}^s} \hspace{1cm}} | Smith-exp | \emph{...} |
+#' | Ph07 | \eqn{P^B = P^B_s~ \dfrac{I}{(I^b + (I_{\alpha}^s)^b)^{1/b}} ~ e^{-I/I_{\beta}^s} \hspace{1cm}} | Bannister-exp | \emph{...} |
+#' | Ph08 | \eqn{P^B = P^B_s~ \dfrac{P^B_{s}}{2 \theta} \left[ \mathcal{I} - \sqrt{\mathcal{I}^2 - 4 \theta(\mathcal{I} - 1)} \right] ~ e^{-I/I_{\beta}^s} \hspace{1cm}} | Prioul-exp | \emph{...} |
+#' | Ph09 | \eqn{P^B = \begin{cases} \alpha I & \hspace{0.5cm} I \leq P^B_{\max} / \alpha \\ & \\ P^B_{\max} & \hspace{0.5cm} P^B_{\max} / \alpha < I \leq P^B_{\max} / \beta\\ & \\ -\beta I & \hspace{0.5cm} I > P^B_{\max} / \beta \end{cases} \hspace{1cm}} | Extended-Blackman | \emph{...} |
+#' | Ph10 | \eqn{P^B = P^B_{\max} \tanh \left( \dfrac{I}{I_{\alpha}} \right) \tanh{ \left[ \left( \dfrac{I_{\beta}}{I} \right)^{\cosh^2(1)} \right] }  \hspace{1cm}} | Double-tanh | \emph{Amirian et al. 2024} |
+#' | Ph11 | \eqn{P^B = P^B_{\max} \tanh \left( \dfrac{I}{I_{\alpha}} \right) \tanh{ \left[ \left( \dfrac{I_{\beta}}{I} \right)^{\gamma} \right] }  \hspace{1cm}} | Double-tanh-shp | \emph{Amirian et al. 2024} |
+#' | Ph12 | \eqn{P^B = P^B_{\max}  \left[1 - \exp{\left( -\dfrac{I}{I_{\alpha}} \right)} \right] \tanh{ \left[ \left( \dfrac{I_{\beta}}{I} \right)^{\cosh^2(1)} \right] }  \hspace{1cm}} | Exp-tanh | \emph{Amirian et al. 2024} |
+#' | Ph13 | \eqn{P^B = P^B_{\max} \left[1 - \exp{\left( -\dfrac{I}{I_{\alpha}} \right)} \right] \tanh{ \left[ \left( \dfrac{I_{\beta}}{I} \right)^{\gamma} \right] }  \hspace{1cm}} | Exp-tanh-shp | \emph{Amirian et al. 2024} |
+#' | Ph14 | \eqn{P^B = P^B_{\max}  \tanh{\left(\dfrac{I}{I_{\alpha}}\right)} \left[1 - \exp{\left(-\dfrac{I_{\beta}}{I}\right)} \right]    \hspace{1cm}} | Tanh-rcp_exp | \emph{Amirian et al. 2024} |
+#' | Ph15 | \eqn{P^B = P^B_{\max} \left[1 - \exp{\left(-\dfrac{I}{I_{\alpha}}\right)} \right] \left[1 - \exp{\left(-\dfrac{I_{\beta}}{I}\right)} \right]  \hspace{1cm}} | Exp_rcp_exp | \emph{Amirian et al. 2024} |
+#'
+#' In equations LS6 and Ph08, \eqn{b} is a shape parameter, \eqn{\theta = \dfrac{1}{1 + \exp{(-b)}}} is
+#' a sigmoid function setting \eqn{0< \theta <1}, and \eqn{\mathcal{I} = \left(\dfrac{I}{I_\alpha} + 1\right) }.
+#' In the above tables also, \eqn{I_{\alpha} = P_{\max}^B/ \alpha}, \eqn{I^s_{\alpha} = P_{s}^B/ \alpha}, \eqn{I_{\beta} = P_{\max}^B/ \beta}, and \eqn{I^s_{\beta} = P_{s}^B/ \beta}.
+#'
+#' ==============================
+#'
+#' Note that the default model_name for light-saturating and photoinhibition data types is
+#' Jassby-tanh (LS5) and double-tanh (Ph12) model, resepctively.
 #' @import tibble
 
 #' @examples
@@ -66,58 +84,25 @@
 #' params <- c(Pmax = 20, alpha = 0.6, R = 0)
 #'
 #' # generate an irradiance profile
-#' df <- tibble::tibble(I = seq(0, 100, length = 25))
+#' df <- tibble::tibble(I = seq(0, 300, length = 25))
 #'
-#' # compute the primary production profile using Baly's rectangular hyperbola model
-#' Model_piCurve(parameters = params, model_name = "Eq3-Baly", data = df)
+#' # compute the photosynthetic rate using Jassby-tanh (LS5) model
+#' Model_piCurve(parameters = params, model_name = "tanh", data = df, data_type = "ls")
 #'
-#' # compute the primary production profile using Eq10 model
-#' Model_piCurve(parameters = c(params, beta = 0.3), model_name = "Eq11_Blackman_extended_1", data = df)
+#' # compute the photosynthetic rate using double-tanh (Ph10) model
+#' Model_piCurve(parameters = c(params, beta = 0.3), model_name = "2tanh", data = df, data_type = "ph")
 #'
 Model_piCurve <-
     function(parameters,
-             model_name = c(
-                 ## no photoinhibition
-                 "Eq1_lm",
-                 "Eq2_Blackman",
-                 "Eq3_Baly",
-                 "Eq4_Smith",
-                 "Eq5_Talling",
-                 "Eq6_Vollenweider_Ln",
-                 "Eq7_Webb",
-                 "Eq8_Jassby",
-                 "Eq9_Prioul",
-                 "Eq10_Bannister",
-
-                 ## with photoinhibition
-                 "Eq11_Blackman_extended_1",
-                 "Eq12_Blackman_extended_2",
-                 "Eq13_Vollenweider",
-                 "Eq14_Steele",
-                 "Eq15_Steele_modified",
-                 "Eq16_Peeters",
-                 "Eq17_Platt",
-                 "Eq18_Neale",
-                 "Eq19_Neale_modified",
-                 "Eq20_Ye",
-                 "Eq21_Baly_extended",
-                 "Eq22_Smith_extended",
-                 "Eq23_Prioul_extended",
-                 "Eq24_Bannister_extended",
-                 "Eq25_Tanh_Tanh_1",
-                 "Eq26_Tanh_Tanh_2",
-                 "Eq27_Tanh_Tanh_shape",
-                 "Eq28_Tanh_Expo",
-                 "Eq29_Expo_Tanh_1",
-                 "Eq30_Expo_Tanh_2",
-                 "Eq31_Expo_Tanh_shape",
-                 "Eq32_Expo_Expo",
-                 "Eq33_Amirian_Tanh",
-                 "Eq34_Amirian_Expo"
-                 ),
-             data){
+             model_name,
+             data,
+             data_type = c(
+                 "light-limited",
+                 "light-saturating",
+                 "photoinhibition"
+             )){
         # select the model specified by the user
-        equation <- Model_setup(which_model = model_name)
+        equation <- Model_setup(which_model = model_name, data_type)
 
         # compute the primary production profile and return it
         return(equation(parameters = parameters, data))
