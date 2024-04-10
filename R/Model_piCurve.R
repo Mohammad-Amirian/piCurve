@@ -1,9 +1,10 @@
 
 #' @title Formulate PI Curve
 #' @description
-#' Wrapper to formulate the photosynthesis-irradiance (PI) curve using well-established
+#' Evaluate one of a large number of photosynthesis-irradiance (PI) models as a function of irradiance.
+#' Well-established
 #' functions such as bi-linear, exponential, hyperbolic tangent, second order polynomial,
-#' generalized rectangular hyperbola, and their appropriate combinations.
+#' generalized rectangular hyperbola, and their appropriate combinations are provided.
 #'
 #' @param parameters Vector -- containing the values listed below:
 #' \itemize{
@@ -17,7 +18,7 @@
 #' @param data Vector -- containing the irradiance profile.
 #' @param data_type String -- data sample type?
 #'
-#' @return A vector that contains the predicted photosynthetic rate over difference irradiances using a given function.
+#' @return A vector of predicted photosynthetic rate at each irradiance using the selected function.
 #'
 #' @export
 #' @references
