@@ -7,38 +7,46 @@ output:
 
 ## Overview
 
-The **piCurve** package integrates a diverse range of photosynthesis irradiance (PI) models, providing a user-friendly environment for users to explore the effects of different irradiance levels on photosynthetic rate using statistical methods. The models have been rigorously tested and validated against experimental data, ensuring their reliability and accuracy. The optimal parameters of the each formulation get estimated through non-linear optimization using two statistical approaches: MSE and MLE.
+The purpose of **piCurve** package to fit a wide range of photosynthesis-irradiance (PI) models to data. The optimal parameters for each model are estimated through non-linear optimization using two statistical approaches: minimizing the mean squared error (MSE) and maximum likelihood esitmation (MLE).
+
+## Installation
+
+Install from github using
+
+```
+remotes::install_github("Mohammad-Amirian/piCurve") # provide auth_token while package is private
+```
 
 ## How to use piCurve
 
-```{r load}
-rm(list = ls())
-devtools::load_all()
+```{r load, message=FALSE}
 library(piCurve)
 library(ggplot2)
 library(viridis)
-library(fBasics)
 ```
 
 ### Light-saturation models
 
-The following data sample is given where `I` and `PP` stand for irradiance and photosynthetic rate, respectively.
+We can use a model to create some simulated data. This code creates a data table with two variables: irradiance, `I`, and photosynthetic rate, `PP`, for irradiances from 0 to 300 µmol photons m-2 s-1 using the hyperbolic tangent model of Jassby & Platt (1976).
+A list of models can be found in the documentation for `Model_piCurve()`. 
 
-```{r generate data 1, include=FALSE}
-set.seed(987)  # Update the seed value to any integer
-params <- c(Pmax = 20, alpha = 0.6, R = 0) # model parameters
-df <- tibble::tibble(I = seq(0, 300, length = 40)) # generate an irradiance profile
-
-df$PP <- # generate data using Jassby's hyperbolic tangent model
-    Model_piCurve(params, model_name = "tanh", data = df, data_type = "ls") +
-    5 * rnorm(length(df$I), 0, 0.2)  # add some noise to PP
+```{r generate-data-1}
+    set.seed(987)  # Update the seed value to any integer
+    params <- c(Pmax = 20, alpha = 0.6, R = 0) # model parameters
+    df <- tibble::tibble(I = seq(0, 300, length = 40)) # generate an irradiance profile
+    
+    df$PP <- # generate data using Jassby's hyperbolic tangent model
+        Model_piCurve(params, model_name = "tanh", data = df, data_type = "ls") +
+        5 * rnorm(length(df$I), 0, 0.2)  # add some noise to PP
 ```
+
+Here is the top of the table:
 
 ```{r, include=TRUE}
 head(round(df, digits = 2), 5)
 ```
 
-To find the optimal parameters for the embed formulations with `MSE` method, one can specify `STATapp = "MSE"` or leave that empty. The default approach is set on `MSE`. See the following example.
+To find the optimal parameters for the selected model with the `MSE` method, specify `STATapp = "MSE"` or leave that empty. The default approach is `MSE`. 
 
 ```{r}
 fit_mse <-
@@ -52,7 +60,7 @@ fit_mse <-
 fit_mse
 ```
 
-For `MLE` method, one simply needs to specify `STATapp = "MLE"`. See the following example
+For `MLE` method, one simply needs to specify `STATapp = "MLE"`:
 
 ```{r}
 fit_mle <-
@@ -60,7 +68,7 @@ fit_mle <-
         parameters = c(params, StDev = 2),
         model_name = "tanh",
         data = df,
-        # Hessian = TRUE,
+        # Hessian = TRUE, # default is FALSE
         STATapp = "MLE",
         data_type = "ls"
     )
@@ -68,7 +76,7 @@ fit_mle <-
 fit_mle
 ```
 
-In case if, the user forgot to set `Hessian = TRUE`, the information matrix can be calculated using `InfoMat_piCurve` as shown below.
+The information matrix can be computed when the model is fit by setting the option `Hessian = TRUE`, or later using the function `InfoMat_piCurve`:
 
 ```{r}
 fit_mle$hessian <-
@@ -82,7 +90,7 @@ fit_mle$hessian <-
 fit_mle$hessian 
 ```
 
-visualizing the fit
+Compute predicted values of photosynthetic rate and visualizing the fit to the data:
 
 ```{r}
 df$P_est <-
@@ -103,7 +111,7 @@ df |>
 
 #### Confidence Interval
 
-To calculate CI, `MLE` method must be used with `Hessian = TRUE`. Then, one simply needs to use `ConfInt_piModel()` function as shown below.
+To calculate confidence intervals for the parameters, the `MLE` method must be used with `Hessian = TRUE`. The function `ConfInt_piModel()` provides the standard errors and confidence intervals:
 
 ```{r}
 ConfInt_piCurve(Fitted_Model = fit_mle)
@@ -111,9 +119,10 @@ ConfInt_piCurve(Fitted_Model = fit_mle)
 
 ### Photoinhibition models
 
-Similar to above, one can alter the codes to photoinhibition models. A list of models can be found under details in `?Model_piCurve()`. Consider the following data sample, let's fit double-tanh (Ph10) model on it.
+Here is another example using simulated data that exhibit photoinhibition.
+A list of models can be found in the documentation for `Model_piCurve()`. 
 
-```{r generate data 2, include=FALSE}
+```{r generate-data-2}
 set.seed(987)  # Update the seed value to any integer
 params <- c(Pmax = 20, alpha = 0.8, beta = 0.1, R = 0) # model parameters
 df <- tibble::tibble(I = seq(0, 300, length = 40)) # generate an irradiance profile
@@ -121,12 +130,10 @@ df <- tibble::tibble(I = seq(0, 300, length = 40)) # generate an irradiance prof
 df$PP <- # generate data using Jassby's hyperbolic tangent model
     Model_piCurve(params, model_name = "2tanh", data = df, data_type = "ph") +
     5 * rnorm(length(df$I), 0, 0.2)  # add some noise to PP
-```
-
-
-```{r}
 head(df, 3)
 ```
+
+Here we fit the double-tanh (Ph10) model to the simulated data:
 
 ```{r}
 fit_mle <-
@@ -141,7 +148,7 @@ fit_mle <-
 fit_mle
 ```
 
-visualizing the fit
+and we visualize the fit:
 
 ```{r}
 df$P_est <-

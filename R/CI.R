@@ -2,7 +2,8 @@
 #' Confidence intervals
 #'
 #' @description
-#' Compute standard errors and confidence intervals for the estimated parameter values for a provided PI model.
+#' Compute standard errors and confidence intervals for the estimated parameter values
+#' for a provided PI model.
 #'
 #' @param Fitted_Model List -- the fitted model (output of \code{\link{Fit_piModel}} function).
 #' @param Clevel Numeric -- the confidence level. Default 95%.
@@ -54,7 +55,8 @@ ConfInt_piCurve <- function(Fitted_Model, Clevel = 0.95){
 #'
 #' @description
 #' Compute standard errors and confidence intervals for the estimated parameter values
-#' when \verb{Hessian = TRUE} is forgotten in \code{\link{Fit_piModel}} function.
+#' for a provided PI model when \verb{Hessian = TRUE} is forgotten
+#' in \verb{OptPar_piCurve} function.
 #'
 #' @param Estimated_Params Vector -- the (optimal) parameter of a given PI model.
 #' Further details \code{\link{Fit_piModel}}

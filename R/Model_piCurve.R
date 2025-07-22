@@ -1,10 +1,10 @@
 
 #' @title Formulate PI Curve
 #' @description
-#' Evaluate one of a large number of photosynthesis-irradiance (PI) models as a
-#' function of irradiance. Well-established functions such as bi-linear, exponential,
-#' hyperbolic tangent, second order polynomial, generalized rectangular hyperbola,
-#' and their appropriate combinations are provided.
+#' Evaluate one of a large number of photosynthesis-irradiance (PI) models as a function of irradiance.
+#' Well-established
+#' functions such as bi-linear, exponential, hyperbolic tangent, second order polynomial,
+#' generalized rectangular hyperbola, and their appropriate combinations are provided.
 #'
 #' @param parameters Vector -- containing the values listed below:
 #' \itemize{
@@ -17,7 +17,7 @@
 #' @param model_name String -- which model? (List of available models is given in \samp{details})
 #' @param data Vector -- containing the irradiance profile.
 #'
-#' @return A vector of predicted photosynthetic rate at each irradiances using the selected function.
+#' @return A vector of predicted photosynthetic rate at each irradiance using the selected function.
 #'
 #' @export
 #' @references
