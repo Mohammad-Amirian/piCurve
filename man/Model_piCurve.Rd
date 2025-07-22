@@ -4,12 +4,7 @@
 \alias{Model_piCurve}
 \title{Formulate PI Curve}
 \usage{
-Model_piCurve(
-  parameters,
-  model_name,
-  data,
-  data_type = c("light-limited", "light-saturating", "photoinhibition")
-)
+Model_piCurve(parameters, model_name, data)
 }
 \arguments{
 \item{parameters}{Vector -- containing the values listed below:
@@ -24,16 +19,15 @@ Model_piCurve(
 \item{model_name}{String -- which model? (List of available models is given in \samp{details})}
 
 \item{data}{Vector -- containing the irradiance profile.}
-
-\item{data_type}{String -- data sample type?}
 }
 \value{
-A vector that contains the predicted photosynthetic rate over difference irradiances using a given function.
+A vector of predicted photosynthetic rate at each irradiances using the selected function.
 }
 \description{
-Wrapper to formulate the photosynthesis-irradiance (PI) curve using well-established
-functions such as bi-linear, exponential, hyperbolic tangent, second order polynomial,
-generalized rectangular hyperbola, and their appropriate combinations.
+Evaluate one of a large number of photosynthesis-irradiance (PI) models as a
+function of irradiance. Well-established functions such as bi-linear, exponential,
+hyperbolic tangent, second order polynomial, generalized rectangular hyperbola,
+and their appropriate combinations are provided.
 }
 \details{
 This package comprises three distinct model frameworks for formulating the PI curve:
@@ -80,17 +74,21 @@ light-limited, light-saturating, and photoinhibition models. Each framework is d
    Ph13 \tab \eqn{P^B = P^B_{\max} \left[1 - \exp{\left( -\dfrac{I}{I_{\alpha}} \right)} \right] \tanh{ \left[ \left( \dfrac{I_{\beta}}{I} \right)^{\gamma} \right] }  \hspace{1cm}} \tab Exp-tanh-shp \tab \emph{Amirian et al. 2024} \cr
    Ph14 \tab \eqn{P^B = P^B_{\max}  \tanh{\left(\dfrac{I}{I_{\alpha}}\right)} \left[1 - \exp{\left(-\dfrac{I_{\beta}}{I}\right)} \right]    \hspace{1cm}} \tab Tanh-rcp_exp \tab \emph{Amirian et al. 2024} \cr
    Ph15 \tab \eqn{P^B = P^B_{\max} \left[1 - \exp{\left(-\dfrac{I}{I_{\alpha}}\right)} \right] \left[1 - \exp{\left(-\dfrac{I_{\beta}}{I}\right)} \right]  \hspace{1cm}} \tab Exp_rcp_exp \tab \emph{Amirian et al. 2024} \cr
+   Ph16 \tab \eqn{P^B = \dfrac{P^B_{\max}}{2 \theta} \left[1 + \theta_\beta ~ \mathcal{I}_\alpha -\sqrt{ \theta_\beta ~  \mathcal{I}_\alpha^2 - 4 \theta ~ \mathcal{I}_\alpha + 1} \right]} \eqn{\hspace{0.5cm}} \tab Fasham-nonRH \tab \emph{Fasham et al. 1983} \cr
 }
 
 
-In equations LS6 and Ph08, \eqn{b} is a shape parameter, \eqn{\theta = \dfrac{1}{1 + \exp{(-b)}}} is
-a sigmoid function setting \eqn{0< \theta <1}, and \eqn{\mathcal{I} = \left(\dfrac{I}{I_\alpha} + 1\right) }.
+In equations LS6 and Ph08, \eqn{b} is a shape parameter, \eqn{\theta = \left[ 1 + \exp{(-b)} \right]^{-1} } is
+a sigmoid function setting \eqn{0< \theta <1},
+\eqn{\theta_\beta = \theta + (1-\theta)\exp{(\beta I)}},
+\eqn{\mathcal{I} = \left({I}/{I_\alpha} + 1\right) },
+and \eqn{\mathcal{I}_\alpha = I / I_\alpha}.
 In the above tables also, \eqn{I_{\alpha} = P_{\max}^B/ \alpha}, \eqn{I^s_{\alpha} = P_{s}^B/ \alpha}, \eqn{I_{\beta} = P_{\max}^B/ \beta}, and \eqn{I^s_{\beta} = P_{s}^B/ \beta}.
 
 ==============================
 
 Note that the default model_name for light-saturating and photoinhibition data types is
-Jassby-tanh (LS5) and double-tanh (Ph12) model, resepctively.
+Jassby-tanh (LS5) and double-tanh (Ph10) model, resepctively.
 }
 \examples{
 # model parameters
@@ -100,13 +98,14 @@ params <- c(Pmax = 20, alpha = 0.6, R = 0)
 df <- tibble::tibble(I = seq(0, 300, length = 25))
 
 # compute the photosynthetic rate using Jassby-tanh (LS5) model
-Model_piCurve(parameters = params, model_name = "tanh", data = df, data_type = "ls")
+Model_piCurve(parameters = params, model_name = "tanh", data = df)
 
 # compute the photosynthetic rate using double-tanh (Ph10) model
-Model_piCurve(parameters = c(params, beta = 0.3), model_name = "2tanh", data = df, data_type = "ph")
+Model_piCurve(parameters = c(params, beta = 0.3), model_name = "2tanh", data = df)
 
 }
 \references{
-Mohammad Amirian, Emmanuel Devred, Zoe V. Finkel, Andrew J. Irwin.
-“\emph{An improved parameterization of photoinhibition in phytoplankton photosynthesis-irradiance curves},” xxx 2024.
+Amirian M.M., V Finkel Z., Devred E., Irwin A.J.,
+“\emph{A new parameterization of photoinhibition for phytoplankton},
+arXiv (2024) 1–33. 10.48550/arXiv.2412.17923.
 }

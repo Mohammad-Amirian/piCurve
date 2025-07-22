@@ -7,9 +7,9 @@
 MSE_piCurve(data, model_fit)
 }
 \arguments{
-\item{data}{Data frame –- containing the primary production profile.}
+\item{data}{Data frame –- containing the true photosynthesis rate profile.}
 
-\item{model_fit}{Vector – containing the calculated primary production profile.}
+\item{model_fit}{Vector – containing the predicted photosynthesis rate profile.}
 }
 \value{
 \samp{MSE} calculates measures the average squared difference between
@@ -25,17 +25,16 @@ params <- c(Pmax = 20, alpha = 0.6, R = 0)
 # generate an irradiance profile
 df <- tibble::tibble(I = seq(0, 100, length = 25))
 
-df$PP <- # generate the photosynthetic rate using Jassby-tanh (LS5) model
-   Model_piCurve(parameters = params, model_name = "tanh", data = df, data_type = "ls") +
+df$P <- # generate the photosynthetic rate using Jassby-tanh (LS5) model
+   Model_piCurve(parameters = params, model_name = "tanh", data = df) +
    5 * rnorm(25, 0, 0.25)    # add noise
 
 # Estimate the optimal values for the generated dataset using MLE method
-fit <- OptPar_piCurve(parameters = c(params, StDev = 2), model_name = "tanh",
-                      STATapp = "MLE", Hessian = TRUE, data = df, data_type = "ls")
+fit <- Fit_piModel(data = df)
 
-# Calculate the primary production profile using the optimal values
-model_fit <- Model_piCurve(parameters = fit$par, model_name = fit$model, data = df, data_type = "ls")
+# Calculate the predicted photosynthetic rate
+Phat <- Model_piCurve(parameters = fit$par, model_name = fit$model, data = df)
 
-MSE_piCurve(df, model_fit)
+MSE_piCurve(df, Phat)
 
 }

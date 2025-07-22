@@ -18,7 +18,7 @@ Ph01_Steele <- function(data, parameters){
     # Pmax, and alpha are positive parameters in the model
     Pmax  <- abs(parameters["Pmax"])
     alpha <- abs(parameters["alpha"])
-    R  <- parameters["R"]
+
     Ik <- Pmax / alpha
 
     # irradiance profile
@@ -26,9 +26,14 @@ Ph01_Steele <- function(data, parameters){
 
     Iratio_a <- I / Ik
 
-    # calculate primary production values
-    PPhat <-
-        Pmax * Iratio_a * exp(1 - Iratio_a) + R
+    # calculate photosynthesis ratevalues
+    if ("R" %in% names(parameters)){
+        R  <- parameters["R"]
+        PPhat <-
+            Pmax * Iratio_a * exp(1 - Iratio_a) + R
+    } else {
+        PPhat <- Pmax * Iratio_a * exp(1 - Iratio_a)
+    }
 
     return(PPhat)
 }
@@ -40,7 +45,7 @@ Ph02_Peeters <- function(data, parameters){
     Pmax  <- abs(parameters["Pmax"])
     alpha <- abs(parameters["alpha"])
     beta  <- abs(parameters["beta"])
-    R   <- parameters["R"]
+
     Ik  <- Pmax / alpha
     Ikb <- Pmax / beta
 
@@ -50,9 +55,14 @@ Ph02_Peeters <- function(data, parameters){
     Iratio_a <- I / Ik
     Iratio_b <- I / Ikb
 
-    # calculate primary production values
-    PPhat <-
-        Pmax * Iratio_a / ( Iratio_a * Iratio_b + Iratio_a + 1 ) + R
+    # calculate photosynthesis ratevalues
+    if ("R" %in% names(parameters)){
+        R  <- parameters["R"]
+        PPhat <-
+            Pmax * Iratio_a / ( Iratio_a * Iratio_b + Iratio_a + 1 ) + R
+    } else {
+        PPhat <- Pmax * Iratio_a / ( Iratio_a * Iratio_b + Iratio_a + 1 )
+    }
 
     return(PPhat)
 }
@@ -64,7 +74,7 @@ Ph03_Platt <- function(data, parameters){
     Pmax  <- abs(parameters["Pmax"])
     alpha <- abs(parameters["alpha"])
     beta  <- abs(parameters["beta"])
-    R   <- parameters["R"]
+
     Ik  <- Pmax / alpha
     Ikb <- Pmax / beta
 
@@ -74,9 +84,16 @@ Ph03_Platt <- function(data, parameters){
     Iratio_a <- I / Ik
     Iratio_b <- I / Ikb
 
-    # calculate primary production values
-    PPhat <-
-        Pmax * (1 - exp(-Iratio_a)) * exp(-Iratio_b) + R
+    # calculate photosynthesis ratevalues
+    if ("R" %in% names(parameters)){
+        R  <- parameters["R"]
+        PPhat <-
+            Pmax * (1 - exp(-Iratio_a)) * exp(-Iratio_b) + R
+    } else {
+        PPhat <-
+            Pmax * (1 - exp(-Iratio_a)) * exp(-Iratio_b)
+    }
+
 
     return(PPhat)
 }
@@ -88,7 +105,7 @@ Ph04_Neale_modified <- function(data, parameters){
     Pmax  <- abs(parameters["Pmax"])
     alpha <- abs(parameters["alpha"])
     beta  <- abs(parameters["beta"])
-    R   <- parameters["R"]
+
     Ik  <- Pmax / alpha
     Ikb <- Pmax / beta
 
@@ -98,9 +115,15 @@ Ph04_Neale_modified <- function(data, parameters){
     I_ratio_1 <- I / Ik
     I_ratio_2 <- I / Ikb
 
-    # calculate primary production values
-    PPhat <-
-        Pmax * tanh(I_ratio_1) * exp(-I_ratio_2) + R
+    # calculate photosynthesis ratevalues
+    if ("R" %in% names(parameters)){
+        R  <- parameters["R"]
+        PPhat <-
+            Pmax * tanh(I_ratio_1) * exp(-I_ratio_2) + R
+    } else {
+        PPhat <-
+            Pmax * tanh(I_ratio_1) * exp(-I_ratio_2)
+    }
 
     return(PPhat)
 }
@@ -112,7 +135,7 @@ Ph05_Baly_extended <- function(data, parameters){
     Pmax  <- abs(parameters["Pmax"])
     alpha <- abs(parameters["alpha"])
     beta  <- abs(parameters["beta"])
-    R   <- parameters["R"]
+
     Ik  <- Pmax / alpha
     Ikb <- Pmax / beta
 
@@ -122,9 +145,15 @@ Ph05_Baly_extended <- function(data, parameters){
     Iratio_a <- I / (I + Ik)
     Iratio_b <- I / Ikb
 
-    # calculate primary production values
-    PPhat <-
-        Pmax * Iratio_a * exp(-Iratio_b) + R
+    # calculate photosynthesis ratevalues
+    if ("R" %in% names(parameters)){
+        R  <- parameters["R"]
+        PPhat <-
+            Pmax * Iratio_a * exp(-Iratio_b) + R
+    } else {
+        PPhat <-
+            Pmax * Iratio_a * exp(-Iratio_b)
+    }
 
     return(PPhat)
 }
@@ -136,7 +165,7 @@ Ph06_Smith_extended <- function(data, parameters){
     Pmax  <- abs(parameters["Pmax"])
     alpha <- abs(parameters["alpha"])
     beta  <- abs(parameters["beta"])
-    R   <- parameters["R"]
+
     Ik  <- Pmax / alpha
     Ikb <- Pmax / beta
 
@@ -146,9 +175,15 @@ Ph06_Smith_extended <- function(data, parameters){
     Iratio_a <- I / sqrt(I^2 + Ik^2)
     Iratio_b <- I / Ikb
 
-    # calculate primary production values
-    PPhat <-
-        Pmax * Iratio_a * exp(-Iratio_b) + R
+    # calculate photosynthesis ratevalues
+    if ("R" %in% names(parameters)){
+        R  <- parameters["R"]
+        PPhat <-
+            Pmax * Iratio_a * exp(-Iratio_b) + R
+    } else {
+        PPhat <-
+            Pmax * Iratio_a * exp(-Iratio_b)
+    }
 
     return(PPhat)
 }
@@ -161,7 +196,7 @@ Ph07_Bannister_extended <- function(data, parameters){
     alpha <- abs(parameters["alpha"])
     beta  <- abs(parameters["beta"])
     b  <- abs(parameters["shape"])
-    R   <- parameters["R"]
+
     Ik  <- Pmax / alpha
     Ikb <- Pmax / beta
 
@@ -171,9 +206,15 @@ Ph07_Bannister_extended <- function(data, parameters){
     Iratio_a <- I / ( (I^b + Ik^b)^(1/b) )
     Iratio_b <- I / Ikb
 
-    # calculate primary production values
-    PPhat <-
-        Pmax * Iratio_a * exp(-Iratio_b) + R
+    # calculate photosynthesis ratevalues
+    if ("R" %in% names(parameters)){
+        R  <- parameters["R"]
+        PPhat <-
+            Pmax * Iratio_a * exp(-Iratio_b) + R
+    } else {
+        PPhat <-
+            Pmax * Iratio_a * exp(-Iratio_b)
+    }
 
     return(PPhat)
 }
@@ -186,7 +227,6 @@ Ph08_Prioul_extended <- function(data, parameters){
     alpha <- abs(parameters["alpha"])
     beta  <- abs(parameters["beta"])
     b   <- parameters["shape"]
-    R   <- parameters["R"]
 
     Ik  <- Pmax / alpha
     Ikb <- Pmax / beta
@@ -204,9 +244,15 @@ Ph08_Prioul_extended <- function(data, parameters){
     # lower roots of a second order polynomial function
     I_ratio_Lroots <-  Iratio_a - sqrt(Iratio_a^2 - 4 * theta * ( Iratio_a - 1 ))
 
-    # calculate primary production values
-    PPhat <-
-        Pmax * I_ratio_Lroots * exp(-Iratio_b) + R
+    # calculate photosynthesis ratevalues
+    if ("R" %in% names(parameters)){
+        R  <- parameters["R"]
+        PPhat <-
+            Pmax * I_ratio_Lroots * exp(-Iratio_b) + R
+    } else {
+        PPhat <-
+            Pmax * I_ratio_Lroots * exp(-Iratio_b)
+    }
 
     return(PPhat)
 }
@@ -218,17 +264,26 @@ Ph09_Blackman_extended_4params <- function(data, parameters){
     Pmax  <- abs(parameters["Pmax"])
     alpha <- abs(parameters["alpha"])
     beta  <- abs(parameters["beta"])
-    R   <- parameters["R"]
+
     Ik  <- Pmax / alpha
     Ikb <- Pmax / beta
 
     # irradiance profile
     I <- data$I
 
-    # calculate primary production values
-    PPhat <-
-        alpha * I + Heaviside(I - Ik) * (Pmax - alpha * I) +
-        Heaviside(I - Ikb) * (-beta * (I - Ikb)) + R
+    # calculate photosynthesis ratevalues
+    if ("R" %in% names(parameters)){
+        R  <- parameters["R"]
+        PPhat <-
+            alpha * I + Heaviside(I - Ik) * (Pmax - alpha * I) +
+            Heaviside(I - Ikb) * (-beta * (I - Ikb)) + R
+    } else {
+        PPhat <-
+            alpha * I + Heaviside(I - Ik) * (Pmax - alpha * I) +
+            Heaviside(I - Ikb) * (-beta * (I - Ikb))
+    }
+
+
 
     return(PPhat)
 }
@@ -240,7 +295,7 @@ Ph10_double_tanh <- function(data, parameters){
     Pmax  <- abs(parameters["Pmax"])
     alpha <- abs(parameters["alpha"])
     beta  <- abs(parameters["beta"])
-    R   <- parameters["R"]
+
     Ik  <- Pmax / alpha
     Ikb <- Pmax / beta
 
@@ -250,9 +305,16 @@ Ph10_double_tanh <- function(data, parameters){
     Iratio_a  <- I / Ik
     Iratio_b  <- Ikb / I
     Iratio_bb  <- (Iratio_b)^(cosh(1)^2)
-    # calculate primary production values
-    PPhat <-
-        Pmax * tanh(Iratio_a) * tanh(Iratio_bb) + R
+
+    # calculate photosynthesis ratevalues
+    if ("R" %in% names(parameters)){
+        R  <- parameters["R"]
+        PPhat <-
+            Pmax * tanh(Iratio_a) * tanh(Iratio_bb) + R
+    } else {
+        PPhat <-
+            Pmax * tanh(Iratio_a) * tanh(Iratio_bb)
+    }
 
     return(PPhat)
 }
@@ -265,7 +327,7 @@ Ph11_double_tanh_shp <- function(data, parameters){
     alpha <- abs(parameters["alpha"])
     beta  <- abs(parameters["beta"])
     shape <- abs(parameters["shape"])
-    R   <- parameters["R"]
+
     Ik  <- Pmax / alpha
     Ikb <- Pmax / beta
 
@@ -276,9 +338,15 @@ Ph11_double_tanh_shp <- function(data, parameters){
     Iratio_b <- Ikb / I
     Iratio_bb <- Iratio_b^shape
 
-    # calculate primary production values
-    PPhat <-
-        Pmax * tanh(Iratio_a) * tanh(Iratio_bb) + R
+    # calculate photosynthesis ratevalues
+    if ("R" %in% names(parameters)){
+        R  <- parameters["R"]
+        PPhat <-
+            Pmax * tanh(Iratio_a) * tanh(Iratio_bb) + R
+    } else {
+        PPhat <-
+            Pmax * tanh(Iratio_a) * tanh(Iratio_bb)
+    }
 
     return(PPhat)
 }
@@ -290,7 +358,7 @@ Ph12_exp_tanh <- function(data, parameters){
     Pmax  <- abs(parameters["Pmax"])
     alpha <- abs(parameters["alpha"])
     beta  <- abs(parameters["beta"])
-    R   <- parameters["R"]
+
     Ik  <- Pmax / alpha
     Ikb <- Pmax / beta
 
@@ -301,9 +369,15 @@ Ph12_exp_tanh <- function(data, parameters){
     Iratio_b <- Ikb / I
     Iratio_bb <- Iratio_b^(cosh(1)^2)
 
-    # calculate primary production values
-    PPhat <-
-        Pmax * ( 1 - exp(-Iratio_a) ) * tanh(Iratio_bb) + R
+    # calculate photosynthesis ratevalues
+    if ("R" %in% names(parameters)){
+        R  <- parameters["R"]
+        PPhat <-
+            Pmax * ( 1 - exp(-Iratio_a) ) * tanh(Iratio_bb) + R
+    } else {
+        PPhat <-
+            Pmax * ( 1 - exp(-Iratio_a) ) * tanh(Iratio_bb)
+    }
 
     return(PPhat)
 }
@@ -316,7 +390,7 @@ Ph13_exp_tanh_shp <- function(data, parameters){
     alpha <- abs(parameters["alpha"])
     beta  <- abs(parameters["beta"])
     shape <- abs(parameters["shape"])
-    R   <- parameters["R"]
+
     Ik  <- Pmax / alpha
     Ikb <- Pmax / beta
 
@@ -327,9 +401,15 @@ Ph13_exp_tanh_shp <- function(data, parameters){
     Iratio_b <- Ikb / I
     Iratio_bb  <- Iratio_b^shape
 
-    # calculate primary production values
-    PPhat <-
-        Pmax *  ( 1 - exp(-Iratio_a) ) * tanh(Iratio_bb) + R
+    # calculate photosynthesis ratevalues
+    if ("R" %in% names(parameters)){
+        R  <- parameters["R"]
+        PPhat <-
+            Pmax *  ( 1 - exp(-Iratio_a) ) * tanh(Iratio_bb) + R
+    } else {
+        PPhat <-
+            Pmax *  ( 1 - exp(-Iratio_a) ) * tanh(Iratio_bb)
+    }
 
     return(PPhat)
 }
@@ -341,7 +421,7 @@ Ph14_tanh_rcp_exp <- function(data, parameters){
     Pmax  <- abs(parameters["Pmax"])
     alpha <- abs(parameters["alpha"])
     beta  <- abs(parameters["beta"])
-    R   <- parameters["R"]
+
     Ik  <- Pmax / alpha
     Ikb <- Pmax / beta
 
@@ -351,9 +431,15 @@ Ph14_tanh_rcp_exp <- function(data, parameters){
     Iratio_a  <- I / Ik
     Iratio_b  <- Ikb / I
 
-    # calculate primary production values
-    PPhat <-
-        Pmax * tanh(Iratio_a) * (1 - exp(-Iratio_b)) + R
+    # calculate photosynthesis ratevalues
+    if ("R" %in% names(parameters)){
+        R  <- parameters["R"]
+        PPhat <-
+            Pmax * tanh(Iratio_a) * (1 - exp(-Iratio_b)) + R
+    } else {
+        PPhat <-
+            Pmax * tanh(Iratio_a) * (1 - exp(-Iratio_b))
+    }
 
     return(PPhat)
 }
@@ -365,7 +451,7 @@ Ph15_exp_rcp_exp <- function(data, parameters){
     Pmax  <- abs(parameters["Pmax"])
     alpha <- abs(parameters["alpha"])
     beta  <- abs(parameters["beta"])
-    R   <- parameters["R"]
+
     Ik  <- Pmax / alpha
     Ikb <- Pmax / beta
 
@@ -374,10 +460,47 @@ Ph15_exp_rcp_exp <- function(data, parameters){
 
     Iratio_a  <- I / Ik
     Iratio_b <- Ikb / I
-    # calculate primary production values
-    PPhat <-
-        Pmax *  ( 1 - exp(-Iratio_a) ) * ( 1 - exp(-Iratio_b) ) + R
+
+    # calculate photosynthesis ratevalues
+    if ("R" %in% names(parameters)){
+        R  <- parameters["R"]
+        PPhat <-
+            Pmax *  ( 1 - exp(-Iratio_a) ) * ( 1 - exp(-Iratio_b) ) + R
+    } else {
+        PPhat <-
+            Pmax *  ( 1 - exp(-Iratio_a) ) * ( 1 - exp(-Iratio_b) )
+    }
 
     return(PPhat)
 }
 
+# Ph16: Fasham & Platt 1983 (5 params)
+Ph16_fasham_nonRH <- function(data, parameters){
+    Pmax  = abs(parameters["Pmax"])
+    alpha = abs(parameters["alpha"])
+    beta  = abs(parameters["beta"])
+    shape = parameters["shape"]
+
+    theta <- sigmoid_fn(shape)
+
+    Ia = Pmax / alpha
+    Ib = Pmax / beta
+
+    I = data$I
+
+    inhib_term <- theta + (1 - theta) * exp(I / Ib)
+
+    I_term <- 1 + inhib_term * (I / Ia)
+
+    # calculate photosynthesis ratevalues
+    if ("R" %in% names(parameters)){
+        R  <- parameters["R"]
+        PPhat <-
+            0.5 * (Pmax / theta) * (I_term - sqrt( I_term^2 - 4 * theta * (I / Ia))) + R
+    } else {
+        PPhat <-
+            0.5 * (Pmax / theta) * (I_term - sqrt( I_term^2 - 4 * theta * (I / Ia)))
+    }
+
+    return(PPhat)
+}

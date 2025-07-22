@@ -7,7 +7,7 @@
 AIC_AICc_BIC_piCurve(Fitted_Model, SampleN)
 }
 \arguments{
-\item{Fitted_Model}{List -- the fitted model (output of \verb{OptPar_piCurve} function).}
+\item{Fitted_Model}{List -- the fitted model (output of \code{\link{Fit_piModel}} function).}
 
 \item{SampleN}{Numeric -- length of sample size.}
 }
@@ -24,14 +24,14 @@ params <- c(Pmax = 20, alpha = 0.6, R = 0)
 # generate an irradiance profile
 df <- tibble::tibble(I = seq(0, 100, length = 25))
 
-df$PP <- # generate the photosynthetic rate using Jassby-tanh (LS5) model
-   Model_piCurve(parameters = params, model_name = "tanh", data = df, data_type = "ls") +
+df$P <- # generate the photosynthetic rate using Jassby-tanh (LS5) model
+   Model_piCurve(parameters = params, model_name = "tanh", data = df) +
    5 * rnorm(25, 0, 0.25)    # add noise
 
 # Estimate the optimal values for the generated dataset using MLE method
-fit <- OptPar_piCurve(parameters = c(params, StDev = 2), model_name = "tanh",
-                      STATapp = "MLE", Hessian = TRUE, data = df, data_type = "ls")
+fit <- Fit_piModel(parameters = c(params, StDev = 2), model_name = "tanh",
+                      STATapp = "MLE", Hessian = TRUE, data = df)
 
 # Calculate 95 \% CI for the estimated parameters
-AIC_AICc_BIC_piCurve(Fitted_Model = fit, SampleN = length(df$PP))
+AIC_AICc_BIC_piCurve(Fitted_Model = fit, SampleN = length(df$P))
 }

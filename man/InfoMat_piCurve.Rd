@@ -8,7 +8,6 @@ InfoMat_piCurve(
   parameters,
   model_name,
   data,
-  data_type = c("light-limited", "light-saturating", "photoinhibition"),
   GradientFn = NULL,
   ...,
   Control = list()
@@ -29,19 +28,17 @@ InfoMat_piCurve(
 
 \item{data}{Vector -- Containing the irradiance profile.}
 
-\item{data_type}{String -- data sample type?}
-
 \item{GradientFn}{String -- A function that produces the gradient for \verb{BFGS},}
 
 \item{...}{Further arguments to be passed to fn and gr.}
 
-\item{Control}{List -- a list of control parameters. Further details \code{?stats::optim}.}
+\item{Control}{List -- a list of control parameters. Further details \code{\link{optim}}.}
 }
 \value{
 A symmetric matrix that estimates the information/hessian matrix at the optimal solution.
 }
 \description{
-A wrapper to calculate the information matrix for PI models.
+A wrapper to calculate the information matrix for PI models based on \code{\link{optimHess}} function.
 }
 \examples{
 # model parameters
@@ -50,21 +47,21 @@ params <- c(Pmax = 20, alpha = 0.6, R = 0, StDev = 2)
 # generate an irradiance profile
 df <- tibble::tibble(I = seq(0, 100, length = 25))
 
-df$PP <- # generate the photosynthetic rate using Jassby-tanh (LS5) model
-   Model_piCurve(parameters = params, model_name = "tanh", data = df, data_type = "ls") +
-   5 * rnorm(25, 0, 0.25)    # add some noise to PP
+df$P <- # generate the photosynthetic rate using Jassby-tanh (LS5) model
+   Model_piCurve(parameters = params, model_name = "tanh", data = df) +
+   5 * rnorm(25, 0, 0.25)    # add some noise to P
 
 
 # Estimate the optimal values for the generated dataset using MLE method
-fit <- OptPar_piCurve(params, model_name = "tanh", STATapp = "MLE", data = df, data_type = "ls")
+fit <- Fit_piModel(params, model_name = "tanh", STATapp = "MLE", data = df)
 
 # Calculating the information matrix
-InfoMat_piCurve(parameters = fit$par, model_name = fit$model, data = df, data_type = "ls")
+InfoMat_piCurve(parameters = fit$par, model_name = fit$model, data = df)
 
 # different accuracy
-InfoMat_piCurve(parameters = fit$par, model_name = fit$model, data = df, data_type = "ls",
-               Control = list( ndeps = rep(1e-4, length = length(fit$par)) ) )
+InfoMat_piCurve(parameters = fit$par, model_name = fit$model, data = df,
+                Control = list( ndeps = rep(1e-4, length = length(fit$par)) ) )
 
-InfoMat_piCurve(parameters = fit$par, model_name = fit$model, data = df, data_type = "ls",
-              Control = list( ndeps = c(rep(1e-4, 3), StDev = 1e-3)) )
+InfoMat_piCurve(parameters = fit$par, model_name = fit$model, data = df,
+               Control = list( ndeps = c(rep(1e-4, 3), StDev = 1e-3)) )
 }

@@ -1,38 +1,37 @@
 
-#' Find the optimal parameters in PI models
+#' Fit PI models
 #' @description
-#' \samp{OptPar_piCurve} uses general-purpose optimization to identify the optimal parameters
+#' \samp{Fit_piModel} uses general-purpose optimization to identify the optimal parameters
 #' in the photosynthesis-irradiance curve models.
 #' The method includes the \samp{Nelder-Mead}, \samp{quasi-Newton}, and \samp{conjugate-gradient} algorithms,
 #' as well as options for box-constrained optimization and simulated annealing. Two different
 #' statistical approaches, Mean Squared Error (MSE) and Maximum Likelihood Estimation (MLE),
 #' are available for objective function optimization.
 #'
-#' @param parameters Vector -- containing the values listed below:
+#' @param parameters Vector -- containing the values listed below. If `NULL`, default values are generated using \code{\link{get_start_piPars}}.
 #' \itemize{
 #'      \item{\code{Pmax} \eqn{\hspace{0.1cm}}: }{Maximum photosynthetic rate normalised by Chl_a (sign +),}
 #'      \item{\code{alpha}: }{Light-saturation slope at low light level (sign +),}
 #'      \item{\code{beta}  \eqn{\hspace{0.15cm}}: }{Photoinhibition parameter (sign +),}
-#'      \item{\code{R}  \eqn{\hspace{0.7cm}}: }{Dark reaction rate (sign + OR -),}
+#'      \item{\code{R}  \eqn{\hspace{0.7cm}}: }{Dark reaction rate (\samp{Optional} with sign + OR -)}
 #'      \item{\code{shape}  \eqn{\hspace{0cm}}: }{Shape parameter (sign +) -- Only required for some of the models. See \samp{Details}}.
 #'      \item{\code{StDev}  \eqn{\hspace{0cm}}: }{Standard deviation parameter -- Only required when \samp{STATapp = MLE}}.
 #' }
-#' @param model_name String -- which model? (See \samp{details})
+#' @param model_name String -- which model? If `NULL`, defaults to `Ph10` (double-tanh) model with and without photoinhibition. See \code{\link{Model_piCurve}} and \samp{details}.
 #' @param STATapp String -- Providing the statistical methods for optimization,
 #' which are \samp{MSE} or \samp{MLE}. See \samp{Details}. Default is \samp{MSE}.
-#' @param data Vector -- Containing the irradiance profile.
-#' @param data_type String -- data sample type?
+#' @param data Data frame -- Containing  `I` (irradiance) and `P` (photosynthesis rate) columns
 #' @param GradientFn String -- A function that produces the gradient for \verb{BFGS},
 #' \verb{CG} and \verb{L-BFGS-B} techniques, and if it is not provided, a numerical
 #' estimation using \samp{finite-differences} will be applied.
 #' @param ... An option to pass further arguments to \verb{GradientFn}.
 #' @param Method String -- The method employed to determine the optimal values for the
-#' model's parameters. Further details \code{?stats::optim}.
+#' model's parameters. Further details \code{\link{optim}}.
 #' @param LowerBnd Numeric -- Lower boundaries on the variables for the \verb{L-BFGS-B}
 #' method, or bounds in which to search for method \verb{Brent}.
 #' @param UpperBnd Numeric -- Upper boundaries on the variables for the \verb{L-BFGS-B}
 #' method, or bounds in which to search for method \verb{Brent}.
-#' @param Control List -- a list of control parameters. Further details \code{?stats::optim}.
+#' @param Control List -- a list of control parameters. Further details \code{\link{optim}}.
 #' @param Hessian Logical -- Should the Hessian matrix be returned through numerical
 #' differentiation? Default is \verb{FALSE}.
 #'
@@ -42,13 +41,13 @@
 #' using either the mean squared error (\samp{MSE}) or maximum likelihood estimate (\samp{MLE}) method.
 #'
 #' \item{\verb{value:}}
-#' The MSE value on the primary production (\verb{PP}) profile when
+#' The MSE value on the primary production (\verb{P}) profile when
 #' \verb{STATapp = MSE} is met or \verb{STATapp} is not specified. This metric
 #' measures the average squared difference between predicted and actual values
 #' in regression analysis. A lower value for the mean MSE indicates a better fit.
 #' For \verb{STATapp = MLE}, the optimization uses Maximum Likelihood Estimation
 #' method to find the optimal parameters. The value in this case stands for the
-#' likelihood of observing the primary production (\verb{PP}) for the estimated
+#' likelihood of observing the primary production (\verb{P}) for the estimated
 #' parameters. A higher value for the MLE indicates a better fit as the method
 #'  aims to find the parameter values that make the observed data most
 #' likely to occur according to the assumed distribution
@@ -113,13 +112,14 @@
 #' \verb{STATapp = MLE}, the \verb{Hessian} argument should be set to \verb{TRUE}. If forgotten,
 #' the user can use \verb{optimHess} function.
 #'
-#' This package includes 36 models which can be found in \code{?piCurve::Model_piCurve} both
+#' This package includes 36 models which can be found in \code{\link{Model_piCurve}} both
 #' commonly-used and recently-developed PI models. The list of models is provided below.
 #'
 #' This function utilizes the \verb{optim()} function from the \verb{stats}
 #' package to perform the optimization. As such, the function makes available all
 #' of the arguments that can be used with the \verb{optim()} function within itself.
 #'
+#' @import dplyr
 #' @export
 #'
 #' @examples
@@ -127,29 +127,28 @@
 #' params <- c(Pmax = 20, alpha = 0.6, R = 0)
 #'
 #' # generate an irradiance profile
-#' df <- tibble::tibble(I = seq(0, 100, length = 25))
+#' df <- tibble::tibble(I = seq(0, 200, length = 25))
 #'
-#' df$PP <- # generate the photosynthetic rate using Jassby-tanh (LS5) model
-#'    Model_piCurve(parameters = params, model_name = "tanh", data = df, data_type = "ls") +
-#'    5 * rnorm(25, 0, 0.25)    # add noise
+#' df$P <- # generate the photosynthetic rate using Jassby-tanh (LS5) model
+#'   Model_piCurve(parameters = params, model_name = "tanh", data = df) +
+#'   5 * rnorm(25, 0, 0.25)    # add noise
 #'
 #' # Estimate the optimal values for the generated dataset using MSE method
-#' OptPar_piCurve(parameters = params, model_name = "tanh", data = df, data_type = "ls")
+#' # Example 1: manual initial values
+#' Fit_piModel(parameters = c(Pmax = 19, alpha = 0.5, R = 0), model_name = "tanh", data = df)
+#'
+#' # Example 2: automated initial values and model selection
+#' Fit_piModel(data = df)
 #'
 #' # Estimate the optimal values for the generated dataset using MLE method
-#' OptPar_piCurve(parameters = c(params, StDev = 2), model_name = "tanh",
-#'             STATapp = "MLE", Hessian = TRUE, data = df, data_type = "ls")
-
+#' Fit_piModel(STATapp = "MLE", Hessian = TRUE, data = df)
 #'
 #' @importFrom fBasics Heaviside
 #' @importFrom stats optim
 #'
-OptPar_piCurve <- function(parameters,
-                           model_name,
-                           data,
-                           data_type = c("light-limited",
-                                         "light-saturating",
-                                         "photoinhibition"),
+Fit_piModel <- function(data,
+                           parameters = NULL,
+                           model_name = NULL,
                            STATapp = c("MSE", "MLE"),
                            GradientFn = NULL,
                            ...,
@@ -159,36 +158,85 @@ OptPar_piCurve <- function(parameters,
                            Control = list(),
                            Hessian = FALSE) {
 
+    # data format check ----
+    if (!all(c("P", "I") %in% names(data))) {
+        print("Input data frame must contain 'P' and 'I' columns. Let's fix the issue ...")
+        data <- FormatCheck_piCurve(data = data)
+    }
+
+    # dataType ? ----
+    if(is.null(model_name)){
+        data_type <- DataType_piCurve(data = data)$data_type
+
+        model_name <-
+            ifelse(data_type == "ph", "2tanh",
+                   ifelse(data_type == "ls", "tanh", "ll"))
+    } else {
+        data_type <-
+            ifelse(
+                nameFormat(model_name) %in% Pool_eqName_lm,
+                "ll", # light-limited
+                ifelse(
+                    nameFormat(model_name) %in% Pool_eqName_ls,
+                    "ls", # light-saturating
+                    "ph" # photoinhibition
+                )
+            )
+    }
+
+    # over-write!
+    if (data_type == "lm") {
+        fit_lm <- summary(lm(I ~ P, data))
+        stop(paste("Light-limited data detected. Model summary:\n",
+                   paste(capture.output(fit_lm), collapse = "\n")))
+    }
+
+    # if parameters is missing, use get_start_piPars() function ----
+    if (is.null(parameters)) {
+        parameters <- cbind(get_start_piPars(data), StDev = 1, shape = 0.9)[1,]
+    }
+
+    # If STATapp is "MLE" and StDev is missing from parameters, set default StDev = 1
+    ifelse(
+        missing(STATapp) || tolower(STATapp) == "mse",
+        parameters,
+        ifelse(
+            "StDev" %in% names(parameters),
+            parameters,
+            parameters <- c(parameters, StDev = 1)
+        )
+    )
+
     # select the model specified by the user
     equation <- Model_setup(which_model = model_name, data_type)
 
     # MSE_fn needs an equation name, requiring us to define the function in
     # the global environment due to Scoping Rules of R
     MSE_fn <- function(parameters, data) {
-        PPhat <- # predicted PP for a given parameters
+        Phat <- # predicted P for a given parameters
             tryCatch(
                 equation(parameters = parameters, data),
                 error = function (e)
-                    rep(0, data$PP)
+                    rep(0, data$P)
                 )
 
-        MSE_piCurve(data, model_fit = PPhat) # return MSE value
+        MSE_piCurve(data, model_fit = Phat) # return MSE value
     }
 
 
     # same comment as MSE_n concerning scoping rules of R applies to MLE_fn
     MLE_fn <- function(parameters, data) {
-        # predicted PP for a given parameters
-        PPhat <-
+        # predicted P for a given parameters
+        Phat <-
             tryCatch(
                 equation(parameters = parameters, data),
                 error = function (e)
-                    rep(0, data$PP)
+                    rep(0, data$P)
                 )
 
         logl <- # calculate log-likelihood function
             tryCatch(
-                LogL(data, model_fit = PPhat, StDev = parameters["StDev"]),
+                LogL(data, model_fit = Phat, StDev = parameters["StDev"]),
                 error = function (e) -1e5  # generate a large number in case of err
                 )
 
@@ -254,15 +302,48 @@ OptPar_piCurve <- function(parameters,
         fit,
         # add AIC, AICc, and BIC info to the fit for MLE method
         fit$info_criteria <-
-            AIC_AICc_BIC_piCurve(Fitted_Model = fit, SampleN = length(data$PP))
+            AIC_AICc_BIC_piCurve(Fitted_Model = fit, SampleN = length(data$P))
     )
+
+    # --- clean up par depending on the method ----
+    ifelse(
+        missing(STATapp) || tolower(STATapp) == "mse",
+        fit$par <- fit$par[names(fit$par) != "StDev"], # rm StDev
+        fit
+    )
+
+    ifelse(
+        data_type == "ls",
+        fit$par <- fit$par[names(fit$par) != "beta"], # rm beta
+        ifelse(
+            data_type == "ll",
+            fit$par <- fit$par[!(names(fit$par) %in% c("beta", "alpha"))],
+            fit
+        )
+    )
+
+    ### ----
+    if (model_name %in% steel_model_names) {
+        fit$par <- fit$par[names(fit$par) != "beta"]
+    }
+
+    if (!(model_name %in% extra_param_models)) {
+        fit$par <- fit$par[names(fit$par) != "shape"] # rm shape param
+    }
+
+    # update hessian matrix
+    if ("StDev" %in% names(fit$par)){
+        idx = which(colnames(fit$hessian) %in% names(fit$par))
+        fit$hessian <- fit$hessian[idx, idx]
+    }
+    # ----
 
     # add the model name to the optimization results
     fit$model <- model_name
 
     # add R2 ad adjusted R2 values to the optimization results
-    PPhat <- equation(parameters = fit$par, data)
-    fit$SQA <- R2_piCurve(data, model_fit = PPhat, Nparams = length(fit$par))
+    Phat <- equation(parameters = fit$par, data)
+    fit$SQA <- R2_piCurve(data, model_fit = Phat, Nparams = length(fit$par))
 
     return(fit)
 }

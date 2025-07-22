@@ -116,28 +116,28 @@
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Calculating the information matrix</span></span></span>
 <span class="r-in"><span><span class="fu">InfoMat_piCurve</span><span class="op">(</span>parameters <span class="op">=</span> <span class="va">fit</span><span class="op">$</span><span class="va">par</span>, model_name <span class="op">=</span> <span class="va">fit</span><span class="op">$</span><span class="va">model</span>, data <span class="op">=</span> <span class="va">df</span>, data_type <span class="op">=</span> <span class="st">"ls"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>               Pmax        alpha            R        StDev</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Pmax   8.771709023   71.3191767  11.64011998  0.005141681</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> alpha 71.319176710 1912.2473556 176.29545944  0.334566904</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> R     11.640119982  176.2954594  22.30498481  0.028335391</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> StDev  0.005141681    0.3345669   0.02833539 44.500497831</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                Pmax         alpha            R         StDev</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Pmax   6.5933967761   40.31233958   8.36803612 -0.0007107257</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> alpha 40.3123395785 1021.94836172 100.57655638 -0.0611030879</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> R      8.3680361209  100.57655638  15.00494130 -0.0042198796</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> StDev -0.0007107257   -0.06110309  -0.00421988 30.0099972321</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># different accuracy</span></span></span>
 <span class="r-in"><span><span class="fu">InfoMat_piCurve</span><span class="op">(</span>parameters <span class="op">=</span> <span class="va">fit</span><span class="op">$</span><span class="va">par</span>, model_name <span class="op">=</span> <span class="va">fit</span><span class="op">$</span><span class="va">model</span>, data <span class="op">=</span> <span class="va">df</span>, data_type <span class="op">=</span> <span class="st">"ls"</span>,</span></span>
 <span class="r-in"><span>               Control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span> ndeps <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1e-4</span>, length <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">fit</span><span class="op">$</span><span class="va">par</span><span class="op">)</span><span class="op">)</span> <span class="op">)</span> <span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>               Pmax        alpha            R        StDev</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Pmax   8.771709581   71.3192520  11.64011989  0.005141398</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> alpha 71.319252015 1912.1973535 176.29494078  0.329320748</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> R     11.640119890  176.2949408  22.30498488  0.028335378</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> StDev  0.005141398    0.3293207   0.02833538 44.500143837</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                Pmax         alpha             R         StDev</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Pmax   6.5933969395   40.31234777   8.368036042 -0.0007107204</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> alpha 40.3123477710 1021.93222418 100.576357198 -0.0628874730</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> R      8.3680360419  100.57635720  15.004941467 -0.0042199133</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> StDev -0.0007107204   -0.06288747  -0.004219913 30.0098369266</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">InfoMat_piCurve</span><span class="op">(</span>parameters <span class="op">=</span> <span class="va">fit</span><span class="op">$</span><span class="va">par</span>, model_name <span class="op">=</span> <span class="va">fit</span><span class="op">$</span><span class="va">model</span>, data <span class="op">=</span> <span class="va">df</span>, data_type <span class="op">=</span> <span class="st">"ls"</span>,</span></span>
 <span class="r-in"><span>              Control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span> ndeps <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1e-4</span>, <span class="fl">3</span><span class="op">)</span>, StDev <span class="op">=</span> <span class="fl">1e-3</span><span class="op">)</span><span class="op">)</span> <span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>              Pmax        alpha            R       StDev</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Pmax   8.77170958   71.3192520  11.64011989  0.00514139</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> alpha 71.31925202 1912.1973535 176.29494078  0.32932137</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> R     11.64011989  176.2949408  22.30498488  0.02833537</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> StDev  0.00514139    0.3293214   0.02833537 44.50049783</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                Pmax         alpha             R         StDev</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Pmax   6.5933969395   40.31234777   8.368036042 -0.0007108625</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> alpha 40.3123477710 1021.93222418 100.576357198 -0.0628875796</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> R      8.3680360419  100.57635720  15.004941467 -0.0042198689</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> StDev -0.0007108625   -0.06288758  -0.004219869 30.0099972321</span>
 </code></pre></div>
     </div>
   </div>
