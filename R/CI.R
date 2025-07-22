@@ -5,7 +5,7 @@
 #' Compute standard errors and confidence intervals for the estimated parameter values
 #' for a provided PI model.
 #'
-#' @param Fitted_Model List -- the fitted model (output of \verb{OptPar_piCurve} function).
+#' @param Fitted_Model List -- the fitted model (output of \code{\link{Fit_piModel}} function).
 #' @param Clevel Numeric -- the confidence level. Default 95%.
 #'
 #' @return Vector -- containing estimated errors along with a (\verb{Clevel})%
@@ -14,19 +14,17 @@
 #'
 #' @importFrom stats qnorm
 #' @examples
-#' # model parameters
-#' params <- c(Pmax = 20, alpha = 0.6, R = 0)
 #'
 #' # generate an irradiance profile
 #' df <- tibble::tibble(I = seq(0, 100, length = 25))
 #'
-#' df$PP <- # generate the photosynthetic rate using Jassby-tanh (LS5) model
-#'    Model_piCurve(parameters = params, model_name = "tanh", data = df, data_type = "ls") +
+#' df$P <- # generate the photosynthetic rate using Jassby-tanh (LS5) model
+#'    Model_piCurve(parameters = c(Pmax = 20, alpha = 0.6),
+#'                  model_name = "tanh", data = df) +
 #'    5 * rnorm(25, 0, 0.25)    # add noise
 #'
 #' # Estimate the optimal values for the generated dataset using MLE method
-#' fit <- OptPar_piCurve(parameters = c(params, StDev = 2), model_name = "tanh",
-#'                      STATapp = "MLE", Hessian = TRUE, data = df, data_type = "ls")
+#' fit <- Fit_piModel(STATapp = "MLE", Hessian = TRUE, data = df)
 #'
 #' # Calculate 95 % CI for the estimated parameters
 #' ConfInt_piCurve(Fitted_Model = fit, Clevel = 0.95)
@@ -61,10 +59,9 @@ ConfInt_piCurve <- function(Fitted_Model, Clevel = 0.95){
 #' in \verb{OptPar_piCurve} function.
 #'
 #' @param Estimated_Params Vector -- the (optimal) parameter of a given PI model.
-#' Further details \code{?piCurve::OptPar_piCurve}
-#' @param model_name String – which model? (List of available models is given in \code{?piCurve::Model_piCurve})
+#' Further details \code{\link{Fit_piModel}}
+#' @param model_name String – which model? (List of available models is given in \code{\link{Model_piCurve}})
 #' @param data Vector – containing the irradiance profile.
-#' @param data_type String – data sample type?
 #' @param Clevel Numeric -- the confidence level. Default 95%.
 #'
 #' @return Vector -- containing estimated errors along with a (\verb{Clevel})%
@@ -78,23 +75,23 @@ ConfInt_piCurve <- function(Fitted_Model, Clevel = 0.95){
 #' # generate an irradiance profile
 #' df <- tibble::tibble(I = seq(0, 100, length = 25))
 #'
-#' df$PP <- # generate the photosynthetic rate using Jassby-tanh (LS5) model
-#'    Model_piCurve(parameters = params, model_name = "tanh", data = df, data_type = "ls") +
+#' df$P <- # generate the photosynthetic rate using Jassby-tanh (LS5) model
+#'    Model_piCurve(parameters = params, model_name = "tanh", data = df) +
 #'    5 * rnorm(25, 0, 0.25)    # add noise
 #'
 #' # Estimate the optimal values for the generated dataset using MLE method
-#' fit <- OptPar_piCurve(params, model_name = "tanh", STATapp = "MLE", data = df, data_type = "ls")
+#' fit <- Fit_piModel(params, model_name = "tanh", STATapp = "MLE", data = df)
 #'
 #' # Calculate CI for the fit
-#' ReCal_CI_piCurve(Estimated_Params = fit$par, model_name = fit$model, data = df, data_type = "ls")
+#' ReCal_CI_piCurve(Estimated_Params = fit$par, model_name = fit$model, data = df)
 #'
 #' @importFrom stats qnorm
 ReCal_CI_piCurve <- function(Estimated_Params,
                              model_name,
                              data,
-                             data_type = c("light-limited", "light-saturating", "photoinhibition"),
+                             # data_type = c("light-limited", "light-saturating", "photoinhibition"),
                              Clevel = 0.95) {
-    InfoMatrix <- InfoMat_piCurve(Estimated_Params, model_name, data, data_type)
+    InfoMatrix <- InfoMat_piCurve(Estimated_Params, model_name, data)
 
     model_info  = c(par = list(Estimated_Params),
                     hessian = list(InfoMatrix))

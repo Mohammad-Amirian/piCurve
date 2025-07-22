@@ -1,4 +1,11 @@
 # Utility functions
+# Declare global variables used in non-standard evaluation (e.g., dplyr, ggplot2)
+# utils::globalVariables(c("P", "R2adj", "model"))
+utils::globalVariables(c(
+    "irradiance", "pred", "draw", "ymin", "ymax", "P", "I",
+    "Phat", "model", "R2adj"
+))
+
 
 # Sigmoid function, mapping input values to a range between 0 and 1
 sigmoid_fn <- function(x) {
@@ -13,6 +20,83 @@ nameFormat <- function(model_name){
     return(tolower(x))
 }
 
+Pool_eqName_lm <-
+    c("lightlimited", "lm", "ll", "llimited")
+
+Pool_eqName_ls <-
+    c(
+        # LS1
+        "blackmanpw", "blackman", "piecewise", "pw", "ls1", 1, "1",
+        # LS2
+        "balyrh", "baly", "ls2", 2, "2",
+        # LS3
+        "smithrh", "smith", "ls3", 3, "3",
+        # LS4
+        "webbexp", "webb", "ls4", 4, "4",
+        # LS5
+        "jassbytanh", "jassby", "tanh", "ls5", 5, "5",
+        # LS6
+        "prioulnonrh", "prioul", "ls6", 6, "6",
+        # LS7
+        "bannistergrh", "bannister", "ls7", 7, "7"
+    )
+
+Pool_eqName_ph <-
+    c(
+        # Ph01
+        "steeleexp", "steele", "ph01", "01",
+        # Ph02
+        "peetersrational", "peeters", "ph02", "02",
+        # Ph03
+        "plattexp", "platt", "ph03", "03",
+        # Ph04
+        "nealeexp", "neale", "ph04", "04",
+        # ph05
+        "balyexp", "ph05", "05",
+        # ph06
+        "smithexp", "ph06", "06",
+        # Ph07
+        "bannisterexp", "ph07", "07",
+        # Ph08
+        "prioulexp", "ph08", "08",
+        # Ph09
+        "extendedblackman", "ph09", "09",
+        # Ph10
+        "doubletanh", "2tanh", "ph10", 10, "10",
+        # Ph11
+        "doubletanhshp", "doubletanhshape", "2tanhshp", "2tanhshape", "ph11", 11, "11",
+        # Ph12
+        "exptanh", "ph12", 12, "12",
+        # Ph13
+        "exptanhshp", "exptanhshape", "ph13", 13, "13",
+        # Ph14
+        "tanhexp", "tanhrcpexp", "ph14", 14, "14",
+        # Ph15
+        "doubleexp", "exprcpexp",  "2exp", "ph15", 15, "15",
+        # Ph16
+        "fasham", "fasham_nonRH",  "fashamnonRH", "ph16", 16, "16"
+    )
+
+extra_param_models <-
+    c(
+        # LS6
+        "prioulnonrh", "prioul", "ls6", 6, "6",
+        # LS7
+        "bannistergrh", "bannister", "ls7", 7, "7",
+        # Ph07
+        "bannisterexp", "ph07", "07",
+        # Ph08
+        "prioulexp", "ph08", "08",
+        # Ph11
+        "doubletanhshp", "doubletanhshape", "2tanhshp", "2tanhshape", "ph11", 11, "11",
+        # Ph13
+        "exptanhshp", "exptanhshape", "ph13", 13, "13",
+        # Ph16
+        "fasham", "fasham_nonRH",  "fashamnonRH", "ph16", 16, "16"
+    )
+
+
+steel_model_names <- c("steeleexp", "steele", "ph01", "01")
 
 # which equation?
 Model_setup <- function(which_model, data_type){
@@ -65,7 +149,7 @@ Model_setup <- function(which_model, data_type){
     {return(Ph02_Peeters)}
 
     # Ph03
-    if(nameFormat(which_model) %in% c("plattexp", "platt", "ph03", 3, "03", "2"))
+    if(nameFormat(which_model) %in% c("plattexp", "platt", "ph03", 3, "03", "3"))
     {return(Ph03_Platt)}
 
     # Ph04
@@ -117,12 +201,17 @@ Model_setup <- function(which_model, data_type){
     if(nameFormat(which_model) %in% c("doubleexp", "exprcpexp",  "2exp", "ph15", 15, "15"))
     {return(Ph15_exp_rcp_exp)}
         }
-}
+
+    # Ph16
+    if(nameFormat(which_model) %in% c("fasham", "fasham_nonRH",  "fashamnonRH", "ph16", 16, "16"))
+    {return(Ph16_fasham_nonRH)}
+
+    }
 
 # Log likelihood function
 LogL <- function(data, model_fit, StDev){
     # normal log-likelihood function
-    sum(dnorm(data$PP, mean = model_fit, sd = StDev, log = TRUE))
+    sum(dnorm(data$P, mean = model_fit, sd = StDev, log = TRUE))
 }
 
 add_shape_par <- function(parameters){c(parameters, shape = 1)}

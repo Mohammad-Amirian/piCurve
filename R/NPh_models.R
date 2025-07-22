@@ -10,18 +10,24 @@
 #####################################################################
 ################## formulations #####################################
 
+
 # lm: linear regression
 lm_piCurve <- function(data, parameters){
 
     # alpha are positive parameters in the model
     alpha <- parameters["alpha"]
-    R  <- parameters["R"]
+
 
     # irradiance profile
     I <- data$I
 
     # calculate primary production values
-    PPhat <- alpha * I + R
+    if ("R" %in% names(parameters)){
+        R  <- parameters["R"]
+        PPhat <- alpha * I + R
+    } else {
+        PPhat <- alpha * I
+    }
 
     return(PPhat)
 }
@@ -32,14 +38,20 @@ LS1_Blackman <- function(data, parameters){
     # Pmax and alpha are positive parameters in the model
     Pmax  <- abs(parameters["Pmax"])
     alpha <- abs(parameters["alpha"])
-    R  <- parameters["R"]
+
     Ik <- Pmax/alpha
 
     # irradiance profile
     I <- data$I
 
     # calculate primary production values
-    PPhat <- alpha*I + Heaviside(I - Ik) * (Pmax - alpha*I) + R
+    # calculate primary production values
+    if ("R" %in% names(parameters)){
+        R  <- parameters["R"]
+        PPhat <- alpha*I + Heaviside(I - Ik) * (Pmax - alpha*I) + R
+    } else {
+        PPhat <- alpha*I + Heaviside(I - Ik) * (Pmax - alpha*I)
+    }
 
     return(PPhat)
     }
@@ -50,7 +62,7 @@ LS2_Baly <- function(data, parameters){
     # Pmax and alpha are positive parameters in the model
     Pmax  <- abs(parameters["Pmax"])
     alpha <- abs(parameters["alpha"])
-    R  <- parameters["R"]
+
     Ik <- Pmax/alpha
 
     # irradiance profile
@@ -60,7 +72,13 @@ LS2_Baly <- function(data, parameters){
     I_ratio <- I / (I + Ik)
 
     # calculate primary production values
-    PPhat <- Pmax * I_ratio + R
+    if ("R" %in% names(parameters)){
+        R  <- parameters["R"]
+        PPhat <- Pmax * I_ratio + R
+    } else {
+        PPhat <- Pmax * I_ratio
+    }
+
 
     return(PPhat)
 }
@@ -71,7 +89,7 @@ LS3_Smith <- function(data, parameters){
     # Pmax and alpha are positive parameters in the model
     Pmax  <- abs(parameters["Pmax"])
     alpha <- abs(parameters["alpha"])
-    R  <- parameters["R"]
+
     Ik <- Pmax/alpha
 
     # irradiance profile
@@ -81,7 +99,12 @@ LS3_Smith <- function(data, parameters){
     I_ratio <- I / sqrt(I^2 + Ik^2)
 
     # calculate primary production values
-    PPhat <- Pmax * I_ratio + R
+    if ("R" %in% names(parameters)){
+        R  <- parameters["R"]
+        PPhat <- Pmax * I_ratio + R
+    } else {
+        PPhat <- Pmax * I_ratio
+    }
 
     return(PPhat)
 }
@@ -92,14 +115,21 @@ LS4_Webb <- function(data, parameters){
     # Pmax and alpha are positive parameters in the model
     Pmax  <- abs(parameters["Pmax"])
     alpha <- abs(parameters["alpha"])
-    R  <- parameters["R"]
+
     Ik <- Pmax/alpha
 
     # irradiance profile
     I <- data$I
 
     # calculate primary production values
-    PPhat <- Pmax * ( 1 - exp (- I/Ik ) ) + R
+    if ("R" %in% names(parameters)){
+        R  <- parameters["R"]
+        PPhat <- Pmax * ( 1 - exp (- I/Ik ) ) + R
+    } else {
+        PPhat <- Pmax * ( 1 - exp (- I/Ik ) )
+    }
+
+
 
     return(PPhat)
 }
@@ -110,14 +140,19 @@ LS5_Jassby <- function(data,  parameters){
     # Pmax and alpha are positive parameters in the model
     Pmax  <- abs(parameters["Pmax"])
     alpha <- abs(parameters["alpha"])
-    R  <- parameters["R"]
+
     Ik <- Pmax/alpha
 
     # irradiance profile
     I <- data$I
 
     # calculate primary production values
-    PPhat <- Pmax * tanh( I/Ik ) + R
+    if ("R" %in% names(parameters)){
+        R  <- parameters["R"]
+        PPhat <- Pmax * tanh( I/Ik ) + R
+    } else {
+        PPhat <- Pmax * tanh( I/Ik )
+    }
 
     return(PPhat)
 }
@@ -128,7 +163,6 @@ LS6_Prioul <- function(data,  parameters){
     # Pmax and alpha are positive parameters in the model
     Pmax  <- abs(parameters["Pmax"])
     alpha <- abs(parameters["alpha"])
-    R  <- parameters["R"]
     b  <- parameters["shape"]
     Ik <- Pmax/alpha
 
@@ -145,7 +179,13 @@ LS6_Prioul <- function(data,  parameters){
     I_ratio_Lroots <-  I_ratio - sqrt(I_ratio^2 - 4 * theta * ( I_ratio - 1 ))
 
     # calculate primary production values
-    PPhat <- Pmax * I_ratio_Lroots / (2 * theta) + R
+    if ("R" %in% names(parameters)){
+        R  <- parameters["R"]
+        PPhat <- Pmax * I_ratio_Lroots / (2 * theta) + R
+    } else {
+        PPhat <- Pmax * I_ratio_Lroots / (2 * theta)
+    }
+
 
     return(PPhat)
 }
@@ -157,7 +197,6 @@ LS7_Bannister <- function(data, parameters){
     Pmax  <- abs(parameters["Pmax"])
     alpha <- abs(parameters["alpha"])
     b  <- abs(parameters["shape"])
-    R  <- parameters["R"]
     Ik <- Pmax/alpha
 
     # irradiance profile
@@ -167,7 +206,12 @@ LS7_Bannister <- function(data, parameters){
     I_ratio <- I / ( (I^b + Ik^b)^(1/b) )
 
     # calculate primary production values
-    PPhat <- Pmax * I_ratio + R
+    if ("R" %in% names(parameters)){
+        R  <- parameters["R"]
+        PPhat <- Pmax * I_ratio + R
+    } else {
+        PPhat <- Pmax * I_ratio
+    }
 
     return(PPhat)
 }

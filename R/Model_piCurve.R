@@ -16,14 +16,14 @@
 #' }
 #' @param model_name String -- which model? (List of available models is given in \samp{details})
 #' @param data Vector -- containing the irradiance profile.
-#' @param data_type String -- data sample type?
 #'
 #' @return A vector of predicted photosynthetic rate at each irradiance using the selected function.
 #'
 #' @export
 #' @references
-#' Mohammad Amirian, Emmanuel Devred, Zoe V. Finkel, Andrew J. Irwin.
-#' “\emph{An improved parameterization of photoinhibition in phytoplankton photosynthesis-irradiance curves},” xxx 2024.
+#' Amirian M.M., V Finkel Z., Devred E., Irwin A.J.,
+#' “\emph{A new parameterization of photoinhibition for phytoplankton},
+#' arXiv (2024) 1–33. 10.48550/arXiv.2412.17923.
 #'
 #' @details
 #' This package comprises three distinct model frameworks for formulating the PI curve:
@@ -69,15 +69,19 @@
 #' | Ph13 | \eqn{P^B = P^B_{\max} \left[1 - \exp{\left( -\dfrac{I}{I_{\alpha}} \right)} \right] \tanh{ \left[ \left( \dfrac{I_{\beta}}{I} \right)^{\gamma} \right] }  \hspace{1cm}} | Exp-tanh-shp | \emph{Amirian et al. 2024} |
 #' | Ph14 | \eqn{P^B = P^B_{\max}  \tanh{\left(\dfrac{I}{I_{\alpha}}\right)} \left[1 - \exp{\left(-\dfrac{I_{\beta}}{I}\right)} \right]    \hspace{1cm}} | Tanh-rcp_exp | \emph{Amirian et al. 2024} |
 #' | Ph15 | \eqn{P^B = P^B_{\max} \left[1 - \exp{\left(-\dfrac{I}{I_{\alpha}}\right)} \right] \left[1 - \exp{\left(-\dfrac{I_{\beta}}{I}\right)} \right]  \hspace{1cm}} | Exp_rcp_exp | \emph{Amirian et al. 2024} |
+#' | Ph16 | \eqn{P^B = \dfrac{P^B_{\max}}{2 \theta} \left[1 + \theta_\beta ~ \mathcal{I}_\alpha -\sqrt{ \theta_\beta ~  \mathcal{I}_\alpha^2 - 4 \theta ~ \mathcal{I}_\alpha + 1} \right]} \eqn{\hspace{0.5cm}}  | Fasham-nonRH | \emph{Fasham et al. 1983}
 #'
-#' In equations LS6 and Ph08, \eqn{b} is a shape parameter, \eqn{\theta = \dfrac{1}{1 + \exp{(-b)}}} is
-#' a sigmoid function setting \eqn{0< \theta <1}, and \eqn{\mathcal{I} = \left(\dfrac{I}{I_\alpha} + 1\right) }.
+#' In equations LS6 and Ph08, \eqn{b} is a shape parameter, \eqn{\theta = \left[ 1 + \exp{(-b)} \right]^{-1} } is
+#' a sigmoid function setting \eqn{0< \theta <1},
+#' \eqn{\theta_\beta = \theta + (1-\theta)\exp{(\beta I)}},
+#' \eqn{\mathcal{I} = \left({I}/{I_\alpha} + 1\right) },
+#' and \eqn{\mathcal{I}_\alpha = I / I_\alpha}.
 #' In the above tables also, \eqn{I_{\alpha} = P_{\max}^B/ \alpha}, \eqn{I^s_{\alpha} = P_{s}^B/ \alpha}, \eqn{I_{\beta} = P_{\max}^B/ \beta}, and \eqn{I^s_{\beta} = P_{s}^B/ \beta}.
 #'
 #' ==============================
 #'
 #' Note that the default model_name for light-saturating and photoinhibition data types is
-#' Jassby-tanh (LS5) and double-tanh (Ph12) model, resepctively.
+#' Jassby-tanh (LS5) and double-tanh (Ph10) model, resepctively.
 #' @import tibble
 
 #' @examples
@@ -88,20 +92,34 @@
 #' df <- tibble::tibble(I = seq(0, 300, length = 25))
 #'
 #' # compute the photosynthetic rate using Jassby-tanh (LS5) model
-#' Model_piCurve(parameters = params, model_name = "tanh", data = df, data_type = "ls")
+#' Model_piCurve(parameters = params, model_name = "tanh", data = df)
 #'
 #' # compute the photosynthetic rate using double-tanh (Ph10) model
-#' Model_piCurve(parameters = c(params, beta = 0.3), model_name = "2tanh", data = df, data_type = "ph")
+#' Model_piCurve(parameters = c(params, beta = 0.3), model_name = "2tanh", data = df)
 #'
 Model_piCurve <-
     function(parameters,
              model_name,
-             data,
-             data_type = c(
-                 "light-limited",
-                 "light-saturating",
-                 "photoinhibition"
-             )){
+             data
+             ){
+
+        # data format check ----
+        if (!all("I" %in% names(data))) {
+            stop(print("Input data frame must contain 'I' columns!"))
+        }
+
+        # data type = ? ----
+        data_type <-
+            ifelse(
+                nameFormat(model_name) %in% Pool_eqName_lm, "ll", # light-limited
+                ifelse(nameFormat(model_name) %in% Pool_eqName_ls,
+                       "ls", # light-saturating
+                       "ph" # photoinhibition
+                       )
+                )
+
+
+
         # select the model specified by the user
         equation <- Model_setup(which_model = model_name, data_type)
 

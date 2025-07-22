@@ -4,23 +4,15 @@
 \alias{ReCal_CI_piCurve}
 \title{Confidence intervals}
 \usage{
-ReCal_CI_piCurve(
-  Estimated_Params,
-  model_name,
-  data,
-  data_type = c("light-limited", "light-saturating", "photoinhibition"),
-  Clevel = 0.95
-)
+ReCal_CI_piCurve(Estimated_Params, model_name, data, Clevel = 0.95)
 }
 \arguments{
 \item{Estimated_Params}{Vector -- the (optimal) parameter of a given PI model.
-Further details \code{?piCurve::OptPar_piCurve}}
+Further details \code{\link{Fit_piModel}}}
 
-\item{model_name}{String – which model? (List of available models is given in \code{?piCurve::Model_piCurve})}
+\item{model_name}{String – which model? (List of available models is given in \code{\link{Model_piCurve}})}
 
 \item{data}{Vector – containing the irradiance profile.}
-
-\item{data_type}{String – data sample type?}
 
 \item{Clevel}{Numeric -- the confidence level. Default 95\%.}
 }
@@ -29,9 +21,8 @@ Vector -- containing estimated errors along with a (\verb{Clevel})\%
 confidence interval for the estimated parameters. Default is 95\%.
 }
 \description{
-A wrapper to compute confidence intervals for the optimal values, in addition
-to calculating the estimation errors when \verb{Hessian = TRUE} is forgotten
-in \verb{OptPar_piCurve} function.
+Compute standard errors and confidence intervals for the estimated parameter values
+when \verb{Hessian = TRUE} is forgotten in \code{\link{Fit_piModel}} function.
 }
 \examples{
 # model parameters
@@ -40,14 +31,14 @@ params <- c(Pmax = 20, alpha = 0.6, R = 0, StDev = 2)
 # generate an irradiance profile
 df <- tibble::tibble(I = seq(0, 100, length = 25))
 
-df$PP <- # generate the photosynthetic rate using Jassby-tanh (LS5) model
-   Model_piCurve(parameters = params, model_name = "tanh", data = df, data_type = "ls") +
+df$P <- # generate the photosynthetic rate using Jassby-tanh (LS5) model
+   Model_piCurve(parameters = params, model_name = "tanh", data = df) +
    5 * rnorm(25, 0, 0.25)    # add noise
 
 # Estimate the optimal values for the generated dataset using MLE method
-fit <- OptPar_piCurve(params, model_name = "tanh", STATapp = "MLE", data = df, data_type = "ls")
+fit <- Fit_piModel(params, model_name = "tanh", STATapp = "MLE", data = df)
 
 # Calculate CI for the fit
-ReCal_CI_piCurve(Estimated_Params = fit$par, model_name = fit$model, data = df, data_type = "ls")
+ReCal_CI_piCurve(Estimated_Params = fit$par, model_name = fit$model, data = df)
 
 }
