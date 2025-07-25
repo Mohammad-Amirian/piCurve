@@ -185,25 +185,19 @@ To add confidence intervals to the predicted response variable (`y`),
 you can use the `addCI_to_piPred()` function.
 
 ``` r
-addCI_to_piPred(Fitted_Model = fit, irrad = df$I)
+addCI_to_piPred(Fitted_Model = fit, irrad = df$I) |> head(3)
 ```
 
-    ## # A tibble: 55 × 3
-    ##    irradiance    ymin    ymax
-    ##         <dbl>   <dbl>   <dbl>
-    ##  1     0.0846 0.00495 0.00544
-    ##  2     0.127  0.00742 0.00816
-    ##  3     0.169  0.00990 0.0109 
-    ##  4     0.212  0.0124  0.0136 
-    ##  5     0.254  0.0148  0.0163 
-    ##  6     0.381  0.0223  0.0245 
-    ##  7     0.423  0.0247  0.0272 
-    ##  8     0.592  0.0346  0.0381 
-    ##  9     1.02   0.0594  0.0653 
-    ## 10     1.06   0.0618  0.0680 
-    ## # ℹ 45 more rows
+    ## # A tibble: 3 × 3
+    ##   irradiance    ymin    ymax
+    ##        <dbl>   <dbl>   <dbl>
+    ## 1     0.0846 0.00495 0.00544
+    ## 2     0.127  0.00742 0.00816
+    ## 3     0.169  0.00990 0.0109
 
-List of models are also listed in `?Model_piCurve()`.
+To increase the resolution of prediction value across a finer irradiance
+space, you can use `?highRes_piPred()` function. List of models are also
+listed in `?Model_piCurve()`.
 
 ## Citation
 
@@ -211,6 +205,6 @@ This package is developed based on the research outlined in the
 following paper. If you utilize the `piCurve` package in your work, we
 kindly request that you cite the referenced publication.
 
-Mohammad Amirian, Emmanuel Devred, Zoe V. Finkel, Andrew J. Irwin. “*AA
+Mohammad Amirian, Emmanuel Devred, Zoe V. Finkel, Andrew J. Irwin. “*A
 new parameterization of photoinhibition for phytoplankton*,” arXiv
 (2024) 1–33. 10.48550/arXiv.2412.17923.

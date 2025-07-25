@@ -96,13 +96,13 @@ InfoMat_piCurve(parameters = fit$par, model_name = fit$model, data = df)
 To add confidence intervals to the predicted response variable (`y`), you can use the `addCI_to_piPred()` function.
 
 ```{r}
-addCI_to_piPred(Fitted_Model = fit, irrad = df$I)
+addCI_to_piPred(Fitted_Model = fit, irrad = df$I) |> head(3)
 ```
 
-List of models are also listed in `?Model_piCurve()`.
+To increase the resolution of prediction value across a finer irradiance space, you can use `?highRes_piPred()` function. List of models are also listed in `?Model_piCurve()`.
 
 ## Citation
 
 This package is developed based on the research outlined in the following paper. If you utilize the `piCurve` package in your work, we kindly request that you cite the referenced publication.
 
-Mohammad Amirian, Emmanuel Devred, Zoe V. Finkel, Andrew J. Irwin. “*AA new parameterization of photoinhibition for phytoplankton*,” arXiv (2024) 1–33. 10.48550/arXiv.2412.17923.
+Mohammad Amirian, Emmanuel Devred, Zoe V. Finkel, Andrew J. Irwin. “*A new parameterization of photoinhibition for phytoplankton*,” arXiv (2024) 1–33. 10.48550/arXiv.2412.17923.
