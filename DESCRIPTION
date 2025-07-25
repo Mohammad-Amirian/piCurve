@@ -1,6 +1,6 @@
 Package: piCurve
 Type: Package
-Title: Photosynthesis Irradiance Modeling
+Title: An R Package for Modeling Photosynthesis-Irradiance
 Version: 0.2.1
 Authors@R: c(
     person(given = "Mohammad",
