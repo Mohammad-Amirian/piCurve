@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">piCurve</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.1</span>
       </span>
     </div>
 
@@ -50,7 +50,7 @@
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>Fitted_Model</dt>
-<dd><p>List -- the fitted model (output of <code>OptPar_piCurve</code> function).</p></dd>
+<dd><p>List -- the fitted model (output of <code><a href="Fit_piModel.html">Fit_piModel</a></code> function).</p></dd>
 
 
 <dt>SampleN</dt>
@@ -72,18 +72,18 @@
 <span class="r-in"><span><span class="co"># generate an irradiance profile</span></span></span>
 <span class="r-in"><span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>I <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">100</span>, length <span class="op">=</span> <span class="fl">25</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">df</span><span class="op">$</span><span class="va">PP</span> <span class="op">&lt;-</span> <span class="co"># generate the photosynthetic rate using Jassby-tanh (LS5) model</span></span></span>
-<span class="r-in"><span>   <span class="fu"><a href="Model_piCurve.html">Model_piCurve</a></span><span class="op">(</span>parameters <span class="op">=</span> <span class="va">params</span>, model_name <span class="op">=</span> <span class="st">"tanh"</span>, data <span class="op">=</span> <span class="va">df</span>, data_type <span class="op">=</span> <span class="st">"ls"</span><span class="op">)</span> <span class="op">+</span></span></span>
+<span class="r-in"><span><span class="va">df</span><span class="op">$</span><span class="va">P</span> <span class="op">&lt;-</span> <span class="co"># generate the photosynthetic rate using Jassby-tanh (LS5) model</span></span></span>
+<span class="r-in"><span>   <span class="fu"><a href="Model_piCurve.html">Model_piCurve</a></span><span class="op">(</span>parameters <span class="op">=</span> <span class="va">params</span>, model_name <span class="op">=</span> <span class="st">"tanh"</span>, data <span class="op">=</span> <span class="va">df</span><span class="op">)</span> <span class="op">+</span></span></span>
 <span class="r-in"><span>   <span class="fl">5</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">25</span>, <span class="fl">0</span>, <span class="fl">0.25</span><span class="op">)</span>    <span class="co"># add noise</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Estimate the optimal values for the generated dataset using MLE method</span></span></span>
-<span class="r-in"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="OptPar_piCurve.html">OptPar_piCurve</a></span><span class="op">(</span>parameters <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">params</span>, StDev <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>, model_name <span class="op">=</span> <span class="st">"tanh"</span>,</span></span>
-<span class="r-in"><span>                      STATapp <span class="op">=</span> <span class="st">"MLE"</span>, Hessian <span class="op">=</span> <span class="cn">TRUE</span>, data <span class="op">=</span> <span class="va">df</span>, data_type <span class="op">=</span> <span class="st">"ls"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="Fit_piModel.html">Fit_piModel</a></span><span class="op">(</span>parameters <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">params</span>, StDev <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>, model_name <span class="op">=</span> <span class="st">"tanh"</span>,</span></span>
+<span class="r-in"><span>                      STATapp <span class="op">=</span> <span class="st">"MLE"</span>, Hessian <span class="op">=</span> <span class="cn">TRUE</span>, data <span class="op">=</span> <span class="va">df</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Calculate 95 % CI for the estimated parameters</span></span></span>
-<span class="r-in"><span><span class="fu">AIC_AICc_BIC_piCurve</span><span class="op">(</span>Fitted_Model <span class="op">=</span> <span class="va">fit</span>, SampleN <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">PP</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">AIC_AICc_BIC_piCurve</span><span class="op">(</span>Fitted_Model <span class="op">=</span> <span class="va">fit</span>, SampleN <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">P</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      AIC     AICc      BIC </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 83.71754 85.71754 88.59304 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 94.23982 96.23982 99.11532 </span>
 </code></pre></div>
     </div>
   </div>

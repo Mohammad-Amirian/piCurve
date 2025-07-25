@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">piCurve</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.1</span>
       </span>
     </div>
 
@@ -50,11 +50,11 @@
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>data</dt>
-<dd><p>Data frame –- containing the primary production profile.</p></dd>
+<dd><p>Data frame –- containing the true photosynthesis rate profile.</p></dd>
 
 
 <dt>model_fit</dt>
-<dd><p>Vector – containing the calculated primary production profile.</p></dd>
+<dd><p>Vector – containing the predicted photosynthesis rate profile.</p></dd>
 
 </dl></div>
     <div id="value">
@@ -73,19 +73,18 @@ predicted and actual values.</p>
 <span class="r-in"><span><span class="co"># generate an irradiance profile</span></span></span>
 <span class="r-in"><span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>I <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">100</span>, length <span class="op">=</span> <span class="fl">25</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">df</span><span class="op">$</span><span class="va">PP</span> <span class="op">&lt;-</span> <span class="co"># generate the photosynthetic rate using Jassby-tanh (LS5) model</span></span></span>
-<span class="r-in"><span>   <span class="fu"><a href="Model_piCurve.html">Model_piCurve</a></span><span class="op">(</span>parameters <span class="op">=</span> <span class="va">params</span>, model_name <span class="op">=</span> <span class="st">"tanh"</span>, data <span class="op">=</span> <span class="va">df</span>, data_type <span class="op">=</span> <span class="st">"ls"</span><span class="op">)</span> <span class="op">+</span></span></span>
+<span class="r-in"><span><span class="va">df</span><span class="op">$</span><span class="va">P</span> <span class="op">&lt;-</span> <span class="co"># generate the photosynthetic rate using Jassby-tanh (LS5) model</span></span></span>
+<span class="r-in"><span>   <span class="fu"><a href="Model_piCurve.html">Model_piCurve</a></span><span class="op">(</span>parameters <span class="op">=</span> <span class="va">params</span>, model_name <span class="op">=</span> <span class="st">"tanh"</span>, data <span class="op">=</span> <span class="va">df</span><span class="op">)</span> <span class="op">+</span></span></span>
 <span class="r-in"><span>   <span class="fl">5</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">25</span>, <span class="fl">0</span>, <span class="fl">0.25</span><span class="op">)</span>    <span class="co"># add noise</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Estimate the optimal values for the generated dataset using MLE method</span></span></span>
-<span class="r-in"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="OptPar_piCurve.html">OptPar_piCurve</a></span><span class="op">(</span>parameters <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">params</span>, StDev <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>, model_name <span class="op">=</span> <span class="st">"tanh"</span>,</span></span>
-<span class="r-in"><span>                      STATapp <span class="op">=</span> <span class="st">"MLE"</span>, Hessian <span class="op">=</span> <span class="cn">TRUE</span>, data <span class="op">=</span> <span class="va">df</span>, data_type <span class="op">=</span> <span class="st">"ls"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="Fit_piModel.html">Fit_piModel</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">df</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Calculate the primary production profile using the optimal values</span></span></span>
-<span class="r-in"><span><span class="va">model_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="Model_piCurve.html">Model_piCurve</a></span><span class="op">(</span>parameters <span class="op">=</span> <span class="va">fit</span><span class="op">$</span><span class="va">par</span>, model_name <span class="op">=</span> <span class="va">fit</span><span class="op">$</span><span class="va">model</span>, data <span class="op">=</span> <span class="va">df</span>, data_type <span class="op">=</span> <span class="st">"ls"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># Calculate the predicted photosynthetic rate</span></span></span>
+<span class="r-in"><span><span class="va">Phat</span> <span class="op">&lt;-</span> <span class="fu"><a href="Model_piCurve.html">Model_piCurve</a></span><span class="op">(</span>parameters <span class="op">=</span> <span class="va">fit</span><span class="op">$</span><span class="va">par</span>, model_name <span class="op">=</span> <span class="va">fit</span><span class="op">$</span><span class="va">model</span>, data <span class="op">=</span> <span class="va">df</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu">MSE_piCurve</span><span class="op">(</span><span class="va">df</span>, <span class="va">model_fit</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1.964406</span>
+<span class="r-in"><span><span class="fu">MSE_piCurve</span><span class="op">(</span><span class="va">df</span>, <span class="va">Phat</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1.187519</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

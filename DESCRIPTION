@@ -1,7 +1,7 @@
 Package: piCurve
 Type: Package
 Title: Photosynthesis Irradiance Modeling
-Version: 0.2.0
+Version: 0.2.1
 Authors@R: c(
     person(given = "Mohammad",
            family = "M. Amirian",
@@ -19,3 +19,8 @@ LazyData: true
 RoxygenNote: 7.2.3
 Roxygen: list(markdown = TRUE)
 Imports: tibble, fBasics, dplyr, parallel, stats, ggplot2
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
+Depends: 
+    R (>= 2.10)

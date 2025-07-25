@@ -28,6 +28,15 @@
     <loc>/reference/ConfInt_piModel.html</loc>
   </url>
   <url>
+    <loc>/reference/DataType_piCurve.html</loc>
+  </url>
+  <url>
+    <loc>/reference/Fit_piModel.html</loc>
+  </url>
+  <url>
+    <loc>/reference/FormatCheck_piCurve.html</loc>
+  </url>
+  <url>
     <loc>/reference/InfoCriteria.html</loc>
   </url>
   <url>
@@ -49,6 +58,9 @@
     <loc>/reference/OptPar_piCurve.html</loc>
   </url>
   <url>
+    <loc>/reference/Plot_piCurve.html</loc>
+  </url>
+  <url>
     <loc>/reference/R2.html</loc>
   </url>
   <url>
@@ -59,6 +71,18 @@
   </url>
   <url>
     <loc>/reference/ReCal_CI_piModel.html</loc>
+  </url>
+  <url>
+    <loc>/reference/Tidy_piCurve.html</loc>
+  </url>
+  <url>
+    <loc>/reference/addCI_to_piPred.html</loc>
+  </url>
+  <url>
+    <loc>/reference/get_start_piPars.html</loc>
+  </url>
+  <url>
+    <loc>/reference/highRes_piPred.html</loc>
   </url>
   <url>
     <loc>/reference/index.html</loc>
