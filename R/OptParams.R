@@ -172,6 +172,7 @@ Fit_piModel <- function(data,
             ifelse(data_type == "ph", "2tanh",
                    ifelse(data_type == "ls", "tanh", "ll"))
     } else {
+        model_name <- tolower(model_name)
         data_type <-
             ifelse(
                 nameFormat(model_name) %in% Pool_eqName_lm,
