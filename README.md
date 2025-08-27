@@ -25,12 +25,12 @@ remotes::install_github("Mohammad-Amirian/piCurve")
 
     ## 
     ## ── R CMD build ─────────────────────────────────────────────────────────────────
-    ##      checking for file ‘/private/var/folders/fl/5wfmmnsn5d50x8xlj07dmms80000gn/T/RtmpSAKqBP/remotes3b662104ca47/Mohammad-Amirian-piCurve-8d8b811/DESCRIPTION’ ...  ✔  checking for file ‘/private/var/folders/fl/5wfmmnsn5d50x8xlj07dmms80000gn/T/RtmpSAKqBP/remotes3b662104ca47/Mohammad-Amirian-piCurve-8d8b811/DESCRIPTION’
+    ##      checking for file ‘/private/var/folders/fl/5wfmmnsn5d50x8xlj07dmms80000gn/T/RtmpmQI6AQ/remotes3e4570eada54/Mohammad-Amirian-piCurve-70da3af/DESCRIPTION’ ...  ✔  checking for file ‘/private/var/folders/fl/5wfmmnsn5d50x8xlj07dmms80000gn/T/RtmpmQI6AQ/remotes3e4570eada54/Mohammad-Amirian-piCurve-70da3af/DESCRIPTION’
     ##   ─  preparing ‘piCurve’:
     ##      checking DESCRIPTION meta-information ...  ✔  checking DESCRIPTION meta-information
     ##   ─  checking for LF line-endings in source and make files and shell scripts
     ##   ─  checking for empty or unneeded directories
-    ##   ─  building ‘piCurve_0.2.2.tar.gz’
+    ##   ─  building ‘piCurve_0.2.3.tar.gz’
     ##      
     ## 
 
@@ -125,7 +125,7 @@ print(fit)
     ## -150.0148 -148.9037 -139.5431 
     ## 
     ## $model
-    ## [1] "2tanh"
+    ## [1] "ph10"
     ## 
     ## $SQA
     ##        R2     R2adj 
