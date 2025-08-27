@@ -19,7 +19,7 @@
 #'
 #' df$P <- # generate the photosynthetic rate using Jassby-tanh (LS5) model
 #'    Model_piCurve(parameters = c(Pmax = 20, alpha = 0.6),
-#'                  model_name = "tanh", data = df) +
+#'                  model_name = "LS5", data = df) +
 #'    5 * rnorm(25, 0, 0.25)    # add noise
 #'
 #' # Estimate the optimal values for the generated dataset using MLE method
@@ -74,11 +74,11 @@ ConfInt_piCurve <- function(Fitted_Model, Clevel = 0.95){
 #' df <- tibble::tibble(I = seq(0, 100, length = 25))
 #'
 #' df$P <- # generate the photosynthetic rate using Jassby-tanh (LS5) model
-#'    Model_piCurve(parameters = params, model_name = "tanh", data = df) +
+#'    Model_piCurve(parameters = params, model_name = "LS5", data = df) +
 #'    5 * rnorm(25, 0, 0.25)    # add noise
 #'
 #' # Estimate the optimal values for the generated dataset using MLE method
-#' fit <- Fit_piModel(params, model_name = "tanh", STATapp = "MLE", data = df)
+#' fit <- Fit_piModel(params, model_name = "LS5", STATapp = "MLE", data = df)
 #'
 #' # Calculate CI for the fit
 #' ReCal_CI_piCurve(Estimated_Params = fit$par, model_name = fit$model, data = df)

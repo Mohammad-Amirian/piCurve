@@ -14,7 +14,7 @@ A data frame with \code{n} rows and 4 variables:
 }
 }
 \source{
-Amirian et al. (2024); raw data in \code{"data-raw/piDataSet.csv"}
+Amirian et al. (2025); raw data in \code{"data-raw/piDataSet.csv"}
 }
 \usage{
 piDataSet
@@ -29,7 +29,8 @@ For inquiries or issues, please include the corresponding \code{pi_number} and c
 head(piDataSet, 3)
 }
 \references{
-Amirian M.M., Finkel Z.V., Devred E., Irwin A.J. (2024).
-\emph{A new parameterization of photoinhibition for phytoplankton}. arXiv:2412.17923.
+M. Amirian, M., Finkel, Z.V., Devred, E., Irwin, A.J.
+"\emph{Parameterization of photoinhibition for phytoplankton}".
+Commun Earth Environ 6, 707 (2025). https://doi.org/10.1038/s43247-025-02686-3
 }
 \keyword{datasets}

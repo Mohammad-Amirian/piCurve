@@ -21,13 +21,22 @@ Install the package from GitHub:
 remotes::install_github("Mohammad-Amirian/piCurve")
 ```
 
-    ## Skipping install of 'piCurve' from a github remote, the SHA1 (a58fc75a) has not changed since last install.
-    ##   Use `force = TRUE` to force installation
+    ## Downloading GitHub repo Mohammad-Amirian/piCurve@HEAD
+
+    ## 
+    ## ── R CMD build ─────────────────────────────────────────────────────────────────
+    ##      checking for file ‘/private/var/folders/fl/5wfmmnsn5d50x8xlj07dmms80000gn/T/RtmpSAKqBP/remotes3b662104ca47/Mohammad-Amirian-piCurve-8d8b811/DESCRIPTION’ ...  ✔  checking for file ‘/private/var/folders/fl/5wfmmnsn5d50x8xlj07dmms80000gn/T/RtmpSAKqBP/remotes3b662104ca47/Mohammad-Amirian-piCurve-8d8b811/DESCRIPTION’
+    ##   ─  preparing ‘piCurve’:
+    ##      checking DESCRIPTION meta-information ...  ✔  checking DESCRIPTION meta-information
+    ##   ─  checking for LF line-endings in source and make files and shell scripts
+    ##   ─  checking for empty or unneeded directories
+    ##   ─  building ‘piCurve_0.2.2.tar.gz’
+    ##      
+    ## 
 
 ## How to use piCurve
 
 ``` r
-devtools::load_all()
 library(piCurve)
 library(ggplot2)
 ```
@@ -45,15 +54,15 @@ dataset.
 # Split the data
 grouped <- 
     piDataSet |> 
-    group_by(pi_number) |> 
-    group_split()
+    dplyr::group_by(pi_number) |> 
+    dplyr::group_split()
 
 # Extract pi_number values
 pi_numbers <- 
     piDataSet |> 
-    group_by(pi_number) |> 
-    group_keys() |> 
-    pull(pi_number)
+    dplyr::group_by(pi_number) |> 
+    dplyr::group_keys() |> 
+    dplyr::pull(pi_number)
 
 # Apply function and combine with pi_number
 result_df <- data.frame(
@@ -61,7 +70,7 @@ result_df <- data.frame(
     data_type = sapply(grouped, function(x) DataType_piCurve(data = x, n_cores = 6)$data_type)
 )
  
-count(result_df, data_type)
+dplyr::count(result_df, data_type)
 ```
 
     ##   data_type n

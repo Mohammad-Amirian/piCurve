@@ -156,12 +156,12 @@ params <- c(Pmax = 20, alpha = 0.6, R = 0)
 df <- tibble::tibble(I = seq(0, 200, length = 25))
 
 df$P <- # generate the photosynthetic rate using Jassby-tanh (LS5) model
-  Model_piCurve(parameters = params, model_name = "tanh", data = df) +
+  Model_piCurve(parameters = params, model_name = "LS5", data = df) +
   5 * rnorm(25, 0, 0.25)    # add noise
 
 # Estimate the optimal values for the generated dataset using MSE method
 # Example 1: manual initial values
-Fit_piModel(parameters = c(Pmax = 19, alpha = 0.5, R = 0), model_name = "tanh", data = df)
+Fit_piModel(parameters = c(Pmax = 19, alpha = 0.5, R = 0), model_name = "LS5", data = df)
 
 # Example 2: automated initial values and model selection
 Fit_piModel(data = df)

@@ -24,7 +24,7 @@
 #' df <- tibble::tibble(I = seq(0, 100, length = 25))
 #'
 #' df$P <- # generate the photosynthetic rate using Jassby-tanh (LS5) model
-#'    Model_piCurve(parameters = params, model_name = "tanh", data = df) +
+#'    Model_piCurve(parameters = params, model_name = "LS5", data = df) +
 #'    5 * rnorm(25, 0, 0.25)    # add noise
 #'
 #' # Estimate the optimal values for the generated dataset using MLE method
@@ -61,7 +61,7 @@ MSE_piCurve <- function(data, model_fit){
 #' df <- tibble::tibble(I = seq(0, 100, length = 25))
 #'
 #' df$P <- # generate the photosynthetic rate using Jassby-tanh (LS5) model
-#'    Model_piCurve(parameters = params, model_name = "tanh", data = df) +
+#'    Model_piCurve(parameters = params, model_name = "LS5", data = df) +
 #'    5 * rnorm(25, 0, 0.25)    # add noise
 #'
 #' # Estimate the optimal values for the generated dataset using MLE method
@@ -118,11 +118,11 @@ R2_piCurve <- function(data, model_fit, Nparams){
 #' df <- tibble::tibble(I = seq(0, 100, length = 25))
 #'
 #' df$P <- # generate the photosynthetic rate using Jassby-tanh (LS5) model
-#'    Model_piCurve(parameters = params, model_name = "tanh", data = df) +
+#'    Model_piCurve(parameters = params, model_name = "LS5", data = df) +
 #'    5 * rnorm(25, 0, 0.25)    # add noise
 #'
 #' # Estimate the optimal values for the generated dataset using MLE method
-#' fit <- Fit_piModel(parameters = c(params, StDev = 2), model_name = "tanh",
+#' fit <- Fit_piModel(parameters = c(params, StDev = 2), model_name = "LS5",
 #'                       STATapp = "MLE", Hessian = TRUE, data = df)
 #'
 #' # Calculate 95 % CI for the estimated parameters

@@ -19,7 +19,7 @@
 #' params <- c(Pmax = 20, alpha = 0.6, beta = 0.1, R = 0)
 #' df <- tibble::tibble(I = seq(0, 300, length = 50))
 #' df$P <- Model_piCurve(parameters = c(params, beta = 0.3),
-#'                       model_name = "2tanh",
+#'                       model_name = "Ph10",
 #'                       data = df)
 #' get_start_piPars(df)
 #'

@@ -21,7 +21,6 @@ remotes::install_github("Mohammad-Amirian/piCurve")
 ## How to use piCurve
 
 ```{r load, message=FALSE}
-devtools::load_all()
 library(piCurve)
 library(ggplot2)
 ```
@@ -40,15 +39,15 @@ To classify PI data as light-limited (ll), light-saturated (ls), or photoinhibit
 # Split the data
 grouped <- 
     piDataSet |> 
-    group_by(pi_number) |> 
-    group_split()
+    dplyr::group_by(pi_number) |> 
+    dplyr::group_split()
 
 # Extract pi_number values
 pi_numbers <- 
     piDataSet |> 
-    group_by(pi_number) |> 
-    group_keys() |> 
-    pull(pi_number)
+    dplyr::group_by(pi_number) |> 
+    dplyr::group_keys() |> 
+    dplyr::pull(pi_number)
 
 # Apply function and combine with pi_number
 result_df <- data.frame(
@@ -56,7 +55,7 @@ result_df <- data.frame(
     data_type = sapply(grouped, function(x) DataType_piCurve(data = x, n_cores = 6)$data_type)
 )
  
-count(result_df, data_type)
+dplyr::count(result_df, data_type)
 ```
 
 # Model Fitting

@@ -21,9 +21,9 @@
 #'
 #' @export
 #' @references
-#' Amirian M.M., V Finkel Z., Devred E., Irwin A.J.,
-#' “\emph{A new parameterization of photoinhibition for phytoplankton},
-#' arXiv (2024) 1–33. 10.48550/arXiv.2412.17923.
+#' M. Amirian, M., Finkel, Z.V., Devred, E., Irwin, A.J.
+#' "\emph{Parameterization of photoinhibition for phytoplankton}".
+#' Commun Earth Environ 6, 707 (2025). https://doi.org/10.1038/s43247-025-02686-3
 #'
 #' @details
 #' This package comprises three distinct model frameworks for formulating the PI curve:
@@ -63,12 +63,12 @@
 #' | Ph07 | \eqn{P^B = P^B_s~ \dfrac{I}{(I^b + (I_{\alpha}^s)^b)^{1/b}} ~ e^{-I/I_{\beta}^s} \hspace{1cm}} | Bannister-exp | \emph{...} |
 #' | Ph08 | \eqn{P^B = \dfrac{P^B_{s}}{2 \theta} \left[ \mathcal{I} - \sqrt{\mathcal{I}^2 - 4 \theta(\mathcal{I} - 1)} \right] ~ e^{-I/I_{\beta}^s} \hspace{1cm}} | Prioul-exp | \emph{...} |
 #' | Ph09 | \eqn{P^B = \begin{cases} \alpha I & \hspace{0.5cm} I \leq P^B_{\max} / \alpha \\ & \\ P^B_{\max} & \hspace{0.5cm} P^B_{\max} / \alpha < I \leq P^B_{\max} / \beta\\ & \\ -\beta I & \hspace{0.5cm} I > P^B_{\max} / \beta \end{cases} \hspace{1cm}} | Extended-Blackman | \emph{...} |
-#' | Ph10 | \eqn{P^B = P^B_{\max} \tanh \left( \dfrac{I}{I_{\alpha}} \right) \tanh{ \left[ \left( \dfrac{I_{\beta}}{I} \right)^{\cosh^2(1)} \right] }  \hspace{1cm}} | Double-tanh | \emph{Amirian et al. 2024} |
-#' | Ph11 | \eqn{P^B = P^B_{\max} \tanh \left( \dfrac{I}{I_{\alpha}} \right) \tanh{ \left[ \left( \dfrac{I_{\beta}}{I} \right)^{\gamma} \right] }  \hspace{1cm}} | Double-tanh-shp | \emph{Amirian et al. 2024} |
-#' | Ph12 | \eqn{P^B = P^B_{\max}  \left[1 - \exp{\left( -\dfrac{I}{I_{\alpha}} \right)} \right] \tanh{ \left[ \left( \dfrac{I_{\beta}}{I} \right)^{\cosh^2(1)} \right] }  \hspace{1cm}} | Exp-tanh | \emph{Amirian et al. 2024} |
-#' | Ph13 | \eqn{P^B = P^B_{\max} \left[1 - \exp{\left( -\dfrac{I}{I_{\alpha}} \right)} \right] \tanh{ \left[ \left( \dfrac{I_{\beta}}{I} \right)^{\gamma} \right] }  \hspace{1cm}} | Exp-tanh-shp | \emph{Amirian et al. 2024} |
-#' | Ph14 | \eqn{P^B = P^B_{\max}  \tanh{\left(\dfrac{I}{I_{\alpha}}\right)} \left[1 - \exp{\left(-\dfrac{I_{\beta}}{I}\right)} \right]    \hspace{1cm}} | Tanh-rcp_exp | \emph{Amirian et al. 2024} |
-#' | Ph15 | \eqn{P^B = P^B_{\max} \left[1 - \exp{\left(-\dfrac{I}{I_{\alpha}}\right)} \right] \left[1 - \exp{\left(-\dfrac{I_{\beta}}{I}\right)} \right]  \hspace{1cm}} | Exp_rcp_exp | \emph{Amirian et al. 2024} |
+#' | Ph10 | \eqn{P^B = P^B_{\max} \tanh \left( \dfrac{I}{I_{\alpha}} \right) \tanh{ \left[ \left( \dfrac{I_{\beta}}{I} \right)^{\cosh^2(1)} \right] }  \hspace{1cm}} | Double-tanh | \emph{Amirian et al. 2025} |
+#' | Ph11 | \eqn{P^B = P^B_{\max} \tanh \left( \dfrac{I}{I_{\alpha}} \right) \tanh{ \left[ \left( \dfrac{I_{\beta}}{I} \right)^{\gamma} \right] }  \hspace{1cm}} | Double-tanh-shp | \emph{Amirian et al. 2025} |
+#' | Ph12 | \eqn{P^B = P^B_{\max}  \left[1 - \exp{\left( -\dfrac{I}{I_{\alpha}} \right)} \right] \tanh{ \left[ \left( \dfrac{I_{\beta}}{I} \right)^{\cosh^2(1)} \right] }  \hspace{1cm}} | Exp-tanh | \emph{Amirian et al. 2025} |
+#' | Ph13 | \eqn{P^B = P^B_{\max} \left[1 - \exp{\left( -\dfrac{I}{I_{\alpha}} \right)} \right] \tanh{ \left[ \left( \dfrac{I_{\beta}}{I} \right)^{\gamma} \right] }  \hspace{1cm}} | Exp-tanh-shp | \emph{Amirian et al. 2025} |
+#' | Ph14 | \eqn{P^B = P^B_{\max}  \tanh{\left(\dfrac{I}{I_{\alpha}}\right)} \left[1 - \exp{\left(-\dfrac{I_{\beta}}{I}\right)} \right]    \hspace{1cm}} | Tanh-rcp_exp | \emph{Amirian et al. 2025} |
+#' | Ph15 | \eqn{P^B = P^B_{\max} \left[1 - \exp{\left(-\dfrac{I}{I_{\alpha}}\right)} \right] \left[1 - \exp{\left(-\dfrac{I_{\beta}}{I}\right)} \right]  \hspace{1cm}} | Exp_rcp_exp | \emph{Amirian et al. 2025} |
 #' | Ph16 | \eqn{P^B = \dfrac{P^B_{\max}}{2 \theta} \left[1 + \theta_\beta ~ \mathcal{I}_\alpha -\sqrt{ \theta_\beta ~  \mathcal{I}_\alpha^2 - 4 \theta ~ \mathcal{I}_\alpha + 1} \right]} \eqn{\hspace{0.5cm}}  | Fasham-nonRH | \emph{Fasham et al. 1983}
 #'
 #' In equations LS6 and Ph08, \eqn{b} is a shape parameter, \eqn{\theta = \left[ 1 + \exp{(-b)} \right]^{-1} } is
@@ -81,7 +81,7 @@
 #' ==============================
 #'
 #' Note that the default model_name for light-saturating and photoinhibition data types is
-#' Jassby-tanh (LS5) and double-tanh (Ph10) model, resepctively.
+#' Jassby-tanh (LS5) and double-tanh (Ph10) model, respectively.
 #' @import tibble
 
 #' @examples
@@ -92,10 +92,10 @@
 #' df <- tibble::tibble(I = seq(0, 300, length = 25))
 #'
 #' # compute the photosynthetic rate using Jassby-tanh (LS5) model
-#' Model_piCurve(parameters = params, model_name = "tanh", data = df)
+#' Model_piCurve(parameters = params, model_name = "LS5", data = df)
 #'
 #' # compute the photosynthetic rate using double-tanh (Ph10) model
-#' Model_piCurve(parameters = c(params, beta = 0.3), model_name = "2tanh", data = df)
+#' Model_piCurve(parameters = c(params, beta = 0.3), model_name = "Ph10", data = df)
 #'
 Model_piCurve <-
     function(parameters,

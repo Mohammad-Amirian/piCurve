@@ -25,7 +25,7 @@ df <- tibble::tibble(I = seq(0, 100, length = 25))
 
 df$P <- # generate the photosynthetic rate using Jassby-tanh (LS5) model
    Model_piCurve(parameters = c(Pmax = 20, alpha = 0.6),
-                 model_name = "tanh", data = df) +
+                 model_name = "LS5", data = df) +
    5 * rnorm(25, 0, 0.25)    # add noise
 
 # Estimate the optimal values for the generated dataset using MLE method

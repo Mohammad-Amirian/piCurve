@@ -48,12 +48,12 @@ params <- c(Pmax = 20, alpha = 0.6, R = 0, StDev = 2)
 df <- tibble::tibble(I = seq(0, 100, length = 25))
 
 df$P <- # generate the photosynthetic rate using Jassby-tanh (LS5) model
-   Model_piCurve(parameters = params, model_name = "tanh", data = df) +
+   Model_piCurve(parameters = params, model_name = "LS5", data = df) +
    5 * rnorm(25, 0, 0.25)    # add some noise to P
 
 
 # Estimate the optimal values for the generated dataset using MLE method
-fit <- Fit_piModel(params, model_name = "tanh", STATapp = "MLE", data = df)
+fit <- Fit_piModel(params, model_name = "LS5", STATapp = "MLE", data = df)
 
 # Calculating the information matrix
 InfoMat_piCurve(parameters = fit$par, model_name = fit$model, data = df)
