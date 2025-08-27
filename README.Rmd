@@ -20,10 +20,14 @@ remotes::install_github("Mohammad-Amirian/piCurve")
 
 ## How to use piCurve
 
-```{r load, echo=FALSE, message=FALSE}
+```{r load, message=FALSE}
 devtools::load_all()
 library(piCurve)
 library(ggplot2)
+```
+
+
+```{r, echo=FALSE, message=FALSE}
 # library(viridis)
 # library(fBasics)
 ```
@@ -113,4 +117,4 @@ This package is developed based on the research outlined in the following paper.
 
 M. Amirian, M., Finkel, Z.V., Devred, E., Irwin, A.J. "*Parameterization of photoinhibition for phytoplankton*". Commun Earth Environ 6, 707 (2025). https://doi.org/10.1038/s43247-025-02686-3
 
-M. Amirian, M. and Irwin, A.J. "*piCurve: an R package for modeling photosynthesis–irradiance curves*". arXiv preprint arXiv:2508.14321v1, (2025)
+M. Amirian, M. and Irwin, A.J. "*piCurve: an R package for modeling photosynthesis–irradiance curves*". arXiv preprint arXiv:2508.14321v1, (2025). https://arxiv.org/abs/2508.14321

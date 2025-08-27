@@ -21,10 +21,16 @@ Install the package from GitHub:
 remotes::install_github("Mohammad-Amirian/piCurve")
 ```
 
-    ## Skipping install of 'piCurve' from a github remote, the SHA1 (3d3016a7) has not changed since last install.
+    ## Skipping install of 'piCurve' from a github remote, the SHA1 (a58fc75a) has not changed since last install.
     ##   Use `force = TRUE` to force installation
 
 ## How to use piCurve
+
+``` r
+devtools::load_all()
+library(piCurve)
+library(ggplot2)
+```
 
     ## Warning: package 'ggplot2' was built under R version 4.3.3
 
@@ -147,7 +153,7 @@ p + # increase the size of axis title and font
     theme(axis.text = element_text(size = 14), axis.title = element_text(size = 14))
 ```
 
-![](README_files/figure-markdown_github/unnamed-chunk-5-1.png)
+![](README_files/figure-markdown_github/unnamed-chunk-6-1.png)
 
 ### Other Useful Functions
 
@@ -199,4 +205,4 @@ of photoinhibition for phytoplankton*”. Commun Earth Environ 6, 707
 
 M. Amirian, M. and Irwin, A.J. “*piCurve: an R package for modeling
 photosynthesis–irradiance curves*”. arXiv preprint arXiv:2508.14321v1,
-(2025)
+(2025). <https://arxiv.org/abs/2508.14321>
