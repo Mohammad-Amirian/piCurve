@@ -17,7 +17,7 @@
 #' *A new parameterization of photoinhibition for phytoplankton*. arXiv:2412.17923.
 #'
 #' @details
-#' For inquiries or issues, please include the corresponding `pi_number` and contact m.amirianmalotb [at] dal.ca.
+#' For inquiries or issues, please include the corresponding `pi_number` and contact \verb{m.amirianmalotb@dal.ca}.
 
 #' @examples
 #' head(piDataSet, 3)

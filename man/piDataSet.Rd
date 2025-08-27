@@ -23,7 +23,7 @@ piDataSet
 A dataset containing 8 independent PI incubation samples for model testing and validation.
 }
 \details{
-For inquiries or issues, please include the corresponding \code{pi_number} and contact m.amirianmalotb \link{at} dal.ca.
+For inquiries or issues, please include the corresponding \code{pi_number} and contact \verb{m.amirianmalotb@dal.ca}.
 }
 \examples{
 head(piDataSet, 3)

@@ -5,40 +5,28 @@ photosynthesis–irradiance (PI) models in a user-friendly environment,
 enabling users to explore how varying irradiance levels influence
 photosynthetic or growth rates using statistical methods. The models
 have been rigorously tested and validated against experimental data,
-ensuring both reliability and accuracy. Optimal parameters for each
+ensuring both reliability and accuracy. In total, 24 PI models are
+included this library (`?Model_piCurve`). Optimal parameters for each
 model formulation are estimated through non-linear optimization using
 two statistical approaches: mean squared error (MSE) and maximum
 likelihood estimation (MLE). A built-in dataset (`?piDataSet`)
 containing eight independent PI incubation samples is included for model
 testing and validation.
 
+## Installation
+
+Install the package from GitHub:
+
+``` r
+remotes::install_github("Mohammad-Amirian/piCurve")
+```
+
+    ## Skipping install of 'piCurve' from a github remote, the SHA1 (3d3016a7) has not changed since last install.
+    ##   Use `force = TRUE` to force installation
+
 ## How to use piCurve
 
-``` r
-rm(list = ls())
-devtools::load_all()
-```
-
-    ## ℹ Loading piCurve
-
-``` r
-library(piCurve)
-library(ggplot2)
-```
-
     ## Warning: package 'ggplot2' was built under R version 4.3.3
-
-``` r
-library(viridis)
-```
-
-    ## Loading required package: viridisLite
-
-``` r
-library(fBasics)
-```
-
-    ## Warning: package 'fBasics' was built under R version 4.3.3
 
 ### Classfying Data
 
@@ -159,7 +147,7 @@ p + # increase the size of axis title and font
     theme(axis.text = element_text(size = 14), axis.title = element_text(size = 14))
 ```
 
-![](README_files/figure-markdown_github/unnamed-chunk-4-1.png)
+![](README_files/figure-markdown_github/unnamed-chunk-5-1.png)
 
 ### Other Useful Functions
 
@@ -205,6 +193,10 @@ This package is developed based on the research outlined in the
 following paper. If you utilize the `piCurve` package in your work, we
 kindly request that you cite the referenced publication.
 
-Mohammad Amirian, Emmanuel Devred, Zoe V. Finkel, Andrew J. Irwin. “*A
-new parameterization of photoinhibition for phytoplankton*,” arXiv
-(2024) 1–33. 10.48550/arXiv.2412.17923.
+M. Amirian, M., Finkel, Z.V., Devred, E., Irwin, A.J. “*Parameterization
+of photoinhibition for phytoplankton*”. Commun Earth Environ 6, 707
+(2025). <https://doi.org/10.1038/s43247-025-02686-3>
+
+M. Amirian, M. and Irwin, A.J. “*piCurve: an R package for modeling
+photosynthesis–irradiance curves*”. arXiv preprint arXiv:2508.14321v1,
+(2025)

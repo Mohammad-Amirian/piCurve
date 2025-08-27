@@ -61,7 +61,7 @@
 #' | Ph05 | \eqn{P^B = P^B_s~ \dfrac{I}{I + I_{\alpha}^s}  ~ e^{-I/I_{\beta}^s} \hspace{1cm}} | Baly-exp | \emph{...} |
 #' | Ph06 | \eqn{P^B = P^B_s~ \dfrac{I}{\sqrt{I^2 + (I_{\alpha}^s)^2}}  ~ e^{-I/I_{\beta}^s} \hspace{1cm}} | Smith-exp | \emph{...} |
 #' | Ph07 | \eqn{P^B = P^B_s~ \dfrac{I}{(I^b + (I_{\alpha}^s)^b)^{1/b}} ~ e^{-I/I_{\beta}^s} \hspace{1cm}} | Bannister-exp | \emph{...} |
-#' | Ph08 | \eqn{P^B = P^B_s~ \dfrac{P^B_{s}}{2 \theta} \left[ \mathcal{I} - \sqrt{\mathcal{I}^2 - 4 \theta(\mathcal{I} - 1)} \right] ~ e^{-I/I_{\beta}^s} \hspace{1cm}} | Prioul-exp | \emph{...} |
+#' | Ph08 | \eqn{P^B = \dfrac{P^B_{s}}{2 \theta} \left[ \mathcal{I} - \sqrt{\mathcal{I}^2 - 4 \theta(\mathcal{I} - 1)} \right] ~ e^{-I/I_{\beta}^s} \hspace{1cm}} | Prioul-exp | \emph{...} |
 #' | Ph09 | \eqn{P^B = \begin{cases} \alpha I & \hspace{0.5cm} I \leq P^B_{\max} / \alpha \\ & \\ P^B_{\max} & \hspace{0.5cm} P^B_{\max} / \alpha < I \leq P^B_{\max} / \beta\\ & \\ -\beta I & \hspace{0.5cm} I > P^B_{\max} / \beta \end{cases} \hspace{1cm}} | Extended-Blackman | \emph{...} |
 #' | Ph10 | \eqn{P^B = P^B_{\max} \tanh \left( \dfrac{I}{I_{\alpha}} \right) \tanh{ \left[ \left( \dfrac{I_{\beta}}{I} \right)^{\cosh^2(1)} \right] }  \hspace{1cm}} | Double-tanh | \emph{Amirian et al. 2024} |
 #' | Ph11 | \eqn{P^B = P^B_{\max} \tanh \left( \dfrac{I}{I_{\alpha}} \right) \tanh{ \left[ \left( \dfrac{I_{\beta}}{I} \right)^{\gamma} \right] }  \hspace{1cm}} | Double-tanh-shp | \emph{Amirian et al. 2024} |
