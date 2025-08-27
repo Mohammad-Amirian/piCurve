@@ -1,6 +1,6 @@
 Package: piCurve
 Type: Package
-Title: An R Package for Modeling Photosynthesis-Irradiance
+Title: piCurve: an R package for modeling photosynthesis–irradiance curves
 Version: 0.2.3
 Authors@R: c(
     person(given = "Mohammad",
@@ -24,3 +24,5 @@ Suggests:
 Config/testthat/edition: 3
 Depends: 
     R (>= 2.10)
+URL: https://arxiv.org/abs/2508.14321, https://github.com/Mohammad-Amirian/piCurve
+BugReports: https://github.com/Mohammad-Amirian/piCurve/issues
