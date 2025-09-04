@@ -166,7 +166,7 @@ Fit_piModel <- function(data,
 
     # dataType ? ----
     if(is.null(model_name)){
-        data_type <- DataType_piCurve(data = data)$data_type
+        data_type <- DataType_piCurve(data = data, n_cores = 1)$data_type
 
         model_name <-
             ifelse(data_type == "ph", "ph10",
