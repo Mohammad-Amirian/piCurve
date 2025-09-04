@@ -25,12 +25,12 @@ remotes::install_github("Mohammad-Amirian/piCurve")
 
     ## 
     ## ── R CMD build ─────────────────────────────────────────────────────────────────
-    ##      checking for file ‘/private/var/folders/fl/5wfmmnsn5d50x8xlj07dmms80000gn/T/RtmpmQI6AQ/remotes3e4570eada54/Mohammad-Amirian-piCurve-70da3af/DESCRIPTION’ ...  ✔  checking for file ‘/private/var/folders/fl/5wfmmnsn5d50x8xlj07dmms80000gn/T/RtmpmQI6AQ/remotes3e4570eada54/Mohammad-Amirian-piCurve-70da3af/DESCRIPTION’
+    ##      checking for file ‘/private/var/folders/fl/5wfmmnsn5d50x8xlj07dmms80000gn/T/Rtmp3M0Zoo/remotes14b53f61a285/Mohammad-Amirian-piCurve-699c3a2/DESCRIPTION’ ...  ✔  checking for file ‘/private/var/folders/fl/5wfmmnsn5d50x8xlj07dmms80000gn/T/Rtmp3M0Zoo/remotes14b53f61a285/Mohammad-Amirian-piCurve-699c3a2/DESCRIPTION’
     ##   ─  preparing ‘piCurve’:
     ##      checking DESCRIPTION meta-information ...  ✔  checking DESCRIPTION meta-information
     ##   ─  checking for LF line-endings in source and make files and shell scripts
     ##   ─  checking for empty or unneeded directories
-    ##   ─  building ‘piCurve_0.2.3.tar.gz’
+    ##   ─  building ‘piCurve_0.2.4.tar.gz’
     ##      
     ## 
 
