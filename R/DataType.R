@@ -9,8 +9,8 @@
 #' @details
 #' The function fits a set of candidate models: photoinhibition models ("Ph09", "Ph10"),
 #' light-saturating models ("LS1", "LS5"), and a linear model for light-limited cases
-#' (models listed in \code{\link{Model_piCurve}}) and labels the data based on adjusted R2.
-#' R²adj is chosen over other statstical metric, as the PI data could be extremely imbalanced (see \samp{References} for details).
+#' (models listed in \code{\link{Model_piCurve}}) and labels the data based on both adjusted R2 and AIC, thereby handling
+#' imbalanced more delicately (see \samp{References} for details).
 #'
 #' If the linear model fits exceptionally well (R²adj > 0.94), it is strongly favored.
 #' For details on these model choices, see \samp{References}.
@@ -23,8 +23,8 @@
 #'
 #' @references
 #' Amirian M.M., V Finkel Z., Devred E., Irwin A.J.,
-#' “\emph{A new parameterization of photoinhibition for phytoplankton},
-#' arXiv (2024) 1–33. 10.48550/arXiv.2412.17923.
+#' “\emph{Parameterization of photoinhibition for phytoplankton},
+#' Commun Earth Environ 6, 707 (2025). https://doi.org/10.1038/s43247-025-02686-3
 #'
 #' @examples
 #' # model parameters
@@ -66,6 +66,22 @@ DataType_piCurve <- function(data, n_cores = 2) {
                             NA
                     )
 
+                    # important for imbalance data where Ib > Imax but beta != 0
+                    fit_mle <- tryCatch(
+                        Fit_piModel(
+                            parameters =  c(fit$par, StDev = 1),
+                            model_name = model,
+                            STATapp = "MLE",
+                            data = data
+                        ),
+                        error = function(e)
+                            NA
+                    )
+
+                aic_val <- ifelse(is.na(fit_mle), 1e+15,
+                                  as.numeric(fit_mle$info_criteria["AIC"])
+                                  )
+
 
             # Evaluate adjusted R-squared
             R2adj <- 0  # default fallback
@@ -89,7 +105,7 @@ DataType_piCurve <- function(data, n_cores = 2) {
                 }
             }
 
-            tibble::tibble(model = model, R2adj = as.numeric(R2adj))
+            tibble::tibble(model = model, R2adj = as.numeric(R2adj), AIC_val = aic_val)
         },
         mc.cores = n_cores
         )
@@ -98,6 +114,13 @@ DataType_piCurve <- function(data, n_cores = 2) {
     # Flatten and find the best-fitting model
     df_flat <- bind_rows(unlist(df_out, recursive = FALSE))
     df_best <- df_flat |> arrange(model) |> slice(which.max(R2adj))
+    df_best_aic <- df_flat |> arrange(model) |> slice(which.min(AIC_val))
+
+    # over-write based on AIC
+    if(gsub("[0-9]+", "", df_best$model) != "ph" &
+       gsub("[0-9]+", "", df_best_aic$model) == "ph"){
+        df_best$model = "ph"
+    }
 
     return(list(data_type = gsub("[0-9]+", "", df_best$model) ))
 }

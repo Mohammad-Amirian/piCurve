@@ -211,7 +211,9 @@ Model_setup <- function(which_model, data_type){
 # Log likelihood function
 LogL <- function(data, model_fit, StDev){
     # normal log-likelihood function
-    sum(dnorm(data$P, mean = model_fit, sd = StDev, log = TRUE))
+    sum(suppressWarnings(
+        dnorm(data$P, mean = model_fit, sd = StDev, log = TRUE)
+    ))
 }
 
 add_shape_par <- function(parameters){c(parameters, shape = 1)}

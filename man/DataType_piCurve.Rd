@@ -20,8 +20,8 @@ Fits multiple photosynthesis–irradiance (PI) models to the data in parallel an
 \details{
 The function fits a set of candidate models: photoinhibition models ("Ph09", "Ph10"),
 light-saturating models ("LS1", "LS5"), and a linear model for light-limited cases
-(models listed in \code{\link{Model_piCurve}}) and labels the data based on adjusted R2.
-R²adj is chosen over other statstical metric, as the PI data could be extremely imbalanced (see \samp{References} for details).
+(models listed in \code{\link{Model_piCurve}}) and labels the data based on both adjusted R2 and AIC, thereby handling
+imbalanced more delicately (see \samp{References} for details).
 
 If the linear model fits exceptionally well (R²adj > 0.94), it is strongly favored.
 For details on these model choices, see \samp{References}.
@@ -42,6 +42,6 @@ df$P <- # generate the photosynthetic rate using Jassby-tanh (LS5) model
 }
 \references{
 Amirian M.M., V Finkel Z., Devred E., Irwin A.J.,
-“\emph{A new parameterization of photoinhibition for phytoplankton},
-arXiv (2024) 1–33. 10.48550/arXiv.2412.17923.
+“\emph{Parameterization of photoinhibition for phytoplankton},
+Commun Earth Environ 6, 707 (2025). https://doi.org/10.1038/s43247-025-02686-3
 }
