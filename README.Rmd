@@ -13,7 +13,7 @@ The piCurve package offers a comprehensive suite of photosynthesis–irradiance 
  
 Install the package from GitHub:
  
-```{r}
+```{r, message=FALSE}
 remotes::install_github("Mohammad-Amirian/piCurve")
 ```
 

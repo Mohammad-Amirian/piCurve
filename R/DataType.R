@@ -66,21 +66,21 @@ DataType_piCurve <- function(data, n_cores = 2) {
                             NA
                     )
 
-                    # important for imbalance data where Ib > Imax but beta != 0
-                    fit_mle <- tryCatch(
-                        Fit_piModel(
-                            parameters =  c(fit$par, StDev = 1),
-                            model_name = model,
-                            STATapp = "MLE",
-                            data = data
-                        ),
-                        error = function(e)
-                            NA
-                    )
-
-                aic_val <- ifelse(is.na(fit_mle), 1e+15,
-                                  as.numeric(fit_mle$info_criteria["AIC"])
-                                  )
+                #     # important for imbalance data where Ib > Imax but beta != 0
+                #     fit_mle <- tryCatch(
+                #         Fit_piModel(
+                #             parameters =  c(fit$par, StDev = 1),
+                #             model_name = model,
+                #             STATapp = "MLE",
+                #             data = data
+                #         ),
+                #         error = function(e)
+                #             NA
+                #     )
+                #
+                # aic_val <- ifelse(is.na(fit_mle), 1e+15,
+                #                   as.numeric(fit_mle$info_criteria["AIC"])
+                #                   )
 
 
             # Evaluate adjusted R-squared
@@ -88,8 +88,21 @@ DataType_piCurve <- function(data, n_cores = 2) {
 
             if (!is.null(fit) && !all(is.na(fit))) {
                 if (model %in% c("ph09", "ph10")) {
-                    Ib <- as.numeric(fit$par["Pmax"] / fit$par["beta"])
-                    R2adj <- ifelse(Ib > max(data$I, na.rm = TRUE), 0, fit$SQA["R2adj"])
+                    # Ib <- as.numeric(fit$par["Pmax"] / fit$par["beta"])
+                    # R2adj <- ifelse(Ib > max(data$I, na.rm = TRUE), 0, fit$SQA["R2adj"])
+                    df_sim <- highRes_piPred(Fitted_Model = fit, data = data, length_out = 500)
+
+                    x2 = last(df_sim$Phat)
+                    x1 = max(df_sim$Phat)
+
+                    R2adj <-
+                        ifelse(
+                            # inhibition threshold 5% reduction in photosynthesis rate
+                            x2 / x1 > 0.95,
+                            0,
+                            fit$SQA["R2adj"]
+                            )
+
                 } else {
                     R2adj <- fit$SQA["R2adj"]
                 }
@@ -105,7 +118,9 @@ DataType_piCurve <- function(data, n_cores = 2) {
                 }
             }
 
-            tibble::tibble(model = model, R2adj = as.numeric(R2adj), AIC_val = aic_val)
+            tibble::tibble(model = model, R2adj = as.numeric(R2adj)
+                           # , AIC_val = aic_val
+                           )
         },
         mc.cores = n_cores
         )
@@ -114,13 +129,13 @@ DataType_piCurve <- function(data, n_cores = 2) {
     # Flatten and find the best-fitting model
     df_flat <- bind_rows(unlist(df_out, recursive = FALSE))
     df_best <- df_flat |> arrange(model) |> slice(which.max(R2adj))
-    df_best_aic <- df_flat |> arrange(model) |> slice(which.min(AIC_val))
+    # df_best_aic <- df_flat |> arrange(model) |> slice(which.min(AIC_val))
 
-    # over-write based on AIC
-    if(gsub("[0-9]+", "", df_best$model) != "ph" &
-       gsub("[0-9]+", "", df_best_aic$model) == "ph"){
-        df_best$model = "ph"
-    }
+    # # over-write based on AIC
+    # if(gsub("[0-9]+", "", df_best$model) != "ph" &
+    #    gsub("[0-9]+", "", df_best_aic$model) == "ph"){
+    #     df_best$model = "ph"
+    # }
 
     return(list(data_type = gsub("[0-9]+", "", df_best$model) ))
 }
