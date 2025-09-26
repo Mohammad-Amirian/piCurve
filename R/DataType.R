@@ -44,7 +44,7 @@ DataType_piCurve <- function(data, n_cores = 2) {
 
     data <- FormatCheck_piCurve(data)
     params <- get_start_piPars(data)
-    list_models <- c("lm", "ls1", "ls5", "ph09", "ph10")
+    list_models <- c("lm", "ls1", "ls2", "ls5", "ph09", "ph10")
 
     df_out <- vector("list", nrow(params))
 
@@ -70,10 +70,10 @@ DataType_piCurve <- function(data, n_cores = 2) {
             # Evaluate adjusted R-squared
             R2adj <- 0  # default fallback
 
+            ppmax <- ifelse(!is.null(fit), 1e+10, as.numeric(fit$par["Pmax"]) )
+
             if (!is.null(fit) && !all(is.na(fit))) {
                 if (model %in% c("ph09", "ph10")) {
-                    # Ib <- as.numeric(fit$par["Pmax"] / fit$par["beta"])
-                    # R2adj <- ifelse(Ib > max(data$I, na.rm = TRUE), 0, fit$SQA["R2adj"])
                     df_sim <- highRes_piPred(Fitted_Model = fit, data = data, length_out = 500)
 
                     x2 = last(df_sim$Phat)
@@ -87,7 +87,11 @@ DataType_piCurve <- function(data, n_cores = 2) {
                             fit$SQA["R2adj"]
                             )
 
-                } else {
+                }  # over-write: prevent overestimation of Pmax by Baly's Eq
+                else if (model == "ls2" & ppmax > 1.3 * max(data$P, na.rm = T)) {
+                    R2adj <- 0
+                }
+                else {
                     R2adj <- fit$SQA["R2adj"]
                 }
 
@@ -102,9 +106,7 @@ DataType_piCurve <- function(data, n_cores = 2) {
                 }
             }
 
-            tibble::tibble(model = model, R2adj = as.numeric(R2adj)
-                           # , AIC_val = aic_val
-                           )
+            tibble::tibble(model = model, R2adj = as.numeric(R2adj))
         },
         mc.cores = n_cores
         )
