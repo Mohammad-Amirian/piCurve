@@ -21,19 +21,6 @@ Install the package from GitHub:
 remotes::install_github("Mohammad-Amirian/piCurve")
 ```
 
-    ## Downloading GitHub repo Mohammad-Amirian/piCurve@HEAD
-
-    ## 
-    ## ── R CMD build ─────────────────────────────────────────────────────────────────
-    ##      checking for file ‘/private/var/folders/fl/5wfmmnsn5d50x8xlj07dmms80000gn/T/Rtmp3M0Zoo/remotes14b53f61a285/Mohammad-Amirian-piCurve-699c3a2/DESCRIPTION’ ...  ✔  checking for file ‘/private/var/folders/fl/5wfmmnsn5d50x8xlj07dmms80000gn/T/Rtmp3M0Zoo/remotes14b53f61a285/Mohammad-Amirian-piCurve-699c3a2/DESCRIPTION’
-    ##   ─  preparing ‘piCurve’:
-    ##      checking DESCRIPTION meta-information ...  ✔  checking DESCRIPTION meta-information
-    ##   ─  checking for LF line-endings in source and make files and shell scripts
-    ##   ─  checking for empty or unneeded directories
-    ##   ─  building ‘piCurve_0.2.4.tar.gz’
-    ##      
-    ## 
-
 ## How to use piCurve
 
 ``` r
@@ -67,15 +54,15 @@ pi_numbers <-
 # Apply function and combine with pi_number
 result_df <- data.frame(
     pi_number = pi_numbers,
-    data_type = sapply(grouped, function(x) DataType_piCurve(data = x, n_cores = 6)$data_type)
+    data_type = unlist(parallel::mclapply(grouped, function(x) DataType_piCurve(data = x, n_cores = 1)$data_type, mc.cores = 6))
 )
  
 dplyr::count(result_df, data_type)
 ```
 
     ##   data_type n
-    ## 1        ls 5
-    ## 2        ph 3
+    ## 1        ls 4
+    ## 2        ph 4
 
 # Model Fitting
 
