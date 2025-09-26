@@ -70,7 +70,11 @@ DataType_piCurve <- function(data, n_cores = 2) {
             # Evaluate adjusted R-squared
             R2adj <- 0  # default fallback
 
-            ppmax <- ifelse(!is.null(fit), 1e+10, as.numeric(fit$par["Pmax"]) )
+            if(unique(is.null(fit) | is.na(fit) )){
+                ppmax <- 1e+10
+            } else {
+                ppmax <- as.numeric(fit$par["Pmax"])
+        }
 
             if (!is.null(fit) && !all(is.na(fit))) {
                 if (model %in% c("ph09", "ph10")) {
