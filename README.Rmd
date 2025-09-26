@@ -52,7 +52,7 @@ pi_numbers <-
 # Apply function and combine with pi_number
 result_df <- data.frame(
     pi_number = pi_numbers,
-    data_type = sapply(grouped, function(x) DataType_piCurve(data = x, n_cores = 6)$data_type)
+    data_type = unlist(parallel::mclapply(grouped, function(x) DataType_piCurve(data = x, n_cores = 1)$data_type, mc.cores = 6))
 )
  
 dplyr::count(result_df, data_type)
