@@ -20,8 +20,9 @@ Fits multiple photosynthesis–irradiance (PI) models to the data in parallel an
 \details{
 The function fits a set of candidate models: photoinhibition models ("Ph09", "Ph10"),
 light-saturating models ("LS1", "LS5"), and a linear model for light-limited cases
-(models listed in \code{\link{Model_piCurve}}) and labels the data based on both adjusted R2 and AIC, thereby handling
-imbalanced more delicately (see \samp{References} for details).
+(models listed in \code{\link{Model_piCurve}}). Data are clustered by adjusted R2 with
+a 5\% inhibition detection threshold to better handle imbalance photoinhibition data
+samples (see \samp{References} for details).
 
 If the linear model fits exceptionally well (R²adj > 0.94), it is strongly favored.
 For details on these model choices, see \samp{References}.
