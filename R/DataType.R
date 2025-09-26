@@ -9,8 +9,9 @@
 #' @details
 #' The function fits a set of candidate models: photoinhibition models ("Ph09", "Ph10"),
 #' light-saturating models ("LS1", "LS5"), and a linear model for light-limited cases
-#' (models listed in \code{\link{Model_piCurve}}) and labels the data based on both adjusted R2 and AIC, thereby handling
-#' imbalanced more delicately (see \samp{References} for details).
+#' (models listed in \code{\link{Model_piCurve}}). Data are clustered by adjusted R2 with
+#' a 5% inhibition detection threshold to better handle imbalance photoinhibition data
+#' samples (see \samp{References} for details).
 #'
 #' If the linear model fits exceptionally well (R²adj > 0.94), it is strongly favored.
 #' For details on these model choices, see \samp{References}.
@@ -66,23 +67,6 @@ DataType_piCurve <- function(data, n_cores = 2) {
                             NA
                     )
 
-                #     # important for imbalance data where Ib > Imax but beta != 0
-                #     fit_mle <- tryCatch(
-                #         Fit_piModel(
-                #             parameters =  c(fit$par, StDev = 1),
-                #             model_name = model,
-                #             STATapp = "MLE",
-                #             data = data
-                #         ),
-                #         error = function(e)
-                #             NA
-                #     )
-                #
-                # aic_val <- ifelse(is.na(fit_mle), 1e+15,
-                #                   as.numeric(fit_mle$info_criteria["AIC"])
-                #                   )
-
-
             # Evaluate adjusted R-squared
             R2adj <- 0  # default fallback
 
@@ -129,13 +113,6 @@ DataType_piCurve <- function(data, n_cores = 2) {
     # Flatten and find the best-fitting model
     df_flat <- bind_rows(unlist(df_out, recursive = FALSE))
     df_best <- df_flat |> arrange(model) |> slice(which.max(R2adj))
-    # df_best_aic <- df_flat |> arrange(model) |> slice(which.min(AIC_val))
-
-    # # over-write based on AIC
-    # if(gsub("[0-9]+", "", df_best$model) != "ph" &
-    #    gsub("[0-9]+", "", df_best_aic$model) == "ph"){
-    #     df_best$model = "ph"
-    # }
 
     return(list(data_type = gsub("[0-9]+", "", df_best$model) ))
 }
