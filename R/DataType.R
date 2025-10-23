@@ -3,7 +3,7 @@
 #' Fits multiple photosynthesis–irradiance (PI) models to the data in parallel and infers the data type based on the best adjusted R-squared.
 #'
 #' @param data A data frame containing `I` (irradiance) and `P` (photosynthesis rate) columns.
-#' @param n_cores Integer. Number of CPU cores to use for parallel model fitting. Default is 2 to comply with CRAN check limits.
+#' @param n_cores Integer. Number of CPU cores to use for parallel model fitting (default: 1).
 #' @return A list with a single named element `data_type`, indicating the data type: _ll (light-limited)_, _ls (light-saturated)_, and _ph (photoinhibition)_.
 #'
 #' @details
@@ -40,7 +40,7 @@
 #'
 #'  DataType_piCurve(data = df)
 #'
-DataType_piCurve <- function(data, n_cores = 2) {
+DataType_piCurve <- function(data, n_cores = 1) {
 
     data <- FormatCheck_piCurve(data)
     params <- get_start_piPars(data)

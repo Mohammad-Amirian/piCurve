@@ -8,7 +8,7 @@ Plot_piCurve(
   Fitted_Model,
   data,
   add_CI = FALSE,
-  n_cores = 2,
+  n_cores = 1,
   length_out = 50,
   point_size = 2
 )
@@ -20,7 +20,7 @@ Plot_piCurve(
 
 \item{add_CI}{Logical. Whether to add confidence intervals around the fitted curve (default: \code{FALSE}, see details).}
 
-\item{n_cores}{Integer. Number of CPU cores to use if computing confidence intervals (default: 2).}
+\item{n_cores}{Integer. Number of CPU cores to use if computing confidence intervals (default: 1).}
 
 \item{length_out}{Integer. Number of points to use when generating the high-resolution fitted curve (default: 50).}
 

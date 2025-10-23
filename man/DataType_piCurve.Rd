@@ -4,12 +4,12 @@
 \alias{DataType_piCurve}
 \title{Automatic Data Classifier}
 \usage{
-DataType_piCurve(data, n_cores = 2)
+DataType_piCurve(data, n_cores = 1)
 }
 \arguments{
 \item{data}{A data frame containing \code{I} (irradiance) and \code{P} (photosynthesis rate) columns.}
 
-\item{n_cores}{Integer. Number of CPU cores to use for parallel model fitting. Default is 2 to comply with CRAN check limits.}
+\item{n_cores}{Integer. Number of CPU cores to use for parallel model fitting (default: 1).}
 }
 \value{
 A list with a single named element \code{data_type}, indicating the data type: \emph{ll (light-limited)}, \emph{ls (light-saturated)}, and \emph{ph (photoinhibition)}.

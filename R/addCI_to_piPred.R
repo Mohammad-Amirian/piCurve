@@ -4,7 +4,7 @@
 #'
 #' @param Fitted_Model A model object returned by \code{\link{Fit_piModel}} including parameter estimates and model name.
 #' @param irrad A numeric vector of irradiance (`I`) values at which to compute prediction intervals.
-#' @param n_cores Integer. Number of CPU cores to use for parallel sampling (default: 2).
+#' @param n_cores Integer. Number of CPU cores to use for parallel sampling (default: 1).
 #' @param n_sample Integer. Number of parameter samples to draw from the confidence intervals (default: 1000).
 #' @param Clevel Confidence level for interval computation (default: 0.95).
 #'
@@ -39,7 +39,7 @@
 #' fit <- Fit_piModel(parameters = c(params, StDev = 2), STATapp = "MLE",
 #'                    Hessian = TRUE, data = df)
 #'
-#' cal_ci <- addCI_to_piPred(fit, irrad = df$I, n_cores = 2, n_sample = 500)
+#' cal_ci <- addCI_to_piPred(fit, irrad = df$I, n_sample = 500)
 #'
 #' df_ci <- tibble::tibble(
 #'   cal_ci,
@@ -52,7 +52,7 @@
 #' lines(df_ci$irradiance, df_ci$ymin, lty = "dashed")
 #' lines(df_ci$irradiance, df_ci$ymax, lty = "dashed")
 #'
-addCI_to_piPred <- function(Fitted_Model, irrad, n_cores = 2, n_sample = 1000, Clevel = 0.95) {
+addCI_to_piPred <- function(Fitted_Model, irrad, n_cores = 1, n_sample = 1000, Clevel = 0.95) {
 
     if (!("StDev" %in% names(Fitted_Model$par))){
         stop("No error estimates found. Fit model with `STATapp = 'MLE'` using Fit_piModel().")

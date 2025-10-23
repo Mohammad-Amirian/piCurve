@@ -7,7 +7,7 @@
 addCI_to_piPred(
   Fitted_Model,
   irrad,
-  n_cores = 2,
+  n_cores = 1,
   n_sample = 1000,
   Clevel = 0.95
 )
@@ -17,7 +17,7 @@ addCI_to_piPred(
 
 \item{irrad}{A numeric vector of irradiance (\code{I}) values at which to compute prediction intervals.}
 
-\item{n_cores}{Integer. Number of CPU cores to use for parallel sampling (default: 2).}
+\item{n_cores}{Integer. Number of CPU cores to use for parallel sampling (default: 1).}
 
 \item{n_sample}{Integer. Number of parameter samples to draw from the confidence intervals (default: 1000).}
 
@@ -50,7 +50,7 @@ df$P <- Model_piCurve(parameters = params, model_name = "LS5", data = df) +
 fit <- Fit_piModel(parameters = c(params, StDev = 2), STATapp = "MLE",
                    Hessian = TRUE, data = df)
 
-cal_ci <- addCI_to_piPred(fit, irrad = df$I, n_cores = 2, n_sample = 500)
+cal_ci <- addCI_to_piPred(fit, irrad = df$I, n_sample = 500)
 
 df_ci <- tibble::tibble(
   cal_ci,

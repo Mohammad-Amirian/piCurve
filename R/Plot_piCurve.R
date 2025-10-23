@@ -6,7 +6,7 @@
 #' @param Fitted_Model A model object returned by \code{\link{Fit_piModel}} containing parameter estimates and model type.
 #' @param data A data frame containing observed data with columns \code{I} (irradiance) and \code{P} (photosynthesis).
 #' @param add_CI Logical. Whether to add confidence intervals around the fitted curve (default: \code{FALSE}, see details).
-#' @param n_cores Integer. Number of CPU cores to use if computing confidence intervals (default: 2).
+#' @param n_cores Integer. Number of CPU cores to use if computing confidence intervals (default: 1).
 #' @param length_out Integer. Number of points to use when generating the high-resolution fitted curve (default: 50).
 #' @param point_size Numeric. Size of observed data points in the plot (default: 2).
 #'
@@ -39,7 +39,7 @@ Plot_piCurve <- function(
         Fitted_Model,
         data,
         add_CI = FALSE,
-        n_cores = 2,
+        n_cores = 1,
         length_out = 50,
         point_size = 2
 ) {
