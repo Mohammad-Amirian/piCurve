@@ -52,10 +52,22 @@ Plot_piCurve <- function(
     # High-resolution prediction
     df_high_res <- highRes_piPred(Fitted_Model, data, length_out)
 
+
     # Add confidence interval if requested
     if (add_CI == TRUE) {
-        df_ci <- addCI_to_piPred(Fitted_Model, irrad = df_high_res$I, n_cores = n_cores)
-        df_high_res <- cbind(df_high_res, df_ci[, c("ymin", "ymax")])
+        # suppress warnings inside this call
+        ci <- suppressWarnings(ConfInt_piCurve(Fitted_Model))
+        if (any(is.na(ci))) {
+            df_high_res <- df_high_res
+
+            message("CI ignored: NA detected while inverting the information matrix; see ConfInt_piCurve().")
+
+        } else{
+
+            df_ci <- addCI_to_piPred(Fitted_Model, irrad = df_high_res$I, n_cores = n_cores)
+            df_high_res <- cbind(df_high_res, df_ci[, c("ymin", "ymax")])
+
+        }
     }
 
     # Construct base plot
@@ -67,9 +79,11 @@ Plot_piCurve <- function(
 
     # Add CI bounds if available
     if (add_CI == TRUE) {
-        pp <- pp +
-            ggplot2::geom_line(data = df_high_res, aes(x = I, y = ymin), linetype = 2, col = "black", alpha = 0.6) +
-            ggplot2::geom_line(data = df_high_res, aes(x = I, y = ymax), linetype = 2, col = "black", alpha = 0.6)
+        if (!any(is.na(ci))) {
+            pp <- pp +
+                ggplot2::geom_line(data = df_high_res, aes(x = I, y = ymin), linetype = 2, col = "black", alpha = 0.6) +
+                ggplot2::geom_line(data = df_high_res, aes(x = I, y = ymax), linetype = 2, col = "black", alpha = 0.6)
+        }
     }
 
     return(pp)
