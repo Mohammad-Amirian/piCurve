@@ -8,13 +8,18 @@
 #'
 #' @details
 #' The function fits a set of candidate models: photoinhibition models ("Ph09", "Ph10"),
-#' light-saturating models ("LS1", "LS5"), and a linear model for light-limited cases
+#' light-saturating models ("LS1", "LS2", "LS5"), and a linear model for light-limited cases
 #' (models listed in \code{\link{Model_piCurve}}). Data are clustered by adjusted R2 with
 #' a 5% inhibition detection threshold to better handle imbalance photoinhibition data
 #' samples (see \samp{References} for details).
 #'
 #' If the linear model fits exceptionally well (R²adj > 0.94), it is strongly favored.
 #' For details on these model choices, see \samp{References}.
+#'
+#' When the variance of the photosynthesis measurements (`P`) is large,
+#' a threshold of 0.5 (based on the adjusted R²) is applied.
+#' In such cases, the function returns a *possible* model label
+#' rather than a definitive classification.
 #'
 #' @importFrom dplyr bind_rows arrange slice
 #' @importFrom parallel mclapply detectCores
@@ -35,7 +40,7 @@
 #' df <- tibble::tibble(I = seq(0, 300, length = 25))
 #'
 #' df$P <- # generate the photosynthetic rate using Jassby-tanh (LS5) model
-#'  Model_piCurve(parameters = params, model_name = "2tanh", data = df) +
+#'  Model_piCurve(parameters = params, model_name = "ph10", data = df) +
 #'  2 * rnorm(25, 0, 0.25)
 #'
 #'  DataType_piCurve(data = df)
@@ -120,7 +125,17 @@ DataType_piCurve <- function(data, n_cores = 1) {
     df_flat <- bind_rows(unlist(df_out, recursive = FALSE))
     df_best <- df_flat |> arrange(model) |> slice(which.max(R2adj))
 
-    return(list(data_type = gsub("[0-9]+", "", df_best$model) ))
+
+
+    if(df_best$R2adj < 0.5){ # add a threshold
+        model_type <- gsub("[0-9]+", "", df_best$model)
+        df_return <- list(
+            data_type = paste0("uncertain classification due to high-variance data. Likely data type: ", model_type) )
+    } else{
+        df_return <- list(data_type = gsub("[0-9]+", "", df_best$model) )
+    }
+
+    return(df_return)
 }
 
 
