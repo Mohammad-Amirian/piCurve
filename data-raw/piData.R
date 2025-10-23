@@ -1,6 +1,6 @@
 ## code to prepare `piData` dataset goes here
 
 
-pi_data <- read.csv("data-raw/piDataSet.csv")
+piDataSet <- read.csv("data-raw/piDataSet.csv")
 
-usethis::use_data(pi_data, overwrite = TRUE)
+usethis::use_data(piDataSet, overwrite = TRUE)
