@@ -15,7 +15,8 @@ Fit_piModel(
   LowerBnd = -Inf,
   UpperBnd = Inf,
   Control = list(),
-  Hessian = FALSE
+  Hessian = FALSE,
+  DarkReactionRate_R = FALSE
 )
 }
 \arguments{
@@ -55,6 +56,11 @@ method, or bounds in which to search for method \verb{Brent}.}
 
 \item{Hessian}{Logical -- Should the Hessian matrix be returned through numerical
 differentiation? Default is \verb{FALSE}.}
+
+\item{DarkReactionRate_R}{Logical.
+Indicates whether the dark reaction rate (\code{R}) should be optimized automatically.
+Default is \verb{FALSE}.
+If an explicit \code{R} value is provided in \verb{parameters}, leave \verb{DarkReactionRate_R = FALSE}.}
 }
 \value{
 Below is a list of the results obtained from the optimization.
