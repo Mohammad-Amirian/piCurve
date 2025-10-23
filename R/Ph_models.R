@@ -504,3 +504,36 @@ Ph16_fasham_nonRH <- function(data, parameters){
 
     return(PPhat)
 }
+
+# Ph17: Amirian 2025 (4 params)
+Ph17_double_tanh_known_shp <- function(data, parameters){
+
+    # Pmax, alpha and beta are positive parameters in the model
+    Pmax  <- abs(parameters["Pmax"])
+    alpha <- abs(parameters["alpha"])
+    beta  <- abs(parameters["beta"])
+    shape <- 0.6
+
+    Ik  <- Pmax / alpha
+    Ikb <- Pmax / beta
+
+    # irradiance profile
+    I <- data$I
+
+    Iratio_a  <- I / Ik
+    Iratio_b <- Ikb / I
+    Iratio_bb <- Iratio_b^shape
+
+    # calculate photosynthesis ratevalues
+    if ("R" %in% names(parameters)){
+        R  <- parameters["R"]
+        PPhat <-
+            Pmax * tanh(Iratio_a) * tanh(Iratio_bb) + R
+    } else {
+        PPhat <-
+            Pmax * tanh(Iratio_a) * tanh(Iratio_bb)
+    }
+}
+
+
+

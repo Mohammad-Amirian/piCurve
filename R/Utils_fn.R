@@ -74,7 +74,9 @@ Pool_eqName_ph <-
         # Ph15
         "doubleexp", "exprcpexp",  "2exp", "ph15", 15, "15",
         # Ph16
-        "fasham", "fasham_nonRH",  "fashamnonRH", "ph16", 16, "16"
+        "fasham", "fasham_nonRH",  "fashamnonRH", "ph16", 16, "16",
+        # Ph17
+        "ph17", 17, "17"
     )
 
 extra_param_models <-
@@ -200,13 +202,22 @@ Model_setup <- function(which_model, data_type){
     # Ph15
     if(nameFormat(which_model) %in% c("doubleexp", "exprcpexp",  "2exp", "ph15", 15, "15"))
     {return(Ph15_exp_rcp_exp)}
-        }
 
     # Ph16
     if(nameFormat(which_model) %in% c("fasham", "fasham_nonRH",  "fashamnonRH", "ph16", 16, "16"))
     {return(Ph16_fasham_nonRH)}
 
+    # Ph17
+    if(nameFormat(which_model) %in% c("ph17", 17, "17"))
+    {return(Ph17_double_tanh_known_shp)}
+
+        }
+
+
     }
+
+
+
 
 # Log likelihood function
 LogL <- function(data, model_fit, StDev){
