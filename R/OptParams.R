@@ -34,6 +34,10 @@
 #' @param Control List -- a list of control parameters. Further details \code{\link{optim}}.
 #' @param Hessian Logical -- Should the Hessian matrix be returned through numerical
 #' differentiation? Default is \verb{FALSE}.
+#' @param DarkReactionRate_R Logical.
+#' Indicates whether the dark reaction rate (`R`) should be optimized automatically.
+#' Default is \verb{FALSE}.
+#' If an explicit `R` value is provided in \verb{parameters}, leave \verb{DarkReactionRate_R = FALSE}.
 #'
 #' @return Below is a list of the results obtained from the optimization.
 #' \itemize{
@@ -156,7 +160,9 @@ Fit_piModel <- function(data,
                            LowerBnd = -Inf,
                            UpperBnd =  Inf,
                            Control = list(),
-                           Hessian = FALSE) {
+                           Hessian = FALSE,
+                        DarkReactionRate_R = FALSE
+                        ) {
 
     # data format check ----
     if (!all(c("P", "I") %in% names(data))) {
@@ -196,6 +202,21 @@ Fit_piModel <- function(data,
     if (is.null(parameters)) {
         parameters <- cbind(get_start_piPars(data), StDev = 1, shape = 0.9)[1,]
     }
+
+    if (DarkReactionRate_R == TRUE) {
+        parameters <- c(parameters, R = 0)
+    }
+
+
+    # necessary par impact on info_criteria suuch as AIC, so rm them -----
+    if (!(model_name %in% extra_param_models)) {
+        parameters <- parameters[names(parameters) != "shape"] # rm shape param
+    }
+
+    if (data_type == "ls") {
+        parameters <- parameters[names(parameters) != "beta"] # rm beta for ls models
+    }
+
 
     # If STATapp is "MLE" and StDev is missing from parameters, set default StDev = 1
     ifelse(
