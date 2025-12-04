@@ -6,8 +6,9 @@
         # "piCurve 0.2.7 loaded:: DataType_piCurve debugged, handling imbalanced data more delicately."
         # "piCurve 0.2.8 loaded:: bugs fixed; default parallel computing choice is set on 1 for Windows users."
         # "piCurve 0.2.9 loaded:: Improved data classification: added R2 threshold (0.5) for high-variance cases."
-        # "piCurve 0.3.0 loaded:: DarkReactionRate_R option is added to the optimizer; see ?Fit_piModel"
-        "piCurve 0.3.1 loaded::  Plot_piCurve debugged"
+        # "piCurve 0.3.0 loaded:: DarkReactionRate_R option is added to the optimizer; see ?Fit_piModel."
+        # "piCurve 0.3.1 loaded::  Plot_piCurve debugged."
+        "piCurve 0.3.2 loaded::  Fit_piModel debugged."
     )
 }
 
