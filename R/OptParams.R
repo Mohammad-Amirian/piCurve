@@ -239,7 +239,7 @@ Fit_piModel <- function(data,
             tryCatch(
                 equation(parameters = parameters, data),
                 error = function (e)
-                    rep(0, data$P)
+                    rep( 0, length(data$P) )
                 )
 
         MSE_piCurve(data, model_fit = Phat) # return MSE value
@@ -253,7 +253,7 @@ Fit_piModel <- function(data,
             tryCatch(
                 equation(parameters = parameters, data),
                 error = function (e)
-                    rep(0, data$P)
+                    rep( 0, length(data$P) )
                 )
 
         logl <- # calculate log-likelihood function
