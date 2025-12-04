@@ -170,9 +170,20 @@ Fit_piModel <- function(data,
         data <- FormatCheck_piCurve(data = data)
     }
 
+    # rm na in data, if there is any ----
+    data <- na.omit(data[ , c("I", "P")])
+
     # dataType ? ----
     if(is.null(model_name)){
         data_type <- DataType_piCurve(data = data, n_cores = 1)$data_type
+        data_type_msg <- data_type
+
+        if(grepl("high-variance", data_type_msg)) {
+            print(data_type_msg)
+        }
+
+        data_type <-
+            gsub("uncertain classification due to high-variance data. Likely data type: ", "", data_type)
 
         model_name <-
             ifelse(data_type == "ph", "ph10",
@@ -200,7 +211,7 @@ Fit_piModel <- function(data,
 
     # if parameters is missing, use get_start_piPars() function ----
     if (is.null(parameters)) {
-        parameters <- cbind(get_start_piPars(data), StDev = 1, shape = 0.9)[1,]
+        parameters <- cbind(get_start_piPars(na.omit(data)), StDev = 1, shape = 0.9)[1,]
     }
 
     if (DarkReactionRate_R == TRUE) {

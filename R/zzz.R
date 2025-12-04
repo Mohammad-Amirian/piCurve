@@ -8,7 +8,8 @@
         # "piCurve 0.2.9 loaded:: Improved data classification: added R2 threshold (0.5) for high-variance cases."
         # "piCurve 0.3.0 loaded:: DarkReactionRate_R option is added to the optimizer; see ?Fit_piModel."
         # "piCurve 0.3.1 loaded::  Plot_piCurve debugged."
-        "piCurve 0.3.2 loaded::  Fit_piModel debugged."
+        # "piCurve 0.3.2 loaded::  Fit_piModel debugged."
+        "piCurve 0.3.3 loaded::  New feature added, see ?absCoef"
     )
 }
 
