@@ -21,6 +21,34 @@ Install the package from GitHub:
 remotes::install_github("Mohammad-Amirian/piCurve")
 ```
 
+    ## rlang      (1.1.6    -> 1.1.7   ) [CRAN]
+    ## lifecycle  (1.0.4    -> 1.0.5   ) [CRAN]
+    ## cpp11      (0.5.1    -> 0.5.2   ) [CRAN]
+    ## vctrs      (0.6.5    -> 0.7.0   ) [CRAN]
+    ## pillar     (1.11.0   -> 1.11.1  ) [CRAN]
+    ## magrittr   (2.0.3    -> 2.0.4   ) [CRAN]
+    ## timeDate   (4041.110 -> 4051.111) [CRAN]
+    ## S7         (0.2.0    -> 0.2.1   ) [CRAN]
+    ## isoband    (0.2.7    -> 0.3.0   ) [CRAN]
+    ## tibble     (3.3.0    -> 3.3.1   ) [CRAN]
+    ## gss        (2.2-9    -> 2.2-10  ) [CRAN]
+    ## timeSeries (4041.111 -> 4052.112) [CRAN]
+    ## ggplot2    (3.5.2    -> 4.0.1   ) [CRAN]
+    ## fBasics    (4041.97  -> 4052.98 ) [CRAN]
+
+    ## 
+    ## The downloaded binary packages are in
+    ##  /var/folders/fl/5wfmmnsn5d50x8xlj07dmms80000gn/T//RtmpMvpaJm/downloaded_packages
+    ## ── R CMD build ─────────────────────────────────────────────────────────────────
+    ##      checking for file ‘/private/var/folders/fl/5wfmmnsn5d50x8xlj07dmms80000gn/T/RtmpMvpaJm/remotes2a954d61b93f/Mohammad-Amirian-piCurve-0333299/DESCRIPTION’ ...  ✔  checking for file ‘/private/var/folders/fl/5wfmmnsn5d50x8xlj07dmms80000gn/T/RtmpMvpaJm/remotes2a954d61b93f/Mohammad-Amirian-piCurve-0333299/DESCRIPTION’
+    ##   ─  preparing ‘piCurve’:
+    ##      checking DESCRIPTION meta-information ...  ✔  checking DESCRIPTION meta-information
+    ##   ─  checking for LF line-endings in source and make files and shell scripts
+    ##   ─  checking for empty or unneeded directories
+    ##   ─  building ‘piCurve_0.3.3.tar.gz’
+    ##      
+    ## 
+
 ## How to use piCurve
 
 ``` r
@@ -85,14 +113,14 @@ print(fit)
 
     ## $par
     ##        Pmax       alpha        beta       StDev 
-    ## 1.851955156 0.061374091 0.003337316 0.063783954 
+    ## 1.852016996 0.061371599 0.003337527 0.063776649 
     ## 
     ## $value
-    ## [1] -80.00741
+    ## [1] -80.00742
     ## 
     ## $counts
     ## function gradient 
-    ##      396       NA 
+    ##      325       NA 
     ## 
     ## $convergence
     ## [1] 0
@@ -101,15 +129,15 @@ print(fit)
     ## NULL
     ## 
     ## $hessian
-    ##               Pmax        alpha         beta        StDev
-    ## Pmax  7.614233e+03 1.138670e+04 8.671789e+05 4.957483e+00
-    ## alpha 1.138670e+04 5.138762e+05 5.825017e-02 1.059650e+02
-    ## beta  8.671789e+05 5.825017e-02 1.647233e+08 1.170477e+06
-    ## StDev 4.957483e+00 1.059650e+02 1.170477e+06 2.954846e+04
+    ##                Pmax        alpha         beta         StDev
+    ## Pmax    7615.940697 1.139034e+04 8.674185e+05 -1.080748e+00
+    ## alpha  11390.339148 5.140572e+05 5.835343e-02  1.240775e+02
+    ## beta  867418.505124 5.835343e-02 1.647622e+08  1.170479e+06
+    ## StDev     -1.080748 1.240775e+02 1.170479e+06  2.956539e+04
     ## 
     ## $info_criteria
     ##       AIC      AICc       BIC 
-    ## -150.0148 -148.9037 -139.5431 
+    ## -152.0148 -151.2876 -143.6375 
     ## 
     ## $model
     ## [1] "ph10"
@@ -166,10 +194,10 @@ InfoMat_piCurve(parameters = fit$par, model_name = fit$model, data = df)
 ```
 
     ##                Pmax         alpha          beta         StDev
-    ## Pmax   7.614233e+03  1.138670e+04 -8.671789e+05  4.957483e+00
-    ## alpha  1.138670e+04  5.138762e+05 -5.825017e-02  1.059650e+02
-    ## beta  -8.671789e+05 -5.825017e-02  1.647233e+08 -1.170477e+06
-    ## StDev  4.957483e+00  1.059650e+02 -1.170477e+06  2.954846e+04
+    ## Pmax   7.615941e+03  1.139034e+04 -8.674185e+05 -1.080748e+00
+    ## alpha  1.139034e+04  5.140572e+05 -5.835343e-02  1.240775e+02
+    ## beta  -8.674185e+05 -5.835343e-02  1.647622e+08 -1.170479e+06
+    ## StDev -1.080748e+00  1.240775e+02 -1.170479e+06  2.956539e+04
 
 To add confidence intervals to the predicted response variable (`y`),
 you can use the `addCI_to_piPred()` function.
@@ -188,6 +216,32 @@ addCI_to_piPred(Fitted_Model = fit, irrad = df$I) |> head(3)
 To increase the resolution of prediction value across a finer irradiance
 space, you can use `?highRes_piPred()` function. List of models are also
 listed in `?Model_piCurve()`.
+
+## Phytoplankton Absorption Coefficient
+
+Chlorophyll-a–specific phytoplankton absorption,
+*a*<sub>*p**h*</sub><sup>\*</sup>(*λ*), and the corresponding
+phytoplankton absorption coefficient, *a*<sub>*p**h*</sub>(*λ*), can be
+estimated from chl-a concentration using the empirical spectral
+parameterization of Bricaud et al. (1995). This approach provides a
+globally averaged relationship between chlorophyll concentration and
+phytoplankton absorption in the absence of direct optical measurements
+(Details `?absCoef`). Below is an example illustrating the computation
+and visualization of *a*<sub>*p**h*</sub>(*λ*) for a chl-a concentration
+of 0.9 mg m<sup>−3</sup>.
+
+``` r
+absCoef(chla = 0.9) |>
+    ggplot(aes(x = lambda_nm, y = a_ph)) +
+    geom_line() +
+    theme_bw(base_size = 14) +
+    labs(
+        x = "Wavelength (nm)",
+        y = expression(a[ph](lambda)~~(m^{-1}))
+    )
+```
+
+![](README_files/figure-markdown_github/unnamed-chunk-9-1.png)
 
 ## Citation
 

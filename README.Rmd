@@ -110,6 +110,23 @@ addCI_to_piPred(Fitted_Model = fit, irrad = df$I) |> head(3)
 
 To increase the resolution of prediction value across a finer irradiance space, you can use `?highRes_piPred()` function. List of models are also listed in `?Model_piCurve()`.
 
+## Phytoplankton Absorption Coefficient
+
+Chlorophyll-a–specific phytoplankton absorption, $a_{ph}^*(\lambda)$, and the corresponding phytoplankton absorption coefficient, $a_{ph}(\lambda)$, can be estimated from chl-a concentration using the empirical spectral parameterization of Bricaud et al. (1995). This approach provides a globally averaged relationship between chlorophyll concentration and phytoplankton absorption in the absence of direct optical measurements (Details `?absCoef`). Below is an example illustrating the computation and visualization of $a_{ph}(\lambda)$ for a chl-a concentration of 0.9 mg m$^{-3}$. 
+ 
+```{r}
+absCoef(chla = 0.9) |>
+    ggplot(aes(x = lambda_nm, y = a_ph)) +
+    geom_line() +
+    theme_bw(base_size = 14) +
+    labs(
+        x = "Wavelength (nm)",
+        y = expression(a[ph](lambda)~~(m^{-1}))
+    )
+```
+
+
+
 ## Citation
 
 This package is developed based on the research outlined in the following paper. If you utilize the `piCurve` package in your work, we kindly request that you cite the referenced publication.
