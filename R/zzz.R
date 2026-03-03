@@ -9,7 +9,8 @@
         # "piCurve 0.3.0 loaded:: DarkReactionRate_R option is added to the optimizer; see ?Fit_piModel."
         # "piCurve 0.3.1 loaded::  Plot_piCurve debugged."
         # "piCurve 0.3.2 loaded::  Fit_piModel debugged."
-        "piCurve 0.3.3 loaded::  New feature added, see ?absCoef"
+        # "piCurve 0.3.3 loaded::  New feature added, see ?absCoef."
+        "piCurve 0.3.4 loaded:: solar declination angle can now be computed, see ?solar_declination_piCurve"
     )
 }
 
