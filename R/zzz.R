@@ -11,7 +11,11 @@
         # "piCurve 0.3.2 loaded::  Fit_piModel debugged."
         # "piCurve 0.3.3 loaded::  New feature added, see ?absCoef."
         # "piCurve 0.3.4 loaded:: solar declination angle can now be computed, see ?solar_declination_piCurve"
-        "piCurve 0.3.5 loaded:: solar zenith angle can now be computed, see ?solar_zenith_angle_piCurve"
+        # "piCurve 0.3.5 loaded:: solar zenith angle can now be computed, see ?solar_zenith_angle_piCurve"
+        # "piCurve 0.3.6 loaded:: new feature added, see ?atmospheric_mass_piCurve"
+        # "piCurve 0.3.7 loaded:: new feature added, see ?ozone_depth_piCurve"
+        # "piCurve 0.3.8 loaded:: new feature added, see ?sea_surface_irradiance_piCurve"
+        "piCurve 0.3.9 loaded:: feature update using embeded database, see ?sea_surface_irradiance_piCurve"
     )
 }
 
