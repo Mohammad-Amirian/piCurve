@@ -16,7 +16,9 @@
         # "piCurve 0.3.7 loaded:: new feature added, see ?ozone_depth_piCurve"
         # "piCurve 0.3.8 loaded:: new feature added, see ?sea_surface_irradiance_piCurve"
         # "piCurve 0.3.9 loaded:: feature update using embedded database, see ?sea_surface_irradiance_piCurve"
-        # "piCurve 0.4.1 loaded:: loaded:: new feature added, see ?PAR_sea_surface_piCurve()
+        # "piCurve 0.4.0 loaded:: new feature added, see ?PAR_sea_surface_piCurve()"
+        # "piCurve 0.4.1 loaded:: bugs fixed, see ?PAR_sea_surface_piCurve()"
+        "piCurve 0.4.2 loaded:: new feature upgraded, see ?PAR_sea_surface_piCurve()"
     )
 }
 

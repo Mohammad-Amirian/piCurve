@@ -113,7 +113,8 @@ sea_surface_irradiance_piCurve(
 DATE <- as.Date("2024-03-20")
 zn <- solar_zenith_angle_piCurve(DATE, hour_utc = 12, latitude = 0, longitude = 0)
 
-sea_surface_irradiance_piCurve(zenith_angle = zn, database_info = GreggCarder1990, sample_date = DATE)
+SSirad <- sea_surface_irradiance_piCurve(zenith_angle = zn, database_info = GreggCarder1990, sample_date = DATE)
+head(SSirad, 3)
 
 
 }
