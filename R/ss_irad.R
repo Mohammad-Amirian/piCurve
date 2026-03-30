@@ -89,6 +89,15 @@
 #'   database_info = GreggCarder1990,
 #'   sample_date = "2024-07-24"
 #' )
+#'
+#' # Example based on coordinators & time (unknown zenith angle)
+#' DATE <- as.Date("2024-03-20")
+#' zn <- solar_zenith_angle_piCurve(DATE, hour_utc = 12, latitude = 0, longitude = 0)
+#'
+#' SSirad <- sea_surface_irradiance_piCurve(zenith_angle = zn, database_info = GreggCarder1990, sample_date = DATE)
+#' head(SSirad, 3)
+#'
+#'
 #' @export
 sea_surface_irradiance_piCurve <- function(
         zenith_angle,
