@@ -118,7 +118,7 @@ PAR_sea_surface_piCurve(
 DATE <- as.Date("2024-03-20")
 zn <- solar_zenith_angle_piCurve(
   DATE,
-  hour_utc = 12,
+  time = "12:00:00",
   latitude = 0,
   longitude = 0
 )

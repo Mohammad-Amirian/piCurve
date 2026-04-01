@@ -13,6 +13,23 @@ likelihood estimation (MLE). A built-in dataset (`?piDataSet`)
 containing eight independent PI incubation samples is included for model
 testing and validation.
 
+In addition to PI-curve fitting, **piCurve package now provides tools
+for radiative transfer and optical modelling**, including:
+
+-   Estimation of **downwelling spectral irradiance** at the sea surface
+    using a Gregg–Carder–type parameterization with climatological
+    atmospheric inputs.
+-   Computation of **photosynthetically available radiation (PAR)** by
+    spectrally integrating downwelling irradiance.
+-   Estimation of **phytoplankton absorption coefficients** from
+    chlorophyll-a concentration using established bio-optical
+    parameterizations.
+
+These capabilities enable users to link physiological photosynthesis
+models with environmental forcing, facilitating analyses ranging from
+single-experiment PI curve fitting to regional or global assessments of
+marine primary productivity.
+
 ## Installation
 
 Install the package from GitHub:
@@ -20,34 +37,6 @@ Install the package from GitHub:
 ``` r
 remotes::install_github("Mohammad-Amirian/piCurve")
 ```
-
-    ## rlang      (1.1.6    -> 1.1.7   ) [CRAN]
-    ## lifecycle  (1.0.4    -> 1.0.5   ) [CRAN]
-    ## cpp11      (0.5.1    -> 0.5.2   ) [CRAN]
-    ## vctrs      (0.6.5    -> 0.7.0   ) [CRAN]
-    ## pillar     (1.11.0   -> 1.11.1  ) [CRAN]
-    ## magrittr   (2.0.3    -> 2.0.4   ) [CRAN]
-    ## timeDate   (4041.110 -> 4051.111) [CRAN]
-    ## S7         (0.2.0    -> 0.2.1   ) [CRAN]
-    ## isoband    (0.2.7    -> 0.3.0   ) [CRAN]
-    ## tibble     (3.3.0    -> 3.3.1   ) [CRAN]
-    ## gss        (2.2-9    -> 2.2-10  ) [CRAN]
-    ## timeSeries (4041.111 -> 4052.112) [CRAN]
-    ## ggplot2    (3.5.2    -> 4.0.1   ) [CRAN]
-    ## fBasics    (4041.97  -> 4052.98 ) [CRAN]
-
-    ## 
-    ## The downloaded binary packages are in
-    ##  /var/folders/fl/5wfmmnsn5d50x8xlj07dmms80000gn/T//RtmpMvpaJm/downloaded_packages
-    ## ── R CMD build ─────────────────────────────────────────────────────────────────
-    ##      checking for file ‘/private/var/folders/fl/5wfmmnsn5d50x8xlj07dmms80000gn/T/RtmpMvpaJm/remotes2a954d61b93f/Mohammad-Amirian-piCurve-0333299/DESCRIPTION’ ...  ✔  checking for file ‘/private/var/folders/fl/5wfmmnsn5d50x8xlj07dmms80000gn/T/RtmpMvpaJm/remotes2a954d61b93f/Mohammad-Amirian-piCurve-0333299/DESCRIPTION’
-    ##   ─  preparing ‘piCurve’:
-    ##      checking DESCRIPTION meta-information ...  ✔  checking DESCRIPTION meta-information
-    ##   ─  checking for LF line-endings in source and make files and shell scripts
-    ##   ─  checking for empty or unneeded directories
-    ##   ─  building ‘piCurve_0.3.3.tar.gz’
-    ##      
-    ## 
 
 ## How to use piCurve
 
@@ -57,6 +46,17 @@ library(ggplot2)
 ```
 
     ## Warning: package 'ggplot2' was built under R version 4.3.3
+
+``` r
+library(dplyr)
+library(maps)
+```
+
+    ## Warning: package 'maps' was built under R version 4.3.3
+
+``` r
+library(grid)
+```
 
 ### Classfying Data
 
@@ -237,11 +237,146 @@ absCoef(chla = 0.9) |>
     theme_bw(base_size = 14) +
     labs(
         x = "Wavelength (nm)",
-        y = expression(a[ph](lambda)~~(m^{-1}))
+        y = expression(a[ph]^"*"~(lambda)~~(m^{-1}))
     )
 ```
 
 ![](README_files/figure-markdown_github/unnamed-chunk-9-1.png)
+
+## Photosynthetically Available Radiation
+
+Photosynthetically available radiation (PAR) is estimated by integrating
+downwelling spectral irradiance across the 400–700 nm photosynthetically
+active waveband. In **piCurve**, sea-surface spectral irradiance is
+computed using a Gregg–Carder–type parameterization with climatological
+atmospheric inputs (details: `?sea_surface_irradiance_piCurve`),
+providing a practical approach for estimating PAR in the absence of
+direct irradiance measurements. Below is an example illustrating the
+computation and visualization of PAR for a given date and solar zenith
+angle.
+
+``` r
+PAR_sea_surface_piCurve(
+  zenith_angle = 30,
+  database_info = GreggCarder1990,
+  sample_date = "2024-07-24"
+)
+```
+
+    ##   lambda_min lambda_max  units      PAR
+    ## 1        400        700 W m^-2 413.1315
+
+When not provided, the solar zenith angle can be computed from
+geographic coordinates (latitude and longitude) and time using
+`?solar_zenith_angle_piCurve`. Building on this, the figure below
+illustrates the global distribution of sea-surface PAR at local noon on
+March 31, 2026.
+
+``` r
+Date <- as.Date("2026-03-31")
+
+lat <- 0
+long <- 0
+
+sza <- 
+    solar_zenith_angle_piCurve(date = Date, time = "12:00:00", latitude = lat, longitude = long)
+
+PAR_sea_surface_piCurve(zenith_angle = sza, GreggCarder1990, sample_date = Date)
+```
+
+    ##   lambda_min lambda_max  units      PAR
+    ## 1        400        700 W m^-2 479.4463
+
+``` r
+#--------------------------------------------------
+# 1. Create global grid
+#--------------------------------------------------
+df_global <- 
+    expand.grid(
+        longitude = seq(-180, 180, by = 2),
+        latitude  = seq(-90, 90, by = 2)
+        ) |>
+    as_tibble()
+
+#--------------------------------------------------
+# 2. Compute solar zenith angle
+#--------------------------------------------------
+df_global <-
+    df_global |>
+    mutate(
+        sza = mapply(
+            FUN = function(lat, lon) {
+                solar_zenith_angle_piCurve(
+                    date      = Date,
+                    time      = "12:00:00",
+                    latitude  = lat,
+                    longitude = lon
+                )
+            },
+            lat = latitude,
+            lon = longitude
+        )
+    )
+
+#--------------------------------------------------
+# 3. Compute PAR
+#    If sun is below horizon / zenith >= 90, set PAR = 0
+#--------------------------------------------------
+df_global <-
+    df_global |>
+    rowwise() |>
+    mutate(PAR = ifelse(
+        is.na(sza) || sza >= 90,
+        0,
+        PAR_sea_surface_piCurve(
+            zenith_angle  = sza,
+            database_info = GreggCarder1990,
+            sample_date   = Date
+        )$PAR[1]
+    )) |>
+    ungroup()
+
+#--------------------------------------------------
+# 4. Plot global PAR map
+#--------------------------------------------------
+world_map <- map_data("world")
+
+ggplot() +
+    geom_raster(data = df_global,
+                aes(x = longitude, y = latitude, fill = PAR)) +
+    geom_polygon(
+        data = world_map,
+        aes(x = long, y = lat, group = group),
+        fill = NA,
+        color = "black",
+        linewidth = 0.2
+    ) +
+    coord_fixed(xlim = c(-180, 180),
+                ylim = c(-90, 90),
+                expand = FALSE) +
+    scale_fill_viridis_c(
+        name = expression(PAR ~ (W ~ m ^ -2)),
+        limits = c(0, 500),
+        breaks = seq(0, 500, by = 100),
+        guide = guide_colorbar(
+            direction = "horizontal",
+            barwidth  = unit(0.7, "npc"),
+            barheight = unit(0.03, "npc"),
+            title.position = "top",
+            label.position = "bottom"
+        )
+    ) +
+    labs(
+        title = "Global sea-surface PAR at local noon",
+        subtitle = "March 31, 2026",
+        x = "",
+        y = ""
+    ) +
+    theme_bw(base_size = 13) +
+    theme(legend.position = "bottom", axis.title = element_blank())
+```
+
+![](README_files/figure-markdown_github/unnamed-chunk-12-1.png)
 
 ## Citation
 
