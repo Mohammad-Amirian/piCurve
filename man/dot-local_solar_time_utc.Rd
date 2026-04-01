@@ -7,14 +7,14 @@
 .local_solar_time_utc(date, hour_utc, longitude)
 }
 \arguments{
-\item{date}{Date or POSIXct/POSIXt (used for day-of-year in EoT).}
+\item{date}{Date or POSIXct/POSIXt.}
 
-\item{hour_utc}{Numeric hours since 00:00 UTC (may be fractional).}
+\item{hour_utc}{Numeric hours since 00:00 UTC.}
 
 \item{longitude}{Longitude in degrees (east positive, west negative).}
 }
 \value{
-Numeric local solar time in hours (not wrapped).
+Numeric local solar time in hours.
 }
 \description{
 Converts UTC hour and longitude into local apparent solar time (hours),

@@ -4,13 +4,16 @@
 \alias{solar_zenith_angle_piCurve}
 \title{Solar zenith angle}
 \usage{
-solar_zenith_angle_piCurve(date, hour_utc, latitude, longitude)
+solar_zenith_angle_piCurve(date, time, latitude, longitude)
 }
 \arguments{
 \item{date}{Date or POSIXct/POSIXt.}
 
-\item{hour_utc}{Numeric hours since 00:00 UTC (may be fractional). Length 1
-or same length as \code{date}.}
+\item{time}{Local clock time. Either:
+\itemize{
+\item Character string "HH:MM:SS"
+\item POSIXct/POSIXt object
+}}
 
 \item{latitude}{Latitude in degrees (north positive).}
 
@@ -20,11 +23,22 @@ or same length as \code{date}.}
 Numeric vector of solar zenith angle in degrees in \eqn{[0, 180]}.
 }
 \description{
-Computes solar zenith angle (SZA) in degrees using latitude, longitude, date,
-and UTC hour, with an approximate equation of time correction.
+Computes solar zenith angle (SZA) in degrees using latitude, longitude,
+date, and \strong{local clock time}. The function internally estimates UTC time
+from longitude, so users do not need to perform time zone conversions.
+}
+\details{
+The UTC time is approximated from longitude using:
+\deqn{UTC\ offset \approx \mathrm{round}(longitude / 15)}
+This assumes standard time zones and ignores political boundaries and daylight saving time.
 }
 \examples{
-# Equator at equinox: near zenith at local noon
-solar_zenith_angle_piCurve(as.Date("2024-03-20"), hour_utc = 12, latitude = 0, longitude = 0)
+# Halifax, Canada (~UTC-4), local time 15:00
+solar_zenith_angle_piCurve(
+  date = "2026-04-03",
+  time = "15:00:00",
+  latitude = 44.65,
+  longitude = -63.57
+)
 
 }
