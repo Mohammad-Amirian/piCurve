@@ -162,9 +162,7 @@ sza <-
     solar_zenith_angle_piCurve(date = Date, time = "12:00:00", latitude = lat, longitude = long)
 
 PAR_sea_surface_piCurve(zenith_angle = sza, GreggCarder1990, sample_date = Date)
-```
 
-```{r}
 #--------------------------------------------------
 # 1. Create global grid
 #--------------------------------------------------
