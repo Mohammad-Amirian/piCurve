@@ -185,7 +185,7 @@ extraterrestrial_irradiance_corrected <-
         e_orbital <- 0.0167
 
         # Extract the day of the year
-        D <- lubridate::day(date)
+        D <- lubridate::yday(date)
         # Utility functions for atmospheric
         D_adj <- (D - 3) / 365
 

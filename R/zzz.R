@@ -20,7 +20,8 @@
         # "piCurve 0.4.1 loaded:: bugs fixed, see ?PAR_sea_surface_piCurve()"
         # "piCurve 0.4.2 loaded:: new feature upgraded, see ?PAR_sea_surface_piCurve()"
         # "piCurve 0.4.3 loaded:: feature updated, see ?solar_zenith_angle_piCurve()"
-        "piCurve 0.4.4 loaded:: new feature added, see ?day_length_piCurve()"
+        # "piCurve 0.4.4 loaded:: new feature added, see ?day_length_piCurve()"
+        "piCurve 0.4.5 loaded:: extraterrestrial_irradiance_corrected debugged."
     )
 }
 
