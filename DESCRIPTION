@@ -29,7 +29,7 @@ Suggests:
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 Depends: 
-    R (>= 2.10)
+    R (>= 4.1.0)
 URL: https://arxiv.org/abs/2508.14321, https://github.com/Mohammad-Amirian/piCurve
 BugReports: https://github.com/Mohammad-Amirian/piCurve/issues
 Config/roxygen2/version: 8.0.0
