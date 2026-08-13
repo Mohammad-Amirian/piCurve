@@ -31,7 +31,7 @@ D = \frac{24}{\pi}\cos^{-1}(-\tan(\phi)\tan(\delta))
 
 where \eqn{\phi} is latitude and \eqn{\delta} is solar declination, both in
 radians. Polar day and polar night cases are handled by constraining the
-argument of \eqn{\cos^{-1}} to the interval \link{-1, 1}.
+argument of \eqn{\cos^{-1}} to the interval \eqn{[-1, 1]}.
 
 The \code{hour} argument is retained for consistency with
 \code{\link[=solar_declination_piCurve]{solar_declination_piCurve()}}. For day-length calculations, \code{hour = 12} is

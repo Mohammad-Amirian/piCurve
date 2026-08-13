@@ -1,90 +1,47 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>/404.html</loc>
-  </url>
-  <url>
-    <loc>/LICENSE-text.html</loc>
-  </url>
-  <url>
-    <loc>/LICENSE.html</loc>
-  </url>
-  <url>
-    <loc>/authors.html</loc>
-  </url>
-  <url>
-    <loc>/index.html</loc>
-  </url>
-  <url>
-    <loc>/reference/AIC_AICc_BIC_piCurve.html</loc>
-  </url>
-  <url>
-    <loc>/reference/Cal_infoMatrix.html</loc>
-  </url>
-  <url>
-    <loc>/reference/ConfInt_piCurve.html</loc>
-  </url>
-  <url>
-    <loc>/reference/ConfInt_piModel.html</loc>
-  </url>
-  <url>
-    <loc>/reference/DataType_piCurve.html</loc>
-  </url>
-  <url>
-    <loc>/reference/Fit_piModel.html</loc>
-  </url>
-  <url>
-    <loc>/reference/FormatCheck_piCurve.html</loc>
-  </url>
-  <url>
-    <loc>/reference/InfoCriteria.html</loc>
-  </url>
-  <url>
-    <loc>/reference/InfoMat_piCurve.html</loc>
-  </url>
-  <url>
-    <loc>/reference/MSE.html</loc>
-  </url>
-  <url>
-    <loc>/reference/MSE_piCurve.html</loc>
-  </url>
-  <url>
-    <loc>/reference/Model_piCurve.html</loc>
-  </url>
-  <url>
-    <loc>/reference/OptPIparams.html</loc>
-  </url>
-  <url>
-    <loc>/reference/OptPar_piCurve.html</loc>
-  </url>
-  <url>
-    <loc>/reference/Plot_piCurve.html</loc>
-  </url>
-  <url>
-    <loc>/reference/R2.html</loc>
-  </url>
-  <url>
-    <loc>/reference/R2_piCurve.html</loc>
-  </url>
-  <url>
-    <loc>/reference/ReCal_CI_piCurve.html</loc>
-  </url>
-  <url>
-    <loc>/reference/ReCal_CI_piModel.html</loc>
-  </url>
-  <url>
-    <loc>/reference/Tidy_piCurve.html</loc>
-  </url>
-  <url>
-    <loc>/reference/addCI_to_piPred.html</loc>
-  </url>
-  <url>
-    <loc>/reference/get_start_piPars.html</loc>
-  </url>
-  <url>
-    <loc>/reference/highRes_piPred.html</loc>
-  </url>
-  <url>
-    <loc>/reference/index.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>/404.html</loc></url>
+<url><loc>/LICENSE-text.html</loc></url>
+<url><loc>/LICENSE.html</loc></url>
+<url><loc>/authors.html</loc></url>
+<url><loc>/index.html</loc></url>
+<url><loc>/reference/AIC_AICc_BIC_piCurve.html</loc></url>
+<url><loc>/reference/Cal_infoMatrix.html</loc></url>
+<url><loc>/reference/ConfInt_piCurve.html</loc></url>
+<url><loc>/reference/ConfInt_piModel.html</loc></url>
+<url><loc>/reference/DataType_piCurve.html</loc></url>
+<url><loc>/reference/Fit_piModel.html</loc></url>
+<url><loc>/reference/FormatCheck_piCurve.html</loc></url>
+<url><loc>/reference/GreggCarder1990.html</loc></url>
+<url><loc>/reference/InfoCriteria.html</loc></url>
+<url><loc>/reference/InfoMat_piCurve.html</loc></url>
+<url><loc>/reference/MSE.html</loc></url>
+<url><loc>/reference/MSE_piCurve.html</loc></url>
+<url><loc>/reference/Model_piCurve.html</loc></url>
+<url><loc>/reference/OptPIparams.html</loc></url>
+<url><loc>/reference/OptPar_piCurve.html</loc></url>
+<url><loc>/reference/PAR_sea_surface_piCurve.html</loc></url>
+<url><loc>/reference/Plot_piCurve.html</loc></url>
+<url><loc>/reference/R2.html</loc></url>
+<url><loc>/reference/R2_piCurve.html</loc></url>
+<url><loc>/reference/ReCal_CI_piCurve.html</loc></url>
+<url><loc>/reference/ReCal_CI_piModel.html</loc></url>
+<url><loc>/reference/Tidy_piCurve.html</loc></url>
+<url><loc>/reference/absCoef.html</loc></url>
+<url><loc>/reference/addCI_to_piPred.html</loc></url>
+<url><loc>/reference/atmospheric_mass_piCurve.html</loc></url>
+<url><loc>/reference/bricaud1995_coef.html</loc></url>
+<url><loc>/reference/day_length_piCurve.html</loc></url>
+<url><loc>/reference/dot-equation_of_time.html</loc></url>
+<url><loc>/reference/dot-estimate_hour_utc.html</loc></url>
+<url><loc>/reference/dot-local_solar_time_utc.html</loc></url>
+<url><loc>/reference/dot-solar_hour_angle.html</loc></url>
+<url><loc>/reference/get_start_piPars.html</loc></url>
+<url><loc>/reference/highRes_piPred.html</loc></url>
+<url><loc>/reference/index.html</loc></url>
+<url><loc>/reference/ozone_depth_piCurve.html</loc></url>
+<url><loc>/reference/piDataSet.html</loc></url>
+<url><loc>/reference/sea_surface_irradiance_piCurve.html</loc></url>
+<url><loc>/reference/solar_declination_piCurve.html</loc></url>
+<url><loc>/reference/solar_zenith_angle_piCurve.html</loc></url>
 </urlset>
+

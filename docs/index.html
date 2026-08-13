@@ -5,13 +5,13 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Photosynthesis Irradiance Modeling • piCurve</title>
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
+<title>piCurve: an R package for modeling photosynthesis–irradiance curves • piCurve</title>
+<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="bootstrap-toc.css">
 <script src="bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
-<script src="pkgdown.js"></script><meta property="og:title" content="Photosynthesis Irradiance Modeling">
+<script src="pkgdown.js"></script><meta property="og:title" content="piCurve: an R package for modeling photosynthesis–irradiance curves">
 <meta property="og:description" content="The piCurve package incorporates a pool of photosynthesis irradiance (PI) models, enabling researchers to analyze the intricate relationship between irradiance and photosynthesis. It provides a comprehensive framework to study the effects of different irradiance levels on photosynthetic activity across various plant species and environmental conditions.">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -19,7 +19,7 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
-    
+
 
     <div class="container template-home">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">piCurve</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.5</span>
       </span>
     </div>
 
@@ -43,7 +43,14 @@
   <a href="reference/index.html">Reference</a>
 </li>
       </ul>
-<ul class="nav navbar-nav navbar-right"></ul>
+<ul class="nav navbar-nav navbar-right">
+<li>
+  <a href="https://github.com/Mohammad-Amirian/piCurve/" class="external-link">
+    <span class="fab fa-github fa-lg"></span>
+
+  </a>
+</li>
+      </ul>
 </div>
 <!--/.nav-collapse -->
   </div>
@@ -51,7 +58,7 @@
 </div>
 <!--/.navbar -->
 
-      
+
 
       </header><div class="row">
   <div class="contents col-md-9">
@@ -59,237 +66,310 @@
 <div class="section level2">
 <h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h2>
-<p>The <strong>piCurve</strong> package integrates a diverse range of photosynthesis irradiance (PI) models, providing a user-friendly environment for users to explore the effects of different irradiance levels on photosynthetic rate using statistical methods. The models have been rigorously tested and validated against experimental data, ensuring their reliability and accuracy. The optimal parameters of the each formulation get estimated through non-linear optimization using two statistical approaches: MSE and MLE.</p>
+<p>The piCurve package offers a comprehensive suite of photosynthesis–irradiance (PI) models in a user-friendly environment, enabling users to explore how varying irradiance levels influence photosynthetic or growth rates using statistical methods. The models have been rigorously tested and validated against experimental data, ensuring both reliability and accuracy. In total, 24 PI models are included this library (<code><a href="reference/Model_piCurve.html">?Model_piCurve</a></code>). Optimal parameters for each model formulation are estimated through non-linear optimization using two statistical approaches: mean squared error (MSE) and maximum likelihood estimation (MLE). A built-in dataset (<code><a href="reference/piDataSet.html">?piDataSet</a></code>) containing eight independent PI incubation samples is included for model testing and validation.</p>
+<p>In addition to PI-curve fitting, <strong>piCurve package now provides tools for radiative transfer and optical modelling</strong>, including:</p>
+<ul>
+<li>Estimation of <strong>downwelling spectral irradiance</strong> at the sea surface using a Gregg–Carder–type parameterization with climatological atmospheric inputs.</li>
+<li>Computation of <strong>photosynthetically available radiation (PAR)</strong> by spectrally integrating downwelling irradiance.</li>
+<li>Estimation of <strong>phytoplankton absorption coefficients</strong> from chlorophyll-a concentration using established bio-optical parameterizations.</li>
+</ul>
+<p>These capabilities enable users to link physiological photosynthesis models with environmental forcing, facilitating analyses ranging from single-experiment PI curve fitting to regional or global assessments of marine primary productivity.</p>
+</div>
+<div class="section level2">
+<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+</h2>
+<p>Install the package from GitHub:</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"Mohammad-Amirian/piCurve"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="how-to-use-picurve">How to use piCurve<a class="anchor" aria-label="anchor" href="#how-to-use-picurve"></a>
 </h2>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/rm.html" class="external-link">rm</a></span><span class="op">(</span>list <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ls.html" class="external-link">ls</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/load_all.html" class="external-link">load_all</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb2"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="do">## ℹ Loading piCurve</span></span></code></pre></div>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">piCurve</span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://sjmgarnier.github.io/viridis/" class="external-link">viridis</a></span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb4"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="do">## Loading required package: viridisLite</span></span></code></pre></div>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://geobosh.github.io/fBasicsDoc/" class="external-link">fBasics</a></span><span class="op">)</span></span></code></pre></div>
-<div class="section level3">
-<h3 id="light-saturation-models">Light-saturation models<a class="anchor" aria-label="anchor" href="#light-saturation-models"></a>
-</h3>
-<p>The following data sample is given where <code>I</code> and <code>PP</code> stand for irradiance and photosynthetic rate, respectively.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://arxiv.org/abs/2508.14321" class="external-link">piCurve</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="do">## Warning: package 'ggplot2' was built under R version 4.3.3</span></span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/adeckmyn/maps" class="external-link">maps</a></span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="do">## Warning: package 'maps' was built under R version 4.3.3</span></span></code></pre></div>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">df</span>, digits <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>, <span class="fl">5</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb7"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="do">## # A tibble: 5 × 2</span></span>
-<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a><span class="do">##       I    PP</span></span>
-<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a><span class="do">##   &lt;dbl&gt; &lt;dbl&gt;</span></span>
-<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a><span class="do">## 1  0    -0.06</span></span>
-<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a><span class="do">## 2  7.69  4.81</span></span>
-<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a><span class="do">## 3 15.4   9.5 </span></span>
-<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a><span class="do">## 4 23.1  11.8 </span></span>
-<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a><span class="do">## 5 30.8  15.6</span></span></code></pre></div>
-<p>To find the optimal parameters for the embed formulations with <code>MSE</code> method, one can specify <code>STATapp = "MSE"</code> or leave that empty. The default approach is set on <code>MSE</code>. See the following example.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">fit_mse</span> <span class="op">&lt;-</span></span>
-<span>    <span class="fu">OptPar_piCurve</span><span class="op">(</span></span>
-<span>        parameters <span class="op">=</span> <span class="va">params</span>,</span>
-<span>        model_name <span class="op">=</span> <span class="st">"tanh"</span>,</span>
-<span>        data <span class="op">=</span> <span class="va">df</span>,</span>
-<span>        data_type <span class="op">=</span> <span class="st">"ls"</span></span>
-<span>    <span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">grid</span><span class="op">)</span></span></code></pre></div>
+<div class="section level3">
+<h3 id="classfying-data">Classfying Data<a class="anchor" aria-label="anchor" href="#classfying-data"></a>
+</h3>
+<p>To classify PI data as light-limited (ll), light-saturated (ls), or photoinhibited (ph), you can use the <code><a href="reference/DataType_piCurve.html">DataType_piCurve()</a></code> function. Below, we demonstrate how to apply this function to the built-in dataset.</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Split the data</span></span>
+<span><span class="va">grouped</span> <span class="op">&lt;-</span> </span>
+<span>    <span class="va">piDataSet</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">pi_number</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_split.html" class="external-link">group_split</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">fit_mse</span></span></code></pre></div>
-<div class="sourceCode" id="cb9"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="do">## $par</span></span>
-<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a><span class="do">##       Pmax      alpha          R </span></span>
-<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a><span class="do">## 19.4918640  0.5520826  0.5778523 </span></span>
-<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a><span class="do">## </span></span>
-<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a><span class="do">## $value</span></span>
-<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a><span class="do">## [1] 0.9292517</span></span>
-<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a><span class="do">## </span></span>
-<span id="cb9-8"><a href="#cb9-8" tabindex="-1"></a><span class="do">## $counts</span></span>
-<span id="cb9-9"><a href="#cb9-9" tabindex="-1"></a><span class="do">## function gradient </span></span>
-<span id="cb9-10"><a href="#cb9-10" tabindex="-1"></a><span class="do">##      183       NA </span></span>
-<span id="cb9-11"><a href="#cb9-11" tabindex="-1"></a><span class="do">## </span></span>
-<span id="cb9-12"><a href="#cb9-12" tabindex="-1"></a><span class="do">## $convergence</span></span>
-<span id="cb9-13"><a href="#cb9-13" tabindex="-1"></a><span class="do">## [1] 0</span></span>
-<span id="cb9-14"><a href="#cb9-14" tabindex="-1"></a><span class="do">## </span></span>
-<span id="cb9-15"><a href="#cb9-15" tabindex="-1"></a><span class="do">## $message</span></span>
-<span id="cb9-16"><a href="#cb9-16" tabindex="-1"></a><span class="do">## NULL</span></span>
-<span id="cb9-17"><a href="#cb9-17" tabindex="-1"></a><span class="do">## </span></span>
-<span id="cb9-18"><a href="#cb9-18" tabindex="-1"></a><span class="do">## $model</span></span>
-<span id="cb9-19"><a href="#cb9-19" tabindex="-1"></a><span class="do">## [1] "tanh"</span></span>
-<span id="cb9-20"><a href="#cb9-20" tabindex="-1"></a><span class="do">## </span></span>
-<span id="cb9-21"><a href="#cb9-21" tabindex="-1"></a><span class="do">## $SQA</span></span>
-<span id="cb9-22"><a href="#cb9-22" tabindex="-1"></a><span class="do">##        R2     R2adj </span></span>
-<span id="cb9-23"><a href="#cb9-23" tabindex="-1"></a><span class="do">## 0.9526224 0.9500614</span></span></code></pre></div>
-<p>For <code>MLE</code> method, one simply needs to specify <code>STATapp = "MLE"</code>. See the following example</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">fit_mle</span> <span class="op">&lt;-</span></span>
-<span>    <span class="fu">OptPar_piCurve</span><span class="op">(</span></span>
-<span>        parameters <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">params</span>, StDev <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>,</span>
-<span>        model_name <span class="op">=</span> <span class="st">"tanh"</span>,</span>
-<span>        data <span class="op">=</span> <span class="va">df</span>,</span>
-<span>        <span class="co"># Hessian = TRUE,</span></span>
-<span>        STATapp <span class="op">=</span> <span class="st">"MLE"</span>,</span>
-<span>        data_type <span class="op">=</span> <span class="st">"ls"</span></span>
-<span>    <span class="op">)</span></span>
+<span><span class="co"># Extract pi_number values</span></span>
+<span><span class="va">pi_numbers</span> <span class="op">&lt;-</span> </span>
+<span>    <span class="va">piDataSet</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">pi_number</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_data.html" class="external-link">group_keys</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html" class="external-link">pull</a></span><span class="op">(</span><span class="va">pi_number</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">fit_mle</span></span></code></pre></div>
-<div class="sourceCode" id="cb11"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="do">## $par</span></span>
-<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a><span class="do">##       Pmax      alpha          R      StDev </span></span>
-<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a><span class="do">## 19.4906004  0.5520385  0.5790616  0.9640312 </span></span>
-<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a><span class="do">## </span></span>
-<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a><span class="do">## $value</span></span>
-<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a><span class="do">## [1] 55.29003</span></span>
-<span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a><span class="do">## </span></span>
-<span id="cb11-8"><a href="#cb11-8" tabindex="-1"></a><span class="do">## $counts</span></span>
-<span id="cb11-9"><a href="#cb11-9" tabindex="-1"></a><span class="do">## function gradient </span></span>
-<span id="cb11-10"><a href="#cb11-10" tabindex="-1"></a><span class="do">##      327       NA </span></span>
-<span id="cb11-11"><a href="#cb11-11" tabindex="-1"></a><span class="do">## </span></span>
-<span id="cb11-12"><a href="#cb11-12" tabindex="-1"></a><span class="do">## $convergence</span></span>
-<span id="cb11-13"><a href="#cb11-13" tabindex="-1"></a><span class="do">## [1] 0</span></span>
-<span id="cb11-14"><a href="#cb11-14" tabindex="-1"></a><span class="do">## </span></span>
-<span id="cb11-15"><a href="#cb11-15" tabindex="-1"></a><span class="do">## $message</span></span>
-<span id="cb11-16"><a href="#cb11-16" tabindex="-1"></a><span class="do">## NULL</span></span>
-<span id="cb11-17"><a href="#cb11-17" tabindex="-1"></a><span class="do">## </span></span>
-<span id="cb11-18"><a href="#cb11-18" tabindex="-1"></a><span class="do">## $info_criteria</span></span>
-<span id="cb11-19"><a href="#cb11-19" tabindex="-1"></a><span class="do">##      AIC     AICc      BIC </span></span>
-<span id="cb11-20"><a href="#cb11-20" tabindex="-1"></a><span class="do">## 118.5801 119.7229 125.3356 </span></span>
-<span id="cb11-21"><a href="#cb11-21" tabindex="-1"></a><span class="do">## </span></span>
-<span id="cb11-22"><a href="#cb11-22" tabindex="-1"></a><span class="do">## $model</span></span>
-<span id="cb11-23"><a href="#cb11-23" tabindex="-1"></a><span class="do">## [1] "tanh"</span></span>
-<span id="cb11-24"><a href="#cb11-24" tabindex="-1"></a><span class="do">## </span></span>
-<span id="cb11-25"><a href="#cb11-25" tabindex="-1"></a><span class="do">## $SQA</span></span>
-<span id="cb11-26"><a href="#cb11-26" tabindex="-1"></a><span class="do">##        R2     R2adj </span></span>
-<span id="cb11-27"><a href="#cb11-27" tabindex="-1"></a><span class="do">## 0.9526224 0.9486743</span></span></code></pre></div>
-<p>In case if, the user forgot to set <code>Hessian = TRUE</code>, the information matrix can be calculated using <code>InfoMat_piCurve</code> as shown below.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">fit_mle</span><span class="op">$</span><span class="va">hessian</span> <span class="op">&lt;-</span></span>
-<span>    <span class="fu"><a href="reference/InfoMat_piCurve.html">InfoMat_piCurve</a></span><span class="op">(</span></span>
-<span>        parameters <span class="op">=</span> <span class="va">fit_mle</span><span class="op">$</span><span class="va">par</span>,</span>
-<span>        model_name <span class="op">=</span> <span class="va">fit_mle</span><span class="op">$</span><span class="va">model</span>,</span>
-<span>        data <span class="op">=</span> <span class="va">df</span>,</span>
-<span>        data_type <span class="op">=</span> <span class="st">"ls"</span></span>
-<span>    <span class="op">)</span></span>
-<span></span>
-<span><span class="va">fit_mle</span><span class="op">$</span><span class="va">hessian</span> </span></code></pre></div>
-<div class="sourceCode" id="cb13"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="do">##               Pmax         alpha            R        StDev</span></span>
-<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a><span class="do">## Pmax  33.596970269   52.86997727  35.65604862 -0.001080808</span></span>
-<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a><span class="do">## alpha 52.869977269 1211.58086626 120.17158129 -0.035297433</span></span>
-<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a><span class="do">## R     35.656048617  120.17158129  43.04054993 -0.006388650</span></span>
-<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a><span class="do">## StDev -0.001080808   -0.03529743  -0.00638865 86.067422165</span></span></code></pre></div>
-<p>visualizing the fit</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">df</span><span class="op">$</span><span class="va">P_est</span> <span class="op">&lt;-</span></span>
-<span>    <span class="fu"><a href="reference/Model_piCurve.html">Model_piCurve</a></span><span class="op">(</span></span>
-<span>        <span class="va">fit_mle</span><span class="op">$</span><span class="va">par</span>,</span>
-<span>        model_name <span class="op">=</span> <span class="va">fit_mse</span><span class="op">$</span><span class="va">model</span>,</span>
-<span>        data_type <span class="op">=</span> <span class="st">"ls"</span>,</span>
-<span>        data <span class="op">=</span> <span class="va">df</span></span>
-<span>    <span class="op">)</span></span>
-<span></span>
-<span><span class="va">df</span> <span class="op">|&gt;</span> </span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">I</span>, <span class="va">PP</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">I</span>, y <span class="op">=</span> <span class="va">P_est</span><span class="op">)</span>, linewidth <span class="op">=</span> <span class="fl">1</span>, alpha <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Irradiance"</span>, y <span class="op">=</span> <span class="st">"Photosynthetic Rate"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="README_files/figure-markdown_github/unnamed-chunk-5-1.png"></p>
-<div class="section level4">
-<h4 id="confidence-interval">Confidence Interval<a class="anchor" aria-label="anchor" href="#confidence-interval"></a>
-</h4>
-<p>To calculate CI, <code>MLE</code> method must be used with <code>Hessian = TRUE</code>. Then, one simply needs to use <code>ConfInt_piModel()</code> function as shown below.</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="reference/ConfInt_piCurve.html">ConfInt_piCurve</a></span><span class="op">(</span>Fitted_Model <span class="op">=</span> <span class="va">fit_mle</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb16"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a><span class="do">##  Est_Err.Pmax Est_Err.alpha     Est_Err.R Est_Err.StDev     L_CI.Pmax </span></span>
-<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a><span class="do">##    0.79789501    0.05430759    0.80005384    0.10779053   17.92675496 </span></span>
-<span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a><span class="do">##    L_CI.alpha        L_CI.R    L_CI.StDev     U_CI.Pmax    U_CI.alpha </span></span>
-<span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a><span class="do">##    0.44559761   -0.98901515    0.75276564   21.05444593    0.65847946 </span></span>
-<span id="cb16-5"><a href="#cb16-5" tabindex="-1"></a><span class="do">##        U_CI.R    U_CI.StDev </span></span>
-<span id="cb16-6"><a href="#cb16-6" tabindex="-1"></a><span class="do">##    2.14713827    1.17529676</span></span></code></pre></div>
+<span><span class="co"># Apply function and combine with pi_number</span></span>
+<span><span class="va">result_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>    pi_number <span class="op">=</span> <span class="va">pi_numbers</span>,</span>
+<span>    data_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/unlist.html" class="external-link">unlist</a></span><span class="op">(</span><span class="fu">parallel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/parallel/mclapply.html" class="external-link">mclapply</a></span><span class="op">(</span><span class="va">grouped</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="reference/DataType_piCurve.html">DataType_piCurve</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">x</span>, n_cores <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">$</span><span class="va">data_type</span>, mc.cores <span class="op">=</span> <span class="fl">6</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span> </span>
+<span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/count.html" class="external-link">count</a></span><span class="op">(</span><span class="va">result_df</span>, <span class="va">data_type</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="do">##   data_type n</span></span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a><span class="do">## 1        ls 4</span></span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a><span class="do">## 2        ph 4</span></span></code></pre></div>
 </div>
+</div>
+<div class="section level1">
+<div class="page-header"><h1 id="model-fitting">Model Fitting<a class="anchor" aria-label="anchor" href="#model-fitting"></a>
+</h1></div>
+<p>To fit a PI model to a given data sample, you can use the <code><a href="reference/Fit_piModel.html">Fit_piModel()</a></code> function. In the example below, we use the default settings of this function, which fits the Amirian–tanh model (Ph10; see <code>?Model_piCurve()</code>) to the data, assuming a dark reaction rate of zero (R = 0). This model is chosen because it provides coherent and consistent outputs. For more details, please refer to the associated reference.</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">df</span> <span class="op">&lt;-</span> <span class="va">grouped</span><span class="op">[[</span><span class="fl">5</span><span class="op">]</span><span class="op">]</span></span>
+<span></span>
+<span><span class="co"># fit model on a given data</span></span>
+<span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/Fit_piModel.html">Fit_piModel</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">df</span>, STATapp <span class="op">=</span> <span class="st">"MLE"</span>, Hessian <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="do">## $par</span></span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a><span class="do">##        Pmax       alpha        beta       StDev </span></span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a><span class="do">## 1.852016996 0.061371599 0.003337527 0.063776649 </span></span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a><span class="do">## $value</span></span>
+<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a><span class="do">## [1] -80.00742</span></span>
+<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a><span class="do">## $counts</span></span>
+<span id="cb10-9"><a href="#cb10-9" tabindex="-1"></a><span class="do">## function gradient </span></span>
+<span id="cb10-10"><a href="#cb10-10" tabindex="-1"></a><span class="do">##      325       NA </span></span>
+<span id="cb10-11"><a href="#cb10-11" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb10-12"><a href="#cb10-12" tabindex="-1"></a><span class="do">## $convergence</span></span>
+<span id="cb10-13"><a href="#cb10-13" tabindex="-1"></a><span class="do">## [1] 0</span></span>
+<span id="cb10-14"><a href="#cb10-14" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb10-15"><a href="#cb10-15" tabindex="-1"></a><span class="do">## $message</span></span>
+<span id="cb10-16"><a href="#cb10-16" tabindex="-1"></a><span class="do">## NULL</span></span>
+<span id="cb10-17"><a href="#cb10-17" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb10-18"><a href="#cb10-18" tabindex="-1"></a><span class="do">## $hessian</span></span>
+<span id="cb10-19"><a href="#cb10-19" tabindex="-1"></a><span class="do">##                Pmax        alpha         beta         StDev</span></span>
+<span id="cb10-20"><a href="#cb10-20" tabindex="-1"></a><span class="do">## Pmax    7615.940697 1.139034e+04 8.674185e+05 -1.080748e+00</span></span>
+<span id="cb10-21"><a href="#cb10-21" tabindex="-1"></a><span class="do">## alpha  11390.339148 5.140572e+05 5.835343e-02  1.240775e+02</span></span>
+<span id="cb10-22"><a href="#cb10-22" tabindex="-1"></a><span class="do">## beta  867418.505124 5.835343e-02 1.647622e+08  1.170479e+06</span></span>
+<span id="cb10-23"><a href="#cb10-23" tabindex="-1"></a><span class="do">## StDev     -1.080748 1.240775e+02 1.170479e+06  2.956539e+04</span></span>
+<span id="cb10-24"><a href="#cb10-24" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb10-25"><a href="#cb10-25" tabindex="-1"></a><span class="do">## $info_criteria</span></span>
+<span id="cb10-26"><a href="#cb10-26" tabindex="-1"></a><span class="do">##       AIC      AICc       BIC </span></span>
+<span id="cb10-27"><a href="#cb10-27" tabindex="-1"></a><span class="do">## -152.0148 -151.2876 -143.6375 </span></span>
+<span id="cb10-28"><a href="#cb10-28" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb10-29"><a href="#cb10-29" tabindex="-1"></a><span class="do">## $model</span></span>
+<span id="cb10-30"><a href="#cb10-30" tabindex="-1"></a><span class="do">## [1] "ph10"</span></span>
+<span id="cb10-31"><a href="#cb10-31" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb10-32"><a href="#cb10-32" tabindex="-1"></a><span class="do">## $SQA</span></span>
+<span id="cb10-33"><a href="#cb10-33" tabindex="-1"></a><span class="do">##        R2     R2adj </span></span>
+<span id="cb10-34"><a href="#cb10-34" tabindex="-1"></a><span class="do">## 0.9925895 0.9921925</span></span></code></pre></div>
+<div class="section level3">
+<h3 id="tidy-fit">Tidy Fit<a class="anchor" aria-label="anchor" href="#tidy-fit"></a>
+</h3>
+<p>You can use the <code><a href="reference/Tidy_piCurve.html">Tidy_piCurve()</a></code> function to convert the output of your model fit into a tidy tibble format.</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># tidy the output of the model</span></span>
+<span><span class="fu"><a href="reference/Tidy_piCurve.html">Tidy_piCurve</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span><span class="op">$</span><span class="va">params</span></span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="do">## # A tibble: 4 × 5</span></span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a><span class="do">##   params Est_Val  Est_Err `LB_95%` `UB_95%`</span></span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a><span class="do">##   &lt;chr&gt;    &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;</span></span>
+<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a><span class="do">## 1 Pmax   1.85    0.0315    1.79     1.91   </span></span>
+<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a><span class="do">## 2 alpha  0.0614  0.00156   0.0583   0.0644 </span></span>
+<span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a><span class="do">## 3 beta   0.00334 0.000248  0.00285  0.00382</span></span>
+<span id="cb12-7"><a href="#cb12-7" tabindex="-1"></a><span class="do">## 4 StDev  0.0638  0.0114    0.0414   0.0862</span></span></code></pre></div>
 </div>
 <div class="section level3">
-<h3 id="photoinhibition-models">Photoinhibition models<a class="anchor" aria-label="anchor" href="#photoinhibition-models"></a>
+<h3 id="plotting">Plotting<a class="anchor" aria-label="anchor" href="#plotting"></a>
 </h3>
-<p>Similar to above, one can alter the codes to photoinhibition models. A list of models can be found under details in <code>?Model_piCurve()</code>. Consider the following data sample, let’s fit double-tanh (Ph10) model on it.</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">df</span>, <span class="fl">3</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb18"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a><span class="do">## # A tibble: 3 × 2</span></span>
-<span id="cb18-2"><a href="#cb18-2" tabindex="-1"></a><span class="do">##       I      PP</span></span>
-<span id="cb18-3"><a href="#cb18-3" tabindex="-1"></a><span class="do">##   &lt;dbl&gt;   &lt;dbl&gt;</span></span>
-<span id="cb18-4"><a href="#cb18-4" tabindex="-1"></a><span class="do">## 1  0    -0.0570</span></span>
-<span id="cb18-5"><a href="#cb18-5" tabindex="-1"></a><span class="do">## 2  7.69  6.24  </span></span>
-<span id="cb18-6"><a href="#cb18-6" tabindex="-1"></a><span class="do">## 3 15.4  11.8</span></span></code></pre></div>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">fit_mle</span> <span class="op">&lt;-</span></span>
-<span>    <span class="fu">OptPar_piCurve</span><span class="op">(</span></span>
-<span>        parameters <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">params</span>, StDev <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>,</span>
-<span>        model_name <span class="op">=</span> <span class="st">"2tanh"</span>,</span>
-<span>        data <span class="op">=</span> <span class="va">df</span>,</span>
-<span>        STATapp <span class="op">=</span> <span class="st">"MLE"</span>,</span>
-<span>        data_type <span class="op">=</span> <span class="st">"ph"</span></span>
-<span>    <span class="op">)</span></span>
+<p>You can use the <code><a href="reference/Plot_piCurve.html">Plot_piCurve()</a></code> function to visualize the fitted model output along with the predicted interval (95% by default) over the data.</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="co"># plot the fitted model </span></span>
+<span>    <span class="fu"><a href="reference/Plot_piCurve.html">Plot_piCurve</a></span><span class="op">(</span><span class="va">fit</span>, <span class="va">df</span>, length_out <span class="op">=</span> <span class="fl">200</span>, add_CI <span class="op">=</span> <span class="cn">TRUE</span>, n_cores <span class="op">=</span> <span class="fl">6</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">fit_mle</span></span></code></pre></div>
-<div class="sourceCode" id="cb20"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" tabindex="-1"></a><span class="do">## $par</span></span>
-<span id="cb20-2"><a href="#cb20-2" tabindex="-1"></a><span class="do">##        Pmax       alpha        beta           R       StDev </span></span>
-<span id="cb20-3"><a href="#cb20-3" tabindex="-1"></a><span class="do">## 19.11427426  0.78938410  0.09420309  0.53500655  0.92564668 </span></span>
-<span id="cb20-4"><a href="#cb20-4" tabindex="-1"></a><span class="do">## </span></span>
-<span id="cb20-5"><a href="#cb20-5" tabindex="-1"></a><span class="do">## $value</span></span>
-<span id="cb20-6"><a href="#cb20-6" tabindex="-1"></a><span class="do">## [1] 53.67205</span></span>
-<span id="cb20-7"><a href="#cb20-7" tabindex="-1"></a><span class="do">## </span></span>
-<span id="cb20-8"><a href="#cb20-8" tabindex="-1"></a><span class="do">## $counts</span></span>
-<span id="cb20-9"><a href="#cb20-9" tabindex="-1"></a><span class="do">## function gradient </span></span>
-<span id="cb20-10"><a href="#cb20-10" tabindex="-1"></a><span class="do">##      501       NA </span></span>
-<span id="cb20-11"><a href="#cb20-11" tabindex="-1"></a><span class="do">## </span></span>
-<span id="cb20-12"><a href="#cb20-12" tabindex="-1"></a><span class="do">## $convergence</span></span>
-<span id="cb20-13"><a href="#cb20-13" tabindex="-1"></a><span class="do">## [1] 1</span></span>
-<span id="cb20-14"><a href="#cb20-14" tabindex="-1"></a><span class="do">## </span></span>
-<span id="cb20-15"><a href="#cb20-15" tabindex="-1"></a><span class="do">## $message</span></span>
-<span id="cb20-16"><a href="#cb20-16" tabindex="-1"></a><span class="do">## NULL</span></span>
-<span id="cb20-17"><a href="#cb20-17" tabindex="-1"></a><span class="do">## </span></span>
-<span id="cb20-18"><a href="#cb20-18" tabindex="-1"></a><span class="do">## $info_criteria</span></span>
-<span id="cb20-19"><a href="#cb20-19" tabindex="-1"></a><span class="do">##      AIC     AICc      BIC </span></span>
-<span id="cb20-20"><a href="#cb20-20" tabindex="-1"></a><span class="do">## 117.3441 119.1088 125.7885 </span></span>
-<span id="cb20-21"><a href="#cb20-21" tabindex="-1"></a><span class="do">## </span></span>
-<span id="cb20-22"><a href="#cb20-22" tabindex="-1"></a><span class="do">## $model</span></span>
-<span id="cb20-23"><a href="#cb20-23" tabindex="-1"></a><span class="do">## [1] "2tanh"</span></span>
-<span id="cb20-24"><a href="#cb20-24" tabindex="-1"></a><span class="do">## </span></span>
-<span id="cb20-25"><a href="#cb20-25" tabindex="-1"></a><span class="do">## $SQA</span></span>
-<span id="cb20-26"><a href="#cb20-26" tabindex="-1"></a><span class="do">##        R2     R2adj </span></span>
-<span id="cb20-27"><a href="#cb20-27" tabindex="-1"></a><span class="do">## 0.9641352 0.9600364</span></span></code></pre></div>
-<p>visualizing the fit</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">df</span><span class="op">$</span><span class="va">P_est</span> <span class="op">&lt;-</span></span>
-<span>    <span class="fu"><a href="reference/Model_piCurve.html">Model_piCurve</a></span><span class="op">(</span></span>
-<span>        <span class="va">fit_mle</span><span class="op">$</span><span class="va">par</span>,</span>
-<span>        model_name <span class="op">=</span> <span class="va">fit_mle</span><span class="op">$</span><span class="va">model</span>,</span>
-<span>        data_type <span class="op">=</span> <span class="st">"ph"</span>,</span>
-<span>        data <span class="op">=</span> <span class="va">df</span></span>
-<span>    <span class="op">)</span></span>
-<span></span>
-<span><span class="va">df</span> <span class="op">|&gt;</span> </span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">I</span>, <span class="va">PP</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">I</span>, y <span class="op">=</span> <span class="va">P_est</span><span class="op">)</span>, linewidth <span class="op">=</span> <span class="fl">1</span>, alpha <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Irradiance"</span>, y <span class="op">=</span> <span class="st">"Photosynthetic Rate"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">p</span> <span class="op">+</span> <span class="co"># increase the size of axis title and font</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>axis.text <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">14</span><span class="op">)</span>, axis.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">14</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><img src="README_files/figure-markdown_github/unnamed-chunk-6-1.png"></p>
+</div>
+<div class="section level3">
+<h3 id="other-useful-functions">Other Useful Functions<a class="anchor" aria-label="anchor" href="#other-useful-functions"></a>
+</h3>
+<p>In addition to the core functions described above, the piCurve package includes several other helpful tools for model analysis and interpretation. A few of them are highlighted below.</p>
+<p>If the user forgot to set <code>Hessian = TRUE</code> when using the <code><a href="reference/Fit_piModel.html">Fit_piModel()</a></code> function, the information matrix can still be calculated afterward using the <code><a href="reference/InfoMat_piCurve.html">InfoMat_piCurve()</a></code> function, as shown below:</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/InfoMat_piCurve.html">InfoMat_piCurve</a></span><span class="op">(</span>parameters <span class="op">=</span> <span class="va">fit</span><span class="op">$</span><span class="va">par</span>, model_name <span class="op">=</span> <span class="va">fit</span><span class="op">$</span><span class="va">model</span>, data <span class="op">=</span> <span class="va">df</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a><span class="do">##                Pmax         alpha          beta         StDev</span></span>
+<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a><span class="do">## Pmax   7.615941e+03  1.139034e+04 -8.674185e+05 -1.080748e+00</span></span>
+<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a><span class="do">## alpha  1.139034e+04  5.140572e+05 -5.835343e-02  1.240775e+02</span></span>
+<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a><span class="do">## beta  -8.674185e+05 -5.835343e-02  1.647622e+08 -1.170479e+06</span></span>
+<span id="cb15-5"><a href="#cb15-5" tabindex="-1"></a><span class="do">## StDev -1.080748e+00  1.240775e+02 -1.170479e+06  2.956539e+04</span></span></code></pre></div>
+<p>To add confidence intervals to the predicted response variable (<code>y</code>), you can use the <code><a href="reference/addCI_to_piPred.html">addCI_to_piPred()</a></code> function.</p>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/addCI_to_piPred.html">addCI_to_piPred</a></span><span class="op">(</span>Fitted_Model <span class="op">=</span> <span class="va">fit</span>, irrad <span class="op">=</span> <span class="va">df</span><span class="op">$</span><span class="va">I</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a><span class="do">## # A tibble: 3 × 3</span></span>
+<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a><span class="do">##   irradiance    ymin    ymax</span></span>
+<span id="cb17-3"><a href="#cb17-3" tabindex="-1"></a><span class="do">##        &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;</span></span>
+<span id="cb17-4"><a href="#cb17-4" tabindex="-1"></a><span class="do">## 1     0.0846 0.00495 0.00544</span></span>
+<span id="cb17-5"><a href="#cb17-5" tabindex="-1"></a><span class="do">## 2     0.127  0.00742 0.00816</span></span>
+<span id="cb17-6"><a href="#cb17-6" tabindex="-1"></a><span class="do">## 3     0.169  0.00990 0.0109</span></span></code></pre></div>
+<p>To increase the resolution of prediction value across a finer irradiance space, you can use <code>?highRes_piPred()</code> function. List of models are also listed in <code>?Model_piCurve()</code>.</p>
+</div>
+<div class="section level2">
+<h2 id="phytoplankton-absorption-coefficient">Phytoplankton Absorption Coefficient<a class="anchor" aria-label="anchor" href="#phytoplankton-absorption-coefficient"></a>
+</h2>
+<p>Chlorophyll-a–specific phytoplankton absorption, <em>a</em><sub><em>p<strong>h<em></em></strong></em></sub><sup>*</sup>(λ<em>), and the corresponding phytoplankton absorption coefficient, </em>a<em><sub></sub></em>ph(<em>λ</em>), can be estimated from chl-a concentration using the empirical spectral parameterization of Bricaud et al. (1995). This approach provides a globally averaged relationship between chlorophyll concentration and phytoplankton absorption in the absence of direct optical measurements (Details <code><a href="reference/absCoef.html">?absCoef</a></code>). Below is an example illustrating the computation and visualization of <em>a</em><sub>*p**h<em></em></sub>(λ*) for a chl-a concentration of 0.9 mg m<sup>−3</sup>.</p>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/absCoef.html">absCoef</a></span><span class="op">(</span>chla <span class="op">=</span> <span class="fl">0.9</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">lambda_nm</span>, y <span class="op">=</span> <span class="va">a_ph</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span>base_size <span class="op">=</span> <span class="fl">14</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span>        x <span class="op">=</span> <span class="st">"Wavelength (nm)"</span>,</span>
+<span>        y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/expression.html" class="external-link">expression</a></span><span class="op">(</span><span class="va">a</span><span class="op">[</span><span class="va">ph</span><span class="op">]</span><span class="op">^</span><span class="st">"*"</span><span class="op">~</span><span class="op">(</span><span class="va">lambda</span><span class="op">)</span><span class="op">~</span><span class="op">~</span><span class="op">(</span><span class="va">m</span><span class="op">^</span><span class="op">{</span><span class="op">-</span><span class="fl">1</span><span class="op">}</span><span class="op">)</span><span class="op">)</span></span>
+<span>    <span class="op">)</span></span></code></pre></div>
 <p><img src="README_files/figure-markdown_github/unnamed-chunk-9-1.png"></p>
 </div>
+<div class="section level2">
+<h2 id="photosynthetically-available-radiation">Photosynthetically Available Radiation<a class="anchor" aria-label="anchor" href="#photosynthetically-available-radiation"></a>
+</h2>
+<p>Photosynthetically available radiation (PAR) is estimated by integrating downwelling spectral irradiance across the 400–700 nm photosynthetically active waveband. In <strong>piCurve</strong>, sea-surface spectral irradiance is computed using a Gregg–Carder–type parameterization with climatological atmospheric inputs (details: <code><a href="reference/sea_surface_irradiance_piCurve.html">?sea_surface_irradiance_piCurve</a></code>), providing a practical approach for estimating PAR in the absence of direct irradiance measurements. Below is an example illustrating the computation and visualization of PAR for a given date and solar zenith angle.</p>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/PAR_sea_surface_piCurve.html">PAR_sea_surface_piCurve</a></span><span class="op">(</span></span>
+<span>  zenith_angle <span class="op">=</span> <span class="fl">30</span>,</span>
+<span>  database_info <span class="op">=</span> <span class="va">GreggCarder1990</span>,</span>
+<span>  sample_date <span class="op">=</span> <span class="st">"2024-07-24"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb20"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" tabindex="-1"></a><span class="do">##   lambda_min lambda_max  units      PAR</span></span>
+<span id="cb20-2"><a href="#cb20-2" tabindex="-1"></a><span class="do">## 1        400        700 W m^-2 413.1315</span></span></code></pre></div>
+<p>When not provided, the solar zenith angle can be computed from geographic coordinates (latitude and longitude) and time using <code><a href="reference/solar_zenith_angle_piCurve.html">?solar_zenith_angle_piCurve</a></code>. Building on this, the figure below illustrates the global distribution of sea-surface PAR at local noon on March 31, 2026.</p>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">Date</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2026-03-31"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">lat</span> <span class="op">&lt;-</span> <span class="fl">0</span></span>
+<span><span class="va">long</span> <span class="op">&lt;-</span> <span class="fl">0</span></span>
+<span></span>
+<span><span class="va">sza</span> <span class="op">&lt;-</span> </span>
+<span>    <span class="fu"><a href="reference/solar_zenith_angle_piCurve.html">solar_zenith_angle_piCurve</a></span><span class="op">(</span>date <span class="op">=</span> <span class="va">Date</span>, time <span class="op">=</span> <span class="st">"12:00:00"</span>, latitude <span class="op">=</span> <span class="va">lat</span>, longitude <span class="op">=</span> <span class="va">long</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="reference/PAR_sea_surface_piCurve.html">PAR_sea_surface_piCurve</a></span><span class="op">(</span>zenith_angle <span class="op">=</span> <span class="va">sza</span>, <span class="va">GreggCarder1990</span>, sample_date <span class="op">=</span> <span class="va">Date</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb22"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" tabindex="-1"></a><span class="do">##   lambda_min lambda_max  units      PAR</span></span>
+<span id="cb22-2"><a href="#cb22-2" tabindex="-1"></a><span class="do">## 1        400        700 W m^-2 479.4463</span></span></code></pre></div>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">#--------------------------------------------------</span></span>
+<span><span class="co"># 1. Create global grid</span></span>
+<span><span class="co">#--------------------------------------------------</span></span>
+<span><span class="va">df_global</span> <span class="op">&lt;-</span> </span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/expand.grid.html" class="external-link">expand.grid</a></span><span class="op">(</span></span>
+<span>        longitude <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">180</span>, <span class="fl">180</span>, by <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>,</span>
+<span>        latitude  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">90</span>, <span class="fl">90</span>, by <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
+<span>        <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html" class="external-link">as_tibble</a></span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">#--------------------------------------------------</span></span>
+<span><span class="co"># 2. Compute solar zenith angle</span></span>
+<span><span class="co">#--------------------------------------------------</span></span>
+<span><span class="va">df_global</span> <span class="op">&lt;-</span></span>
+<span>    <span class="va">df_global</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
+<span>        sza <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mapply.html" class="external-link">mapply</a></span><span class="op">(</span></span>
+<span>            FUN <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">lat</span>, <span class="va">lon</span><span class="op">)</span> <span class="op">{</span></span>
+<span>                <span class="fu"><a href="reference/solar_zenith_angle_piCurve.html">solar_zenith_angle_piCurve</a></span><span class="op">(</span></span>
+<span>                    date      <span class="op">=</span> <span class="va">Date</span>,</span>
+<span>                    time      <span class="op">=</span> <span class="st">"12:00:00"</span>,</span>
+<span>                    latitude  <span class="op">=</span> <span class="va">lat</span>,</span>
+<span>                    longitude <span class="op">=</span> <span class="va">lon</span></span>
+<span>                <span class="op">)</span></span>
+<span>            <span class="op">}</span>,</span>
+<span>            lat <span class="op">=</span> <span class="va">latitude</span>,</span>
+<span>            lon <span class="op">=</span> <span class="va">longitude</span></span>
+<span>        <span class="op">)</span></span>
+<span>    <span class="op">)</span></span>
+<span></span>
+<span><span class="co">#--------------------------------------------------</span></span>
+<span><span class="co"># 3. Compute PAR</span></span>
+<span><span class="co">#    If sun is below horizon / zenith &gt;= 90, set PAR = 0</span></span>
+<span><span class="co">#--------------------------------------------------</span></span>
+<span><span class="va">df_global</span> <span class="op">&lt;-</span></span>
+<span>    <span class="va">df_global</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rowwise.html" class="external-link">rowwise</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>PAR <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span></span>
+<span>        <span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">sza</span><span class="op">)</span> <span class="op">||</span> <span class="va">sza</span> <span class="op">&gt;=</span> <span class="fl">90</span>,</span>
+<span>        <span class="fl">0</span>,</span>
+<span>        <span class="fu"><a href="reference/PAR_sea_surface_piCurve.html">PAR_sea_surface_piCurve</a></span><span class="op">(</span></span>
+<span>            zenith_angle  <span class="op">=</span> <span class="va">sza</span>,</span>
+<span>            database_info <span class="op">=</span> <span class="va">GreggCarder1990</span>,</span>
+<span>            sample_date   <span class="op">=</span> <span class="va">Date</span></span>
+<span>        <span class="op">)</span><span class="op">$</span><span class="va">PAR</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span></span>
+<span>    <span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">ungroup</a></span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">#--------------------------------------------------</span></span>
+<span><span class="co"># 4. Plot global PAR map</span></span>
+<span><span class="co">#--------------------------------------------------</span></span>
+<span><span class="va">world_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/map_data.html" class="external-link">map_data</a></span><span class="op">(</span><span class="st">"world"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_tile.html" class="external-link">geom_raster</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">df_global</span>,</span>
+<span>                <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">longitude</span>, y <span class="op">=</span> <span class="va">latitude</span>, fill <span class="op">=</span> <span class="va">PAR</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_polygon.html" class="external-link">geom_polygon</a></span><span class="op">(</span></span>
+<span>        data <span class="op">=</span> <span class="va">world_map</span>,</span>
+<span>        <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">long</span>, y <span class="op">=</span> <span class="va">lat</span>, group <span class="op">=</span> <span class="va">group</span><span class="op">)</span>,</span>
+<span>        fill <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>        color <span class="op">=</span> <span class="st">"black"</span>,</span>
+<span>        linewidth <span class="op">=</span> <span class="fl">0.2</span></span>
+<span>    <span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_fixed.html" class="external-link">coord_fixed</a></span><span class="op">(</span>xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">180</span>, <span class="fl">180</span><span class="op">)</span>,</span>
+<span>                ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">90</span>, <span class="fl">90</span><span class="op">)</span>,</span>
+<span>                expand <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_viridis.html" class="external-link">scale_fill_viridis_c</a></span><span class="op">(</span></span>
+<span>        name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/expression.html" class="external-link">expression</a></span><span class="op">(</span><span class="va">PAR</span> <span class="op">~</span> <span class="op">(</span><span class="va">W</span> <span class="op">~</span> <span class="va">m</span> <span class="op">^</span> <span class="op">-</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>        limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">500</span><span class="op">)</span>,</span>
+<span>        breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">500</span>, by <span class="op">=</span> <span class="fl">100</span><span class="op">)</span>,</span>
+<span>        guide <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guide_colourbar.html" class="external-link">guide_colorbar</a></span><span class="op">(</span></span>
+<span>            direction <span class="op">=</span> <span class="st">"horizontal"</span>,</span>
+<span>            barwidth  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grid/unit.html" class="external-link">unit</a></span><span class="op">(</span><span class="fl">0.7</span>, <span class="st">"npc"</span><span class="op">)</span>,</span>
+<span>            barheight <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grid/unit.html" class="external-link">unit</a></span><span class="op">(</span><span class="fl">0.03</span>, <span class="st">"npc"</span><span class="op">)</span>,</span>
+<span>            title.position <span class="op">=</span> <span class="st">"top"</span>,</span>
+<span>            label.position <span class="op">=</span> <span class="st">"bottom"</span></span>
+<span>        <span class="op">)</span></span>
+<span>    <span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span>        title <span class="op">=</span> <span class="st">"Global sea-surface PAR at local noon"</span>,</span>
+<span>        subtitle <span class="op">=</span> <span class="st">"March 31, 2026"</span>,</span>
+<span>        x <span class="op">=</span> <span class="st">""</span>,</span>
+<span>        y <span class="op">=</span> <span class="st">""</span></span>
+<span>    <span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span>base_size <span class="op">=</span> <span class="fl">13</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"bottom"</span>, axis.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_blank</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><img src="README_files/figure-markdown_github/unnamed-chunk-11-1.png"></p>
 </div>
 <div class="section level2">
 <h2 id="citation">Citation<a class="anchor" aria-label="anchor" href="#citation"></a>
 </h2>
 <p>This package is developed based on the research outlined in the following paper. If you utilize the <code>piCurve</code> package in your work, we kindly request that you cite the referenced publication.</p>
-<p>Mohammad Amirian, Emmanuel Devred, Zoe V. Finkel, Andrew J. Irwin. “<em>An improved parameterization of photoinhibition in phytoplankton photosynthesis-irradiance curves</em>,” xxx 2024.</p>
+<p>M. Amirian, M., Finkel, Z.V., Devred, E., Irwin, A.J. “<em>Parameterization of photoinhibition for phytoplankton</em>”. Commun Earth Environ 6, 707 (2025). <a href="https://doi.org/10.1038/s43247-025-02686-3" class="external-link uri">https://doi.org/10.1038/s43247-025-02686-3</a></p>
+<p>M. Amirian, M. and Irwin, A.J. “<em>piCurve: an R package for modeling photosynthesis–irradiance curves</em>”. arXiv preprint arXiv:2508.14321v1, (2025). <a href="https://arxiv.org/abs/2508.14321" class="external-link uri">https://arxiv.org/abs/2508.14321</a></p>
+</div>
 </div>
 
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
-    <div class="license">
+    <div class="links">
+<h2 data-toc-skip>Links</h2>
+<ul class="list-unstyled">
+<li><a href="https://github.com/Mohammad-Amirian/piCurve/" class="external-link">Browse source code</a></li>
+<li><a href="https://github.com/Mohammad-Amirian/piCurve/issues" class="external-link">Report a bug</a></li>
+</ul>
+</div>
+
+<div class="license">
 <h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
 <li><a href="LICENSE.html">Full license</a></li>
@@ -308,8 +388,8 @@
 <div class="developers">
 <h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
-<li>Mohammad M. Amirian <br><small class="roles"> Author, maintainer </small>  </li>
-<li>Andrew Irwin <br><small class="roles"> Author </small>  </li>
+<li>Mohammad M. Amirian <br><small class="roles"> Author, maintainer </small>   </li>
+<li>Andrew Irwin <br><small class="roles"> Author </small>   </li>
 </ul>
 </div>
 
@@ -326,16 +406,16 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
       </footer>
 </div>
 
-  
 
 
-  
+
+
 
   </body>
 </html>

@@ -20,7 +20,7 @@
 #'
 #' where \eqn{\phi} is latitude and \eqn{\delta} is solar declination, both in
 #' radians. Polar day and polar night cases are handled by constraining the
-#' argument of \eqn{\cos^{-1}} to the interval [-1, 1].
+#' argument of \eqn{\cos^{-1}} to the interval \eqn{[-1, 1]}.
 #'
 #' The `hour` argument is retained for consistency with
 #' [solar_declination_piCurve()]. For day-length calculations, `hour = 12` is
